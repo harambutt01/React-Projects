@@ -23,8 +23,8 @@ function Navbar() {
         <li><Link to="/counter">Counter</Link></li>
         <li><Link to="/toggle">Toggle</Link></li>
         <li><Link to="/input">Input</Link></li>
+        <li><Link to="/products">Products</Link></li>
       </ul>
-
     </nav>
   );
 }
