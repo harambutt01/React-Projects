@@ -23,7 +23,6 @@ function Navbar() {
         <li><Link to="/counter">Counter</Link></li>
         <li><Link to="/toggle">Toggle</Link></li>
         <li><Link to="/input">Input</Link></li>
-        <li><Link to="/useeffect">UseEffect</Link></li>
       </ul>
 
     </nav>

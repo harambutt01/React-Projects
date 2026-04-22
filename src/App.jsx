@@ -7,8 +7,6 @@ import Contact from "./components/Contact";
 import Counter from "./components/Counter.jsx";
 import Toggle from "./components/toggle/Toggle.jsx";
 import Input from "./components/Input";
-import UseEffect from "./components/UseEffect";
-
 import { ThemeProvider } from "./components/ThemeContext"; // ← sirf yeh badla
 
 function App() {
@@ -26,7 +24,6 @@ function App() {
             <Route path="/counter"   element={<Counter />}   />
             <Route path="/toggle"    element={<Toggle />}    />
             <Route path="/input"     element={<Input />}     />
-            <Route path="/useeffect" element={<UseEffect />} />
           </Routes>
         </div>
 
