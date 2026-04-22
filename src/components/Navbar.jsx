@@ -1,7 +1,10 @@
 import { Link } from "react-router-dom";
+import { useTheme } from "./ThemeContext";
 import "./Navbar.css";
 
 function Navbar() {
+  const { isDark, toggleTheme } = useTheme();
+
   return (
     <nav className="navbar">
       <h2 className="logo">MyWebsite</h2>
@@ -15,6 +18,13 @@ function Navbar() {
         <li><Link to="/input">Input</Link></li>
         <li><Link to="/useeffect">UseEffect</Link></li>
       </ul>
+      <div className="theme-btn-wrapper">
+  <button onClick={toggleTheme} className="theme-btn">
+    {isDark ? "☀️ Light Mode" : "🌙 Dark Mode"}
+  </button>
+</div>
+          
+
     </nav>
   );
 }
