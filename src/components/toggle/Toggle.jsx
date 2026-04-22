@@ -1,10 +1,13 @@
 import { useState, useEffect, useCallback } from "react";
+import { useTheme } from "../ThemeContext";
 import StatusDisplay from "./StatusDisplay";
 import "./Toggle.css";
 
 const STORAGE_KEY = "user_profile_status";
 
 function Toggle() {
+  const { isDark } = useTheme();  // ← yeh add karo
+
   const [isOnline, setIsOnline] = useState(() => {
     const saved = localStorage.getItem(STORAGE_KEY);
     return saved ? JSON.parse(saved) : true;
@@ -31,6 +34,7 @@ function Toggle() {
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
             className="avatar-svg"
+            style={{ color: isDark ? "#aaaaaa" : "#000000" }}  // ← yeh add karo
           >
             <circle cx="32" cy="24" r="12" fill="currentColor" opacity="0.9" />
             <path
@@ -44,19 +48,14 @@ function Toggle() {
           </svg>
 
           <span
-            className={`avatar-dot ${
-              isOnline ? "dot-online" : "dot-offline"
-            }`}
+            className={`avatar-dot ${isOnline ? "dot-online" : "dot-offline"}`}
           />
         </div>
-
 
         {/* <StatusDisplay isOnline={isOnline} /> */}
 
         <button
-          className={`toggle-switch ${
-            isOnline ? "toggle-on" : "toggle-off"
-          }`}
+          className={`toggle-switch ${isOnline ? "toggle-on" : "toggle-off"}`}
           onClick={toggleStatus}
         >
           <span className="toggle-thumb" />
