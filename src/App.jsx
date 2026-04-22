@@ -1,3 +1,4 @@
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import ProductList from "./components/products/ProductList.jsx";
 import Navbar from "./components/Navbar";
 import Home from "./components/Home";
@@ -6,12 +7,12 @@ import Contact from "./components/Contact";
 import Counter from "./components/Counter.jsx";
 import Toggle from "./components/toggle/Toggle.jsx";
 import Input from "./components/Input";
-import { ThemeProvider } from "./components/ThemeContext"; 
+import { ThemeProvider } from "./components/ThemeContext";
 
 function App() {
   return (
     <BrowserRouter>
-      <ThemeProvider> 
+      <ThemeProvider>
 
         <Navbar />
 
@@ -23,7 +24,7 @@ function App() {
             <Route path="/counter"   element={<Counter />}   />
             <Route path="/toggle"    element={<Toggle />}    />
             <Route path="/input"     element={<Input />}     />
-            <Route path="/products" element={<ProductList />} />
+            <Route path="/products"  element={<ProductList />} />
           </Routes>
         </div>
 
