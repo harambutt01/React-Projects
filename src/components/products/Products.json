@@ -1,0 +1,14 @@
+[
+  { "id": 1,  "name": "Wireless Headphones",  "category": "Electronics", "price": 59.99,  "image": "https://placehold.co/300x200?text=Headphones"  },
+  { "id": 2,  "name": "Running Shoes",         "category": "Footwear",    "price": 89.99,  "image": "https://placehold.co/300x200?text=Shoes"        },
+  { "id": 3,  "name": "Coffee Maker",          "category": "Kitchen",     "price": 49.99,  "image": "https://placehold.co/300x200?text=Coffee+Maker" },
+  { "id": 4,  "name": "Bluetooth Speaker",     "category": "Electronics", "price": 39.99,  "image": "https://placehold.co/300x200?text=Speaker"      },
+  { "id": 5,  "name": "Yoga Mat",              "category": "Sports",      "price": 29.99,  "image": "https://placehold.co/300x200?text=Yoga+Mat"     },
+  { "id": 6,  "name": "Leather Wallet",        "category": "Accessories", "price": 24.99,  "image": "https://placehold.co/300x200?text=Wallet"       },
+  { "id": 7,  "name": "Smart Watch",           "category": "Electronics", "price": 199.99, "image": "https://placehold.co/300x200?text=Smart+Watch"  },
+  { "id": 8,  "name": "Cooking Pan Set",       "category": "Kitchen",     "price": 79.99,  "image": "https://placehold.co/300x200?text=Pan+Set"      },
+  { "id": 9,  "name": "Sunglasses",            "category": "Accessories", "price": 34.99,  "image": "https://placehold.co/300x200?text=Sunglasses"   },
+  { "id": 10, "name": "Basketball",            "category": "Sports",      "price": 19.99,  "image": "https://placehold.co/300x200?text=Basketball"   },
+  { "id": 11, "name": "Sneakers",              "category": "Footwear",    "price": 64.99,  "image": "https://placehold.co/300x200?text=Sneakers"     },
+  { "id": 12, "name": "Air Purifier",          "category": "Electronics", "price": 129.99, "image": "https://placehold.co/300x200?text=Air+Purifier" }
+]
