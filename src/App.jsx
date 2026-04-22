@@ -16,7 +16,7 @@ function App() {
 
         <Navbar />
 
-        <div style={{ marginLeft: "220px", padding: "20px" }}>
+        <div className="main-content">
           <Routes>
             <Route path="/"         element={<Home />}        />
             <Route path="/about"    element={<About />}       />
