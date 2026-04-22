@@ -7,7 +7,14 @@ function Navbar() {
 
   return (
     <nav className="navbar">
+      <div className="theme-btn-wrapper">
+    <button onClick={toggleTheme} className="theme-btn">
+      {isDark ? "☀️" : "🌙"}
+    </button>
+  </div>
       <h2 className="logo">MyWebsite</h2>
+
+    
 
       <ul className="nav-links">
         <li><Link to="/">Home</Link></li>
@@ -18,12 +25,6 @@ function Navbar() {
         <li><Link to="/input">Input</Link></li>
         <li><Link to="/useeffect">UseEffect</Link></li>
       </ul>
-      <div className="theme-btn-wrapper">
-  <button onClick={toggleTheme} className="theme-btn">
-    {isDark ? "☀️ Light Mode" : "🌙 Dark Mode"}
-  </button>
-</div>
-          
 
     </nav>
   );
