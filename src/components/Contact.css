@@ -30,9 +30,9 @@
 }
 
 .field {
-  display:       flex;
+  display:        flex;
   flex-direction: column;
-  margin-bottom: 20px;
+  margin-bottom:  20px;
 }
 
 .label {
@@ -52,15 +52,15 @@
   color:         #111;
 }
 
-.input:focus {
+ .input:focus {
   border-color: #4f6ef7;
-}
+} 
 
- .error {
+.error {
   margin-top: 5px;
   font-size:  0.78rem;
   color:      #e53935;
-} 
+}
 
 .submit-btn {
   width:         100%;

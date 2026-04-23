@@ -17,19 +17,19 @@ function ProductList() {
   const filteredProducts = useMemo(() => {
     let result = [...productsData];
 
-    // 1. Search filter
+   
     if (search.trim()) {
       result = result.filter((p) =>
         p.name.toLowerCase().includes(search.toLowerCase())
       );
     }
 
-    // 2. Category filter
+    
     if (category) {
       result = result.filter((p) => p.category === category);
     }
 
-    // 3. Sort by price
+    
     if (sort === "asc") {
       result.sort((a, b) => a.price - b.price);
     } else if (sort === "desc") {
