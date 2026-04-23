@@ -1,0 +1,33 @@
+.filters-grid {
+  display:               grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap:                   12px;
+  margin-bottom:         24px;
+}
+
+.filter-input {
+  padding:       8px 12px;
+  border-radius: 8px;
+  font-size:     0.85rem;
+  outline:       none;
+  width:         100%;
+  box-sizing:    border-box;
+  transition:    border 0.2s ease;
+}
+
+.filter-input.light {
+  border:     1px solid #ddd;
+  background: #fff;
+  color:      #111;
+}
+
+.filter-input.dark {
+  border:     1px solid #444;
+  background: #1e1e1e;
+  color:      #e0e0e0;
+}
+
+.filter-input:focus {
+  border-color: #4f6ef7;
+}
+ 
