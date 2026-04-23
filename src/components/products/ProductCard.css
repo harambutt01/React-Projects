@@ -55,3 +55,20 @@
 
 .product-price.light { color: #4f6ef7; }
 .product-price.dark  { color: #6b8cff; }
+
+.product-description {
+  font-size:   0.8rem;
+  margin:      4px 0 8px;
+  line-height: 1.5;
+}
+
+.product-description.light { color: #666; }
+.product-description.dark  { color: #aaa; }
+
+
+/* ── Mobile (480px) ── */
+@media (max-width: 480px) {
+  .product-card img {
+    height: 300px;
+  }
+}

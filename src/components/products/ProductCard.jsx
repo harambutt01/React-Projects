@@ -21,6 +21,10 @@ function ProductCard({ product }) {
         <p className={`product-price ${theme}`}>
           ${product.price.toFixed(2)}
         </p>
+
+        <p className={`product-description ${theme}`}>
+        {product.description}
+       </p>
       </div>
     </div>
   );
