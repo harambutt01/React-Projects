@@ -56,19 +56,11 @@
   border-color: #4f6ef7;
 }
 
-.input-error {
-  border-color: #e53935;
-}
-
-.input-error:focus {
-  border-color: #e53935;
-}
-
-.error {
+ .error {
   margin-top: 5px;
   font-size:  0.78rem;
   color:      #e53935;
-}
+} 
 
 .submit-btn {
   width:         100%;
@@ -93,7 +85,6 @@
   cursor:     not-allowed;
 }
 
-/* ── Responsive ── */
 @media (max-width: 480px) {
   .form-card {
     padding: 24px 18px;
