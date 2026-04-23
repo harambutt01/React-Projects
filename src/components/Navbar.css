@@ -1,4 +1,4 @@
-/* ── Desktop Sidebar ── */
+
 .navbar {
   width: 200px;
   height: 100vh;
@@ -78,29 +78,23 @@
   border-color: white;
 }
 
-/* ── Mobile Header — hidden on desktop ── */
 .mobile-header {
   display: none;
 }
 
-/* ── Overlay — hidden on desktop ── */
 .overlay {
   display: none;
 }
-
-/* ── Tablet & Mobile (max 768px) ── */
 @media (max-width: 768px) {
-  /* Sidebar hidden by default */
+
   .navbar {
     transform: translateX(-100%);
   }
 
-  /* Sidebar open */
   .navbar.open {
     transform: translateX(0);
   }
 
-  /* Top bar visible */
   .mobile-header {
     display: flex;
     align-items: center;
@@ -121,7 +115,6 @@
     gap: 8px;
   }
 
-  /* Overlay visible when menu open */
   .overlay {
     display: block;
     position: fixed;

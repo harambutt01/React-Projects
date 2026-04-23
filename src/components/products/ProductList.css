@@ -37,7 +37,7 @@
 .no-results.light { color: #999; }
 .no-results.dark  { color: #888; }
 
-/* ── Tablet (768px) → 3 products ── */
+
 @media (max-width: 768px) {
   .product-grid {
     grid-template-columns: repeat(3, 1fr);
@@ -49,7 +49,7 @@
   }
 }
 
-/* ── Mobile (480px) → 1 product ── */
+
 @media (max-width: 480px) {
   .product-grid {
     grid-template-columns: 1fr;
