@@ -79,6 +79,16 @@
 .overlay {
   display: none;
 }
+
+
+.navbar-toggle-wrapper {
+  position: fixed;
+  top: 16px;
+  right: 24px;
+  z-index: 1000;
+}
+
+
 @media (max-width: 768px) {
 
   .navbar .theme-btn {

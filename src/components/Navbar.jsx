@@ -41,7 +41,7 @@ function Navbar() {
           <li><Link to="/contact"  onClick={closeMenu}>Contact</Link></li>
           <li><Link to="/counter"  onClick={closeMenu}>Counter</Link></li>
           <li><Link to="/toggle"   onClick={closeMenu}>Toggle</Link></li>
-          <li><Link to="/input"    onClick={closeMenu}>Input</Link></li>
+          <li><Link to="/dashboard"    onClick={closeMenu}>Dashboard</Link></li>
           <li><Link to="/products" onClick={closeMenu}>Products</Link></li>
         </ul>
       </nav>

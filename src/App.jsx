@@ -6,7 +6,7 @@ import About from "./components/About";
 import Contact from "./components/Contact";
 import Counter from "./components/Counter.jsx";
 import Toggle from "./components/toggle/Toggle.jsx";
-import Input from "./components/Input";
+import Dashboard from "./components/Dashboard.jsx";
 import ProductList from "./components/products/ProductList.jsx";
 
 function App() {
@@ -23,7 +23,7 @@ function App() {
             <Route path="/contact"  element={<Contact />}     />
             <Route path="/counter"  element={<Counter />}     />
             <Route path="/toggle"   element={<Toggle />}      />
-            <Route path="/input"    element={<Input />}       />
+            <Route path="/dashboard"    element={<Dashboard />}       />
             <Route path="/products" element={<ProductList />} />
           </Routes>
         </div>
