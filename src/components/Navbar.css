@@ -12,11 +12,14 @@
   z-index: 1000;
   transition: transform 0.3s ease;
 }
-
-.logo {
-  margin-bottom: 0;
-  transition: color 0.3s ease;
+.navbar-top {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  width: 100%;
+  gap: 18px;;
 }
+
 
 .nav-links {
   list-style: none;
@@ -135,5 +138,8 @@
     bottom: 0;
     background: rgba(0, 0, 0, 0.5);
     z-index: 998;
+  }
+  .navbar .avatar-toggle-wrapper {
+    display: none;
   }
 }

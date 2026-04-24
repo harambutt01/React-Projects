@@ -5,29 +5,24 @@ import Home from "./components/Home";
 import About from "./components/About";
 import Contact from "./components/Contact";
 import Counter from "./components/Counter.jsx";
-import Toggle from "./components/toggle/Toggle.jsx";
 import Dashboard from "./components/Dashboard.jsx";
 import ProductList from "./components/products/ProductList.jsx";
-
+import "./components/toggle/Toggle.css";
 function App() {
   return (
     <BrowserRouter>
       <ThemeProvider>
-
         <Navbar />
-
         <div className="main-content">
           <Routes>
             <Route path="/"         element={<Home />}        />
             <Route path="/about"    element={<About />}       />
             <Route path="/contact"  element={<Contact />}     />
             <Route path="/counter"  element={<Counter />}     />
-            <Route path="/toggle"   element={<Toggle />}      />
-            <Route path="/dashboard"    element={<Dashboard />}       />
+            <Route path="/dashboard"    element={<Dashboard />}   />
             <Route path="/products" element={<ProductList />} />
           </Routes>
         </div>
-
       </ThemeProvider>
     </BrowserRouter>
   );
