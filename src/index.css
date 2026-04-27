@@ -1,6 +1,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
@@ -8,6 +9,7 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background-color: #f4f4f4; /* Optional: halka sa background color */
 }
 
 code {
@@ -15,17 +17,33 @@ code {
     monospace;
 }
 
-/* ── Main Content ── */
+/* ── Global Layout Fix ── */
+#root {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Poori website ko horizontal center karega */
+}
+
+/* ── Main Content (Centered) ── */
 .main-content {
-  margin-left: 220px;
+  /* margin-left: 220px;  <-- Is line ko maine hata diya hai */
+  margin: 0 auto;         /* Is se content center ho jaye ga */
+  margin-top: 80px;      /* Navbar k neeche se start hoga */
   padding: 20px;
+  width: 100%;
+  max-width: 1200px;     /* Website boht zyada wide na ho */
+  display: flex;
+  flex-direction: column;
+  align-items: center;   /* Internal items (h1, buttons) ko center karne k liye */
+  min-height: calc(100vh - 80px);
 }
 
 /* ── Tablet & Mobile ── */
 @media (max-width: 768px) {
   .main-content {
-    margin-left: 0;
-    padding: 0;
-    margin-top: 56px;
+    margin-top: 64px;
+    padding: 15px;
+    width: 100%;
   }
 }
