@@ -7,7 +7,6 @@
 .dashboard-page.light { background: #f5f5f5; }
 .dashboard-page.dark  { background: #121212; }
 
-
 .dashboard-header {
   margin-bottom: 20px;
 }
@@ -21,34 +20,28 @@
 .dashboard-title.light { color: #111; }
 .dashboard-title.dark  { color: #e0e0e0; }
 
-.dashboard-count {
-  margin: 0;
-  font-size: 0.85rem;
-}
-
-.dashboard-count.light { color: #999; }
-.dashboard-count.dark  { color: #888; }
-
-
+/* Table Structure Fix (Layout Shift rokne k liye) */
 .table-wrapper {
   overflow-x: auto;
+  width: 100%;
 }
 
 .data-table {
   width: 100%;
   border-collapse: collapse;
   font-size: 0.9rem;
+  table-layout: fixed; /* Ye table ko shrink hone se rokta hai */
 }
 
-.data-table.light {
-  background: #ffffff;
-  color: #111;
-}
+/* Columns ki width fix kar di taake loading k waqt size na badle */
+.data-table th:nth-child(1) { width: 50px; }  /* # column */
+.data-table th:nth-child(2) { width: 25%; }   /* Name */
+.data-table th:nth-child(3) { width: 30%; }   /* Email */
+.data-table th:nth-child(4) { width: 20%; }   /* Phone */
+.data-table th:nth-child(5) { width: 20%; }   /* City */
 
-.data-table.dark {
-  background: #1e1e1e;
-  color: #e0e0e0;
-}
+.data-table.light { background: #ffffff; color: #111; }
+.data-table.dark { background: #1e1e1e; color: #e0e0e0; }
 
 .data-table th {
   padding: 12px 16px;
@@ -75,76 +68,51 @@
   padding: 12px 16px;
 }
 
-.data-table.light td {
-  border-bottom: 1px solid #f0f0f0;
-  color: #333;
+.data-table.light td { border-bottom: 1px solid #f0f0f0; color: #333; }
+.data-table.dark td { border-bottom: 1px solid #2a2a2a; color: #ccc; }
+
+/* --- SKELETON ANIMATION --- */
+.skeleton-cell {
+  height: 18px;
+  border-radius: 4px;
+  width: 90%;
+  position: relative;
+  overflow: hidden;
 }
 
-.data-table.dark td {
-  border-bottom: 1px solid #2a2a2a;
-  color: #ccc;
+/* Light mode skeleton colors */
+.light .skeleton-cell { background: #ececec; }
+
+/* Dark mode skeleton colors */
+.dark .skeleton-cell { background: #333; }
+
+/* Shimmer effect animation */
+.skeleton-cell::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0,
+    rgba(255, 255, 255, 0.2) 20%,
+    rgba(255, 255, 255, 0.5) 60%,
+    rgba(255, 255, 255, 0)
+  );
+  animation: shimmer 1.5s infinite;
 }
 
-.data-table tbody tr:hover {
-  background: rgba(79, 110, 247, 0.05);
+@keyframes shimmer {
+  100% { transform: translateX(100%); }
 }
 
-
-.spinner-wrapper {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 60px 0;
-  gap: 12px;
-}
-
-.spinner {
-  width: 36px;
-  height: 36px;
-  border: 3px solid #ddd;
-  border-top-color: #4f6ef7;
-  border-radius: 50%;
-  animation: spin 0.8s linear infinite;
-}
-
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
-
-.spinner-text {
-  font-size: 0.9rem;
-}
-
-.spinner-text.light { color: #888; }
-.spinner-text.dark  { color: #aaa; }
-
-
-.error-wrapper {
-  display: flex;
-  justify-content: center;
-  padding: 60px 0;
-}
-
-.error-msg {
-  color: #e53935;
-  font-size: 0.95rem;
-}
-
-
-.empty-msg {
-  text-align: center;
-  padding: 60px 0;
-  font-size: 0.95rem;
-}
-
-.empty-msg.light { color: #999; }
-.empty-msg.dark  { color: #888; }
-
+/* Error and Empty States */
+.error-msg { color: #e53935; text-align: center; padding: 20px; }
+.empty-msg { text-align: center; padding: 60px 0; }
 
 @media (max-width: 768px) {
-  .dashboard-page {
-    padding: 16px;
-    margin-top: 56px;
-  }
+  .dashboard-page { padding: 16px; margin-top: 56px; }
+  .data-table { table-layout: auto; } /* Mobile pr auto responsive behtar hai */
 }
