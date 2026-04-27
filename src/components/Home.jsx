@@ -9,10 +9,10 @@ function Home(props) {
 
       {/* Paragraph style */}
       <p className="text-gray-600 mb-4">
-        Welcome <span className="font-semibold text-blue-600">{props.user}</span>
+        Welcome <span className="font-semibold text-red-600">{props.user}</span>
       </p>
 
-      <button className="px-5 py-2.5 bg-black text-white rounded font-medium cursor-pointer mt-2 hover:bg-gray-700 transition-colors duration-200">
+      <button className="px-5 py-2.5 bg-blue-500 text-white rounded font-medium cursor-pointer mt-2 hover:bg-gray-700 transition-colors duration-200">
         Click Me
       </button>
 
