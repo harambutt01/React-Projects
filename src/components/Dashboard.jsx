@@ -21,7 +21,6 @@ function Dashboard() {
         <p className="empty-msg">No data available.</p>
       )}
 
-      {/* Agar loading ho rahi ho ya data aa chuka ho, dono surto mein table ka structure dikhayen */}
       {(loading || (!error && data.length > 0)) && (
         <div className="table-wrapper">
           <table className={`data-table ${theme}`}>
@@ -36,7 +35,7 @@ function Dashboard() {
             </thead>
             <tbody>
               {loading
-                ? // Jab loading ho rahi ho, 5 khali skeleton rows dikhao
+                ?
                   Array(5)
                     .fill(0)
                     .map((_, index) => (
@@ -48,7 +47,7 @@ function Dashboard() {
                         <td><div className="skeleton-cell"></div></td>
                       </tr>
                     ))
-                : // Jab data load ho jaye
+                : //
                   data.map((user) => (
                     <tr key={user.id}>
                       <td>{user.id}</td>

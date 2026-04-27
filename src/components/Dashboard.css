@@ -20,7 +20,6 @@
 .dashboard-title.light { color: #111; }
 .dashboard-title.dark  { color: #e0e0e0; }
 
-/* Table Structure Fix (Layout Shift rokne k liye) */
 .table-wrapper {
   overflow-x: auto;
   width: 100%;
@@ -32,8 +31,6 @@
   font-size: 0.9rem;
   table-layout: fixed; /* Ye table ko shrink hone se rokta hai */
 }
-
-/* Columns ki width fix kar di taake loading k waqt size na badle */
 .data-table th:nth-child(1) { width: 50px; }  /* # column */
 .data-table th:nth-child(2) { width: 25%; }   /* Name */
 .data-table th:nth-child(3) { width: 30%; }   /* Email */
@@ -80,13 +77,11 @@
   overflow: hidden;
 }
 
-/* Light mode skeleton colors */
 .light .skeleton-cell { background: #ececec; }
 
-/* Dark mode skeleton colors */
 .dark .skeleton-cell { background: #333; }
 
-/* Shimmer effect animation */
+
 .skeleton-cell::after {
   content: "";
   position: absolute;
@@ -108,7 +103,6 @@
   100% { transform: translateX(100%); }
 }
 
-/* Error and Empty States */
 .error-msg { color: #e53935; text-align: center; padding: 20px; }
 .empty-msg { text-align: center; padding: 60px 0; }
 
