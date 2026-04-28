@@ -1,7 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { Link } from "react-router-dom";
 import { useTheme } from "./ThemeContext";
-import "./Navbar.css";
 import "./toggle/Toggle.css";
 
 const STORAGE_KEY = "user_profile_status";
@@ -27,54 +26,64 @@ function Navbar() {
 
   return (
     <>
-      <header className="mobile-header">
-        <div className="nav-left-group">
-          <h2 className="logo">MyWebsite</h2>
-          
-          <ul className="nav-links">
-            <li><Link to="/" onClick={closeMenu}>Home</Link></li>
-            <li><Link to="/about" onClick={closeMenu}>About</Link></li>
-            <li><Link to="/contact" onClick={closeMenu}>Contact</Link></li>
-            <li><Link to="/counter" onClick={closeMenu}>Counter</Link></li>
-            <li><Link to="/dashboard" onClick={closeMenu}>Dashboard</Link></li>
-            <li><Link to="/products" onClick={closeMenu}>Products</Link></li>
+      {/* Desktop Header */}
+      <header className="flex justify-between items-center px-10 h-16 bg-[#222] text-white fixed top-0 left-0 w-full z-[1001]">
+        
+        <div className="flex items-center gap-10">
+          <h2 className="text-xl font-bold">MyWebsite</h2>
+
+          <ul className="hidden md:flex list-none gap-5 m-0 p-0">
+            <li><Link to="/" className="text-white no-underline text-[0.95rem] hover:text-[#00bcd4] transition-colors duration-300">Home</Link></li>
+            <li><Link to="/about" className="text-white no-underline text-[0.95rem] hover:text-[#00bcd4] transition-colors duration-300">About</Link></li>
+            <li><Link to="/contact" className="text-white no-underline text-[0.95rem] hover:text-[#00bcd4] transition-colors duration-300">Contact</Link></li>
+            <li><Link to="/counter" className="text-white no-underline text-[0.95rem] hover:text-[#00bcd4] transition-colors duration-300">Counter</Link></li>
+            <li><Link to="/dashboard" className="text-white no-underline text-[0.95rem] hover:text-[#00bcd4] transition-colors duration-300">Dashboard</Link></li>
+            <li><Link to="/products" className="text-white no-underline text-[0.95rem] hover:text-[#00bcd4] transition-colors duration-300">Products</Link></li>
           </ul>
         </div>
 
-        <div className="mobile-controls">
+        <div className="flex items-center gap-4">
           <button
-            className={`toggle-switch ${isOnline ? "toggle-on" : "toggle-off"}`}
+            className={`w-[30px] h-[17px] rounded-full border-none cursor-pointer relative transition-all duration-300 p-0
+              ${isOnline ? "bg-[#00e5a0]" : "bg-[#cccccc]"}`}
             onClick={toggleStatus}
           >
-            <span className="toggle-thumb" />
+            <span className={`w-[11px] h-[11px] bg-white rounded-full absolute top-[3px] transition-all duration-300
+              ${isOnline ? "left-[16px]" : "left-[3px]"}`} />
           </button>
 
-          <button className="theme-btn" onClick={toggleTheme}>
+          <button className="bg-transparent border-none text-white cursor-pointer text-lg" onClick={toggleTheme}>
             {isDark ? "☀️" : "🌙"}
           </button>
 
-          <button className="hamburger" onClick={() => setMenuOpen(true)}>
+          <button
+            className="md:hidden bg-transparent border border-white/30 text-white px-3 py-1 rounded cursor-pointer text-xl"
+            onClick={() => setMenuOpen(true)}>
             ☰
           </button>
         </div>
       </header>
 
-      {menuOpen && <div className="overlay" onClick={closeMenu} />}
+      {/* Overlay */}
+      {menuOpen && (
+        <div className="fixed inset-0 bg-black/60 z-[1500]" onClick={closeMenu} />
+      )}
 
-      {/* ── Side Menu (Updated) ── */}
-      <nav className={`side-navbar ${menuOpen ? "open" : ""}`}>
-        <div className="side-navbar-top">
-           {/* Logo yahan se hata diya gaya hai */}
-           <button className="close-btn" onClick={closeMenu}>✕</button>
+      {/* Side Navbar */}
+      <nav className={`fixed top-0 h-screen w-[280px] bg-[#222] text-white z-[2000] transition-all duration-400 p-5 flex flex-col
+        ${menuOpen ? "left-0" : "-left-[280px]"}`}>
+        
+        <div className="flex justify-between items-center mb-8 border-b border-white/10 pb-3">
+          <button className="bg-transparent border-none text-white text-2xl cursor-pointer" onClick={closeMenu}>✕</button>
         </div>
 
-        <ul className="side-nav-links">
-          <li><Link to="/" onClick={closeMenu}>Home</Link></li>
-          <li><Link to="/about" onClick={closeMenu}>About</Link></li>
-          <li><Link to="/contact" onClick={closeMenu}>Contact</Link></li>
-          <li><Link to="/counter" onClick={closeMenu}>Counter</Link></li>
-          <li><Link to="/dashboard" onClick={closeMenu}>Dashboard</Link></li>
-          <li><Link to="/products" onClick={closeMenu}>Products</Link></li>
+        <ul className="list-none p-0">
+          <li className="mb-4"><Link to="/" onClick={closeMenu} className="text-white no-underline text-[1.1rem] block px-3 py-2 rounded-md hover:bg-white/10 hover:text-[#00bcd4] transition-all duration-200">Home</Link></li>
+          <li className="mb-4"><Link to="/about" onClick={closeMenu} className="text-white no-underline text-[1.1rem] block px-3 py-2 rounded-md hover:bg-white/10 hover:text-[#00bcd4] transition-all duration-200">About</Link></li>
+          <li className="mb-4"><Link to="/contact" onClick={closeMenu} className="text-white no-underline text-[1.1rem] block px-3 py-2 rounded-md hover:bg-white/10 hover:text-[#00bcd4] transition-all duration-200">Contact</Link></li>
+          <li className="mb-4"><Link to="/counter" onClick={closeMenu} className="text-white no-underline text-[1.1rem] block px-3 py-2 rounded-md hover:bg-white/10 hover:text-[#00bcd4] transition-all duration-200">Counter</Link></li>
+          <li className="mb-4"><Link to="/dashboard" onClick={closeMenu} className="text-white no-underline text-[1.1rem] block px-3 py-2 rounded-md hover:bg-white/10 hover:text-[#00bcd4] transition-all duration-200">Dashboard</Link></li>
+          <li className="mb-4"><Link to="/products" onClick={closeMenu} className="text-white no-underline text-[1.1rem] block px-3 py-2 rounded-md hover:bg-white/10 hover:text-[#00bcd4] transition-all duration-200">Products</Link></li>
         </ul>
       </nav>
     </>

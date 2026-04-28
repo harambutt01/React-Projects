@@ -1,17 +1,21 @@
 import { useTheme } from "../ThemeContext";
+import { useNavigate } from "react-router-dom";
 
 function ProductCard({ product }) {
   const { isDark } = useTheme();
+  const navigate = useNavigate();
 
   return (
-    <div className={`rounded-xl overflow-hidden transition-transform duration-200 hover:-translate-y-1 hover:shadow-lg
-      ${isDark 
-        ? "bg-[#1e1e1e] border border-[#333] shadow-[0_2px_8px_rgba(0,0,0,0.4)]" 
-        : "bg-white border border-[#e0e0e0] shadow-[0_2px_8px_rgba(0,0,0,0.08)]"
-      }`}>
+    <div
+      onClick={() => navigate(`/products/${product.id}`)}
+      className={`rounded-xl overflow-hidden transition-transform duration-200 hover:-translate-y-1 hover:shadow-lg cursor-pointer
+        ${isDark
+          ? "bg-[#1e1e1e] border border-[#333] shadow-[0_2px_8px_rgba(0,0,0,0.4)]"
+          : "bg-white border border-[#e0e0e0] shadow-[0_2px_8px_rgba(0,0,0,0.08)]"
+        }`}>
 
-      <img 
-        src={product.image} 
+      <img
+        src={product.image}
         alt={product.name}
         className="w-full h-[160px] object-cover sm:h-[300px]"
       />
