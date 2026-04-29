@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "./components/ThemeContext";
+import { CartProvider } from "./components/CartContext";
 import Navbar from "./components/Navbar";
 import Home from "./components/Home";
 import About from "./components/About";
@@ -14,18 +15,20 @@ function App() {
   return (
     <BrowserRouter>
       <ThemeProvider>
-        <Navbar />
-        <div className="main-content">
-          <Routes>
-            <Route path="/"                element={<Home />}         />
-            <Route path="/about"           element={<About />}        />
-            <Route path="/contact"         element={<Contact />}      />
-            <Route path="/counter"         element={<Counter />}      />
-            <Route path="/dashboard"       element={<Dashboard />}    />
-            <Route path="/products"        element={<ProductList />}  />
-            <Route path="/products/:id"    element={<ProductDetail />} />
-          </Routes>
-        </div>
+        <CartProvider>
+          <Navbar />
+          <div className="main-content">
+            <Routes>
+              <Route path="/"               element={<Home />}         />
+              <Route path="/about"          element={<About />}        />
+              <Route path="/contact"        element={<Contact />}      />
+              <Route path="/counter"        element={<Counter />}      />
+              <Route path="/dashboard"      element={<Dashboard />}    />
+              <Route path="/products"       element={<ProductList />}  />
+              <Route path="/products/:id"   element={<ProductDetail />}/>
+            </Routes>
+          </div>
+        </CartProvider>
       </ThemeProvider>
     </BrowserRouter>
   );
