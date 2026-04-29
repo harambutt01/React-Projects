@@ -5,12 +5,10 @@ function Home(props) {
       
       <div className="flex flex-col items-center justify-center p-10 bg-white shadow-sm rounded-xl border border-gray-100 w-full max-w-2xl">
         
-        {/* Heading style */}
         <h1 className="text-3xl font-bold text-gray-800 mb-2">
           Home Page
         </h1>
 
-        {/* Paragraph style */}
         <p className="text-gray-600 mb-4">
           Welcome <span className="font-semibold text-red-600">{props.user}</span>
         </p>

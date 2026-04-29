@@ -80,8 +80,7 @@ function Contact() {
   };
 
   return (
-    /* Changed: pt-24 ensures it starts below navbar. 
-       Changed: items-start to ensure it doesn't try to vertically center in a way that hides top content */
+    
     <div className="flex justify-center items-start px-[16px] pt-24 pb-10 min-h-screen bg-gray-50">
       <div className="w-full max-w-[480px] bg-white border border-[#e0e0e0] rounded-[12px] px-[32px] py-[36px] shadow-[0_4px_20px_rgba(0,0,0,0.08)] sm:px-[18px] sm:py-[24px]">
 
@@ -111,7 +110,6 @@ function Contact() {
             {touched.name && errors.name && <span className="mt-[5px] text-[0.78rem] text-[#e53935]">{errors.name}</span>}
           </div>
 
-          {/* Email Field */}
           <div className="flex flex-col mb-[20px]">
             <label className="text-[0.82rem] font-[600] text-[#444] mb-[6px]">Email</label>
             <input
@@ -128,7 +126,6 @@ function Contact() {
             {touched.email && errors.email && <span className="mt-[5px] text-[0.78rem] text-[#e53935]">{errors.email}</span>}
           </div>
 
-          {/* Password Field */}
           <div className="flex flex-col mb-[20px]">
             <label className="text-[0.82rem] font-[600] text-[#444] mb-[6px]">Password</label>
             <input
@@ -145,7 +142,6 @@ function Contact() {
             {touched.password && errors.password && <span className="mt-[5px] text-[0.78rem] text-[#e53935]">{errors.password}</span>}
           </div>
 
-          {/* Confirm Password Field */}
           <div className="flex flex-col mb-[20px]">
             <label className="text-[0.82rem] font-[600] text-[#444] mb-[6px]">Confirm Password</label>
             <input
