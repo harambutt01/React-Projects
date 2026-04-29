@@ -9,12 +9,9 @@ function Dashboard() {
   const { data, loading, error } = useFetch(API_URL);
 
   return (
-    /* .dashboard-page { padding: 24px; min-height: 100vh; transition: background 0.3s ease; } */
     <div className={`pt-24 px-6 min-h-screen transition-all duration-300 ${isDark ? "bg-[#121212]" : "bg-[#f5f5f5]"}`}>
       
-      {/* .dashboard-header { margin-bottom: 20px; } */}
       <div className="mb-5">
-        {/* .dashboard-title { margin: 0 0 4px; font-size: 1.5rem; font-weight: 700; } */}
         <h2 className={`text-2xl font-bold mb-1 ${isDark ? "text-[#e0e0e0]" : "text-[#111]"}`}>
           Users
         </h2>
@@ -27,15 +24,12 @@ function Dashboard() {
       )}
 
       {(loading || (!error && data.length > 0)) && (
-        /* .table-wrapper { overflow-x: auto; width: 100%; } */
         <div className="overflow-x-auto w-full rounded-lg shadow-sm">
           
-          {/* .data-table { width: 100%; border-collapse: collapse; font-size: 0.9rem; table-layout: fixed; } */}
           <table className={`w-full border-collapse text-[0.9rem] table-fixed md:table-fixed sm:table-auto ${isDark ? "bg-[#1e1e1e] text-[#e0e0e0]" : "bg-white text-[#111]"}`}>
             
             <thead className={`${isDark ? "bg-[#2a2a2a] text-[#aaa]" : "bg-[#f0f0f0] text-[#555]"}`}>
               <tr>
-                {/* Specific column widths matching your CSS */}
                 <th className="p-3 px-4 text-left text-[0.78rem] font-bold uppercase tracking-wider border-b border-opacity-10 w-[50px]">#</th>
                 <th className="p-3 px-4 text-left text-[0.78rem] font-bold uppercase tracking-wider border-b border-opacity-10 w-1/4">Name</th>
                 <th className="p-3 px-4 text-left text-[0.78rem] font-bold uppercase tracking-wider border-b border-opacity-10 w-[30%]">Email</th>
