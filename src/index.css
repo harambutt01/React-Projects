@@ -18,32 +18,32 @@ code {
 }
 
 /* ── Global Layout Fix ── */
-#root {
+ /* #root {
   width: 100%;
   display: flex;
   flex-direction: column;
-  align-items: center; /* Poori website ko horizontal center karega */
-}
+  align-items: center; 
+}  */
 
 /* ── Main Content (Centered) ── */
-.main-content {
-  /* margin-left: 220px;  <-- Is line ko maine hata diya hai */
-  margin: 0 auto;         /* Is se content center ho jaye ga */
-  margin-top: 80px;      /* Navbar k neeche se start hoga */
+  /* .main-content {
+   margin-left: 220px;
+  margin: 0 auto;         
+  margin-top: 80px;      
   padding: 20px;
   width: 100%;
-  max-width: 1200px;     /* Website boht zyada wide na ho */
+  max-width: 1200px;     
   display: flex;
   flex-direction: column;
-  align-items: center;   /* Internal items (h1, buttons) ko center karne k liye */
+  align-items: center;   
   min-height: calc(100vh - 80px);
-}
+}   */
 
 /* ── Tablet & Mobile ── */
-@media (max-width: 768px) {
+ @media (max-width: 768px) {
   .main-content {
     margin-top: 64px;
     padding: 15px;
     width: 100%;
   }
-}
+} 

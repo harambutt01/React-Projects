@@ -46,7 +46,7 @@ function Navbar() {
           </ul>
         </div>
 
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-[4px]">
 
           {/* Toggle Status */}
           <button
@@ -59,15 +59,15 @@ function Navbar() {
 
           {/* Theme Button */}
           <button
-            className="bg-transparent border-none text-white cursor-pointer text-lg"
+            className="bg-transparent border-none text-white cursor-pointer text-lg p-0"
             onClick={toggleTheme}>
             {isDark ? "☀️" : "🌙"}
           </button>
 
-          {/* Cart Button */}
+          {/* Cart Button - mobile mn bhi navbar mn dikhega, hamburger se pehle */}
           <button
             onClick={() => setCartOpen(true)}
-            className="relative text-white text-xl bg-transparent border-none cursor-pointer">
+            className="relative text-white text-xl bg-transparent border-none cursor-pointer p-0">
             🛒
             {totalItems > 0 && (
               <span className="absolute -top-2 -right-2 bg-red-500 text-white text-[0.65rem] font-bold w-4 h-4 rounded-full flex items-center justify-center">
@@ -90,7 +90,7 @@ function Navbar() {
         <div className="fixed inset-0 bg-black/60 z-[1]" onClick={closeMenu} />
       )}
 
-      {/* Side Navbar */}
+      {/* Side Navbar - Cart item hataya */}
       <nav className={`fixed top-0 h-screen w-[280px] bg-[#222] text-white z-[2000] transition-all duration-300 p-5 flex flex-col
         ${menuOpen ? "left-0" : "-left-[280px]"}`}>
 
@@ -109,13 +109,6 @@ function Navbar() {
           <li className="mb-4"><Link to="/counter" onClick={closeMenu} className="text-white no-underline text-[1.1rem] block px-3 py-2 rounded-md hover:bg-white/10 hover:text-[#00bcd4] transition-all duration-200">Counter</Link></li>
           <li className="mb-4"><Link to="/dashboard" onClick={closeMenu} className="text-white no-underline text-[1.1rem] block px-3 py-2 rounded-md hover:bg-white/10 hover:text-[#00bcd4] transition-all duration-200">Dashboard</Link></li>
           <li className="mb-4"><Link to="/products" onClick={closeMenu} className="text-white no-underline text-[1.1rem] block px-3 py-2 rounded-md hover:bg-white/10 hover:text-[#00bcd4] transition-all duration-200">Products</Link></li>
-          <li className="mb-4">
-            <button
-              onClick={() => { closeMenu(); setCartOpen(true); }}
-              className="text-white no-underline text-[1.1rem] block px-3 py-2 rounded-md hover:bg-white/10 hover:text-[#00bcd4] transition-all duration-200 bg-transparent border-none cursor-pointer w-full text-left">
-              Cart 🛒 {totalItems > 0 && `(${totalItems})`}
-            </button>
-          </li>
         </ul>
       </nav>
 
