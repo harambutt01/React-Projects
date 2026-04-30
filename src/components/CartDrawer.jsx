@@ -7,7 +7,7 @@ function CartDrawer({ isOpen, onClose }) {
 
   return (
     <>
-      {/* Overlay: Backdrop-blur and higher z-index */}
+      {/* Overlay */}
       {isOpen && (
         <div
           className="fixed inset-0 bg-black/60 backdrop-blur-[2px] z-[2001]"
@@ -15,10 +15,7 @@ function CartDrawer({ isOpen, onClose }) {
         />
       )}
 
-      {/* Drawer: 
-          - w-[85%] for small mobile (480px) so it doesn't cover full screen
-          - sm:w-[380px] for tablets (768px) and desktop
-      */}
+      {/* Drawer */}
       <div className={`fixed top-0 right-0 h-screen w-[85%] sm:w-[380px] z-[2002] flex flex-col transition-transform duration-300 ease-in-out shadow-2xl
         ${isDark ? "bg-[#1a1a1a] text-white" : "bg-white text-black"}
         ${isOpen ? "translate-x-0" : "translate-x-full"}`}>
@@ -35,7 +32,7 @@ function CartDrawer({ isOpen, onClose }) {
           </button>
         </div>
 
-        {/* Cart Items: Using responsive padding */}
+        {/* Cart Items */}
         <div className="flex-1 overflow-y-auto px-[15px] sm:px-[20px] py-[20px]">
           {cartItems.length === 0 ? (
             <div className="text-center mt-[60px]">
@@ -49,16 +46,22 @@ function CartDrawer({ isOpen, onClose }) {
               <div key={item.id} className={`flex gap-[12px] sm:gap-[16px] mb-[20px] pb-[20px] border-b
                 ${isDark ? "border-[#333]" : "border-[#e0e0e0]"}`}>
 
-                {/* Image: Adjusted for smaller screens */}
-                <img
-                  src={item.image}
-                  alt={item.name}
-                  className="w-[70px] h-[70px] sm:w-[80px] sm:h-[80px] object-cover rounded-lg bg-gray-50"
-                />
+                {/* IMAGE FIX: flex-shrink-0 added and src changed to thumbnail */}
+                <div className="w-[70px] h-[70px] sm:w-[80px] sm:h-[80px] flex-shrink-0 bg-gray-50 rounded-lg overflow-hidden flex items-center justify-center">
+                  <img
+                    src={item.thumbnail || item.image} 
+                    alt={item.title}
+                    className="w-full h-full object-contain p-1"
+                    onError={(e) => { e.target.src = "https://via.placeholder.com/150?text=No+Image" }}
+                  />
+                </div>
 
                 {/* Info */}
-                <div className="flex-1">
-                  <h3 className="text-[13px] sm:text-[14px] font-semibold mb-1 line-clamp-1">{item.name}</h3>
+                <div className="flex-1 min-w-0">
+                  {/* TITLE FIX: item.name changed to item.title */}
+                  <h3 className="text-[13px] sm:text-[14px] font-semibold mb-1 line-clamp-1">
+                    {item.title || item.name}
+                  </h3>
                   <p className="text-[13px] text-[#00bcd4] font-bold mb-[8px]">
                     ${item.price.toFixed(2)}
                   </p>
@@ -89,7 +92,7 @@ function CartDrawer({ isOpen, onClose }) {
                 </div>
 
                 {/* Item Total */}
-                <p className="font-bold text-[13px] sm:text-[14px]">
+                <p className="font-bold text-[13px] sm:text-[14px] flex-shrink-0">
                   ${(item.price * item.quantity).toFixed(2)}
                 </p>
 
@@ -98,7 +101,7 @@ function CartDrawer({ isOpen, onClose }) {
           )}
         </div>
 
-        {/* Footer: Fixed at bottom */}
+        {/* Footer */}
         {cartItems.length > 0 && (
           <div className={`px-[20px] py-[25px] border-t shadow-[0_-4px_10px_rgba(0,0,0,0.05)]
             ${isDark ? "border-[#333] bg-[#1a1a1a]" : "border-[#e0e0e0] bg-white"}`}>
