@@ -1,47 +1,51 @@
-import { useTheme } from "../ThemeContext";
 import { useNavigate } from "react-router-dom";
+import { useTheme } from "../ThemeContext";
 
 function ProductCard({ product }) {
   const { isDark } = useTheme();
   const navigate = useNavigate();
 
   return (
-    <div
+    <div 
       onClick={() => navigate(`/products/${product.id}`)}
-      className={`rounded-xl overflow-hidden transition-transform duration-200 hover:-translate-y-1 hover:shadow-lg cursor-pointer
-        ${isDark
-          ? "bg-[#1e1e1e] border border-[#333] shadow-[0_2px_8px_rgba(0,0,0,0.4)]"
-          : "bg-white border border-[#e0e0e0] shadow-[0_2px_8px_rgba(0,0,0,0.08)]"
-        }`}>
-
-      <img
-        src={product.image}
-        alt={product.name}
-        className="w-full h-[160px] object-cover sm:h-[300px]"
-      />
-
-      <div className="p-3">
-        <span className={`text-[0.7rem] font-bold uppercase tracking-[0.05em]
-          ${isDark ? "text-[#888]" : "text-[#999]"}`}>
-          {product.category}
-        </span>
-
-        <h3 className={`my-[6px] text-[0.95rem]
-          ${isDark ? "text-[#e0e0e0]" : "text-[#111]"}`}>
-          {product.name}
-        </h3>
-
-        <p className={`text-[1.1rem] font-bold
-          ${isDark ? "text-[#6b8cff]" : "text-[#4f6ef7]"}`}>
-          ${product.price.toFixed(2)}
-        </p>
-
-        <p className={`text-[0.8rem] my-[4px] mb-2 leading-[1.5]
-          ${isDark ? "text-[#aaa]" : "text-[#666]"}`}>
-          {product.description}
-        </p>
+      className={`group cursor-pointer rounded-2xl p-4 transition-all duration-300 border ${
+        isDark ? "bg-[#1e1e1e] border-[#333] hover:border-white" : "bg-white border-gray-100 hover:shadow-xl"
+      }`}
+    >
+      <div className={`relative aspect-square rounded-xl overflow-hidden mb-4 ${isDark ? "bg-white/5" : "bg-[#f9f9f9]"}`}>
+        <img 
+          src={product.thumbnail} 
+          alt={product.title} 
+          className="w-full h-full object-contain p-4 group-hover:scale-110 transition-transform duration-500"
+        />
+        
+        {/* Category: Ab left side par shift kar di hai */}
+        <div className="absolute top-2 left-2">
+          <p className={`font-black text-[10px] uppercase tracking-widest ${isDark ? "text-gray-400" : "text-gray-500"}`}>
+            {product.category}
+          </p>
+        </div>
       </div>
 
+      <div className="space-y-2">
+        {/* Price: Black background badge */}
+        <div className={`inline-block px-2 py-0.5 rounded text-xs font-black ${
+          isDark ? "bg-white text-black" : "bg-black text-white"
+        }`}>
+          ${product.price}
+        </div>
+
+        <h3 className={`font-bold text-sm truncate ${isDark ? "text-white" : "text-black"}`}>
+          {product.title}
+        </h3>
+        
+        {/* View Details Button */}
+        <button className={`w-full mt-2 py-2 text-[11px] font-bold border rounded-lg transition-colors ${
+          isDark ? "border-white text-white hover:bg-white hover:text-black" : "border-black text-black hover:bg-black hover:text-white"
+        }`}>
+          VIEW DETAILS
+        </button>
+      </div>
     </div>
   );
 }

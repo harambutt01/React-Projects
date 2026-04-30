@@ -1,8 +1,8 @@
 import { useParams, useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useTheme } from "../ThemeContext";
 import { useCart } from "../CartContext";
-import productsData from "./Products.json";
+import useFetch from "../../hooks/useFetch"; 
 
 function ProductDetail() {
   const { id } = useParams();
@@ -10,139 +10,78 @@ function ProductDetail() {
   const { isDark } = useTheme();
   const { addToCart } = useCart();
 
-  const product = productsData.find((p) => p.id === parseInt(id));
+  const { data: apiData, loading, error } = useFetch(`https://dummyjson.com/products?limit=0`);
 
   const [quantity, setQuantity] = useState(1);
   const [activeTab, setActiveTab] = useState("details");
 
-  if (!product) {
-    /* Updated: mt-[100px] ensures the error message isn't hidden by navbar */
-    return (
-      <div className="text-center mt-[100px] px-5">
-        <p className={isDark ? "text-white" : "text-black text-lg"}>Product not found.</p>
-        <button onClick={() => navigate("/products")}
-          className="mt-[16px] px-[20px] py-[10px] bg-black text-white rounded-lg hover:bg-gray-800 transition-colors">
-          Back to Products
-        </button>
-      </div>
-    );
-  }
+  const product = useMemo(() => {
+    return apiData?.products?.find((p) => p.id === parseInt(id));
+  }, [apiData, id]);
+
+  const relatedProducts = useMemo(() => {
+    if (!product || !apiData) return [];
+    return apiData.products
+      .filter((p) => p.category === product.category && p.id !== product.id)
+      .slice(0, 4);
+  }, [product, apiData]);
+
+  if (loading) return <div className="pt-32 text-center min-h-screen">Loading...</div>;
 
   return (
-    /* pt-24 (96px) handles the navbar gap. 
-       max-w-6xl and mx-auto center the card nicely on large screens. */
     <div className={`pt-24 pb-12 px-5 min-h-screen ${isDark ? "bg-[#121212]" : "bg-gray-50"}`}>
-      
-      <div className={`mx-auto max-w-6xl p-[32px] rounded-[16px] shadow-sm border
-        ${isDark ? "bg-[#1e1e1e] text-white border-[#333]" : "bg-white text-black border-gray-100"}`}>
-
-        {/* Back Button */}
-        <button
-          onClick={() => navigate("/products")}
-          className="text-sm font-medium text-[#4f6ef7] hover:text-blue-700 cursor-pointer bg-transparent border-none flex items-center gap-1 mb-[24px]">
-          ← Back to Products
+      <div className={`mx-auto max-w-6xl p-8 rounded-2xl border ${isDark ? "bg-[#1e1e1e] text-white border-[#333]" : "bg-white text-black border-gray-100"}`}>
+        
+        {/* Back Button (Now Black/Gray) */}
+        <button onClick={() => navigate("/products")} className={`text-sm font-bold mb-8 bg-transparent border-none flex items-center gap-1 ${isDark ? "text-gray-400" : "text-black"}`}>
+          ← BACK TO SHOP
         </button>
 
-        {/* Grid Layout */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-[40px] lg:gap-[80px]">
-
-          {/* Left Side — Image + Interaction */}
-          <div className="flex flex-col gap-[20px]">
-            <div className="overflow-hidden rounded-2xl bg-white border border-gray-100">
-              <img
-                src={product.image}
-                alt={product.name}
-                className="w-full h-[400px] object-contain p-4 hover:scale-105 transition-transform duration-300"
-              />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+          <div className="flex flex-col gap-6">
+            <div className={`rounded-2xl p-6 flex items-center justify-center min-h-[400px] ${isDark ? "bg-white/5" : "bg-[#f9f9f9]"}`}>
+              <img src={product.thumbnail} alt={product.title} className="max-h-[350px] object-contain" />
             </div>
-
-            {/* Quantity Selector */}
-            <div className="flex items-center gap-[16px]">
-              <span className="font-semibold text-sm">Quantity:</span>
-              <div className="flex items-center gap-[12px]">
-                <button
-                  onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-                  className={`w-[36px] h-[36px] rounded-full border flex items-center justify-center font-bold cursor-pointer transition-all
-                    ${isDark ? "border-[#555] bg-[#2a2a2a] hover:bg-[#333]" : "border-[#ddd] bg-[#f5f5f5] hover:bg-gray-200"}`}>
-                  -
-                </button>
-                <span className="text-lg font-bold min-w-[20px] text-center">{quantity}</span>
-                <button
-                  onClick={() => setQuantity((q) => q + 1)}
-                  className={`w-[36px] h-[36px] rounded-full border flex items-center justify-center font-bold cursor-pointer transition-all
-                    ${isDark ? "border-[#555] bg-[#2a2a2a] hover:bg-[#333]" : "border-[#ddd] bg-[#f5f5f5] hover:bg-gray-200"}`}>
-                  +
-                </button>
+            
+            <div className="flex flex-col gap-4">
+              {/* Quantity Selector Style */}
+              <div className="flex items-center gap-4">
+                <span className="font-bold text-sm">Quantity:</span>
+                <div className="flex items-center gap-3">
+                  <button onClick={() => setQuantity(q => Math.max(1, q - 1))} className="w-9 h-9 rounded-full border border-black">-</button>
+                  <span className="font-bold">{quantity}</span>
+                  <button onClick={() => setQuantity(q => q + 1)} className="w-9 h-9 rounded-full border border-black">+</button>
+                </div>
               </div>
-            </div>
-
-            {/* Add to Cart & Buy Now */}
-            <div className="flex flex-col gap-[12px]">
-              <button
-                onClick={() => addToCart(product, quantity)}
-                className={`w-full py-[14px] rounded-xl border font-bold cursor-pointer transition-all duration-200
-                  ${isDark ? "border-[#555] text-white hover:bg-[#2a2a2a]" : "border-black text-black hover:bg-black hover:text-white"}`}>
-                Add to Cart
-              </button>
-              <button className="w-full py-[14px] rounded-xl bg-blue-600 text-white font-bold cursor-pointer hover:bg-blue-700 shadow-md transition-all">
-                Buy it Now
+              {/* Black Add to Cart Button */}
+              <button onClick={() => addToCart(product, quantity)} className={`w-full py-4 rounded-xl font-bold transition-all ${isDark ? "bg-white text-black" : "bg-black text-white"}`}>
+                ADD TO CART
               </button>
             </div>
           </div>
 
-          {/* Right Side — Product Info */}
           <div className="flex flex-col">
-            <p className={`text-xs uppercase font-black tracking-[0.2em] mb-[8px]
-              ${isDark ? "text-blue-400" : "text-blue-600"}`}>
-              {product.category}
-            </p>
+            <span className={`text-xs font-black uppercase tracking-widest mb-2 ${isDark ? "text-gray-400" : "text-gray-500"}`}>{product.category}</span>
+            <h1 className="text-3xl font-bold mb-4">{product.title}</h1>
+            <p className="text-3xl font-black mb-8">${product.price.toFixed(2)}</p>
 
-            <h1 className="text-3xl md:text-4xl font-extrabold mb-[12px] tracking-tight">{product.name}</h1>
-
-            <p className={`text-3xl font-bold mb-[24px] ${isDark ? "text-white" : "text-gray-900"}`}>
-              ${product.price.toFixed(2)}
-            </p>
-
-            {/* Tabs */}
-            <div className="flex gap-[24px] border-b border-gray-200 mb-[20px]">
-              <button
-                onClick={() => setActiveTab("details")}
-                className={`pb-[12px] text-sm font-bold cursor-pointer border-b-2 transition-all bg-transparent
-                  ${activeTab === "details"
-                    ? (isDark ? "border-blue-400 text-blue-400" : "border-black text-black")
-                    : "border-transparent text-gray-400 hover:text-gray-600"}`}>
-                Details
-              </button>
-              <button
-                onClick={() => setActiveTab("description")}
-                className={`pb-[12px] text-sm font-bold cursor-pointer border-b-2 transition-all bg-transparent
-                  ${activeTab === "description"
-                    ? (isDark ? "border-blue-400 text-blue-400" : "border-black text-black")
-                    : "border-transparent text-gray-400 hover:text-gray-600"}`}>
-                Description
-              </button>
+            {/* Tabs (Now Black Highlight) */}
+            <div className="flex gap-6 border-b border-gray-200 mb-6">
+              <button onClick={() => setActiveTab("details")} className={`pb-2 text-sm font-bold ${activeTab === "details" ? (isDark ? "border-b-2 border-white" : "border-b-2 border-black") : "text-gray-400"}`}>DETAILS</button>
+              <button onClick={() => setActiveTab("description")} className={`pb-2 text-sm font-bold ${activeTab === "description" ? (isDark ? "border-b-2 border-white" : "border-b-2 border-black") : "text-gray-400"}`}>DESCRIPTION</button>
             </div>
 
-            {/* Tab Content */}
-            <div className="min-h-[100px]">
+            <div className="min-h-[100px] text-sm leading-relaxed opacity-80">
               {activeTab === "details" ? (
-                <div className={`space-y-3 text-base ${isDark ? "text-gray-400" : "text-gray-600"}`}>
-                  <p><span className="font-bold text-gray-800 dark:text-gray-200">SKU:</span> PRD-{product.id}00</p>
-                  <p><span className="font-bold text-gray-800 dark:text-gray-200">Category:</span> {product.category}</p>
-                  <p><span className="font-bold text-gray-800 dark:text-gray-200">Availability:</span> In Stock</p>
-                </div>
+                <p><b>Brand:</b> {product.brand}<br/><b>Rating:</b> ⭐ {product.rating}<br/><b>Stock:</b> {product.stock}</p>
               ) : (
-                <p className={`text-base leading-relaxed ${isDark ? "text-gray-400" : "text-gray-600"}`}>
-                  {product.description}
-                </p>
+                <p>{product.description}</p>
               )}
             </div>
           </div>
-
         </div>
       </div>
     </div>
   );
 }
-
 export default ProductDetail;
