@@ -7,16 +7,19 @@ function CartDrawer({ isOpen, onClose }) {
 
   return (
     <>
-      {/* Overlay */}
+      {/* Overlay: Backdrop-blur and higher z-index */}
       {isOpen && (
         <div
-          className="fixed inset-0 bg-black/50 z-[1]"
+          className="fixed inset-0 bg-black/60 backdrop-blur-[2px] z-[2001]"
           onClick={onClose}
         />
       )}
 
-      {/* Drawer */}
-      <div className={`fixed top-0 right-0 h-screen w-[380px] z-[2001] flex flex-col transition-transform duration-300
+      {/* Drawer: 
+          - w-[85%] for small mobile (480px) so it doesn't cover full screen
+          - sm:w-[380px] for tablets (768px) and desktop
+      */}
+      <div className={`fixed top-0 right-0 h-screen w-[85%] sm:w-[380px] z-[2002] flex flex-col transition-transform duration-300 ease-in-out shadow-2xl
         ${isDark ? "bg-[#1a1a1a] text-white" : "bg-white text-black"}
         ${isOpen ? "translate-x-0" : "translate-x-full"}`}>
 
@@ -26,62 +29,67 @@ function CartDrawer({ isOpen, onClose }) {
           <h2 className="text-lg font-bold tracking-widest uppercase">Cart</h2>
           <button
             onClick={onClose}
-            className="bg-transparent border-none text-xl cursor-pointer"
+            className="bg-transparent border-none text-2xl cursor-pointer hover:rotate-90 transition-transform duration-200"
             style={{ color: isDark ? "white" : "black" }}>
             ✕
           </button>
         </div>
 
-        {/* Cart Items */}
-        <div className="flex-1 overflow-y-auto px-[20px] py-[20px]">
+        {/* Cart Items: Using responsive padding */}
+        <div className="flex-1 overflow-y-auto px-[15px] sm:px-[20px] py-[20px]">
           {cartItems.length === 0 ? (
-            <p className={`text-center mt-[40px] ${isDark ? "text-[#aaa]" : "text-[#666]"}`}>
-              Your cart is empty 🛒
-            </p>
+            <div className="text-center mt-[60px]">
+              <p className="text-4xl mb-4">🛒</p>
+              <p className={`${isDark ? "text-[#aaa]" : "text-[#666]"} font-medium`}>
+                Your cart is empty
+              </p>
+            </div>
           ) : (
             cartItems.map((item) => (
-              <div key={item.id} className={`flex gap-[16px] mb-[20px] pb-[20px] border-b
+              <div key={item.id} className={`flex gap-[12px] sm:gap-[16px] mb-[20px] pb-[20px] border-b
                 ${isDark ? "border-[#333]" : "border-[#e0e0e0]"}`}>
 
-                {/* Image */}
+                {/* Image: Adjusted for smaller screens */}
                 <img
                   src={item.image}
                   alt={item.name}
-                  className="w-[80px] h-[80px] object-cover rounded-lg"
+                  className="w-[70px] h-[70px] sm:w-[80px] sm:h-[80px] object-cover rounded-lg bg-gray-50"
                 />
 
                 {/* Info */}
                 <div className="flex-1">
-                  <h3 className="text-[14px] font-semibold mb-1">{item.name}</h3>
-                  <p className="text-[13px] text-[#4f6ef7] font-bold mb-[8px]">
+                  <h3 className="text-[13px] sm:text-[14px] font-semibold mb-1 line-clamp-1">{item.name}</h3>
+                  <p className="text-[13px] text-[#00bcd4] font-bold mb-[8px]">
                     ${item.price.toFixed(2)}
                   </p>
 
                   {/* Quantity + Remove */}
-                  <div className="flex items-center gap-[12px]">
-                    <button
-                      onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                      className={`w-[28px] h-[28px] rounded border cursor-pointer font-bold text-sm
-                        ${isDark ? "border-[#555] bg-[#2a2a2a] text-white" : "border-[#ddd] bg-[#f5f5f5] text-black"}`}>
-                      -
-                    </button>
-                    <span className="font-semibold">{item.quantity}</span>
-                    <button
-                      onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                      className={`w-[28px] h-[28px] rounded border cursor-pointer font-bold text-sm
-                        ${isDark ? "border-[#555] bg-[#2a2a2a] text-white" : "border-[#ddd] bg-[#f5f5f5] text-black"}`}>
-                      +
-                    </button>
+                  <div className="flex items-center gap-[10px] sm:gap-[12px]">
+                    <div className="flex items-center border rounded-md overflow-hidden">
+                       <button
+                         onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                         className={`px-2 py-1 cursor-pointer border-none text-xs font-bold
+                           ${isDark ? "bg-[#2a2a2a] text-white" : "bg-[#f5f5f5] text-black"}`}>
+                         -
+                       </button>
+                       <span className="px-3 text-xs font-semibold">{item.quantity}</span>
+                       <button
+                         onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                         className={`px-2 py-1 cursor-pointer border-none text-xs font-bold
+                           ${isDark ? "bg-[#2a2a2a] text-white" : "bg-[#f5f5f5] text-black"}`}>
+                         +
+                       </button>
+                    </div>
                     <button
                       onClick={() => removeFromCart(item.id)}
-                      className="text-red-500 text-sm cursor-pointer bg-transparent border-none ml-2 hover:underline">
+                      className="text-red-500 text-[11px] sm:text-xs cursor-pointer bg-transparent border-none hover:underline font-medium">
                       Remove
                     </button>
                   </div>
                 </div>
 
                 {/* Item Total */}
-                <p className="font-bold text-[14px]">
+                <p className="font-bold text-[13px] sm:text-[14px]">
                   ${(item.price * item.quantity).toFixed(2)}
                 </p>
 
@@ -90,17 +98,18 @@ function CartDrawer({ isOpen, onClose }) {
           )}
         </div>
 
-        {/* Footer */}
+        {/* Footer: Fixed at bottom */}
         {cartItems.length > 0 && (
-          <div className={`px-[20px] py-[20px] border-t ${isDark ? "border-[#333]" : "border-[#e0e0e0]"}`}>
-            <div className="flex justify-between items-center mb-[16px]">
-              <span className="font-semibold">Total:</span>
-              <span className="text-xl font-bold text-[#4f6ef7]">
+          <div className={`px-[20px] py-[25px] border-t shadow-[0_-4px_10px_rgba(0,0,0,0.05)]
+            ${isDark ? "border-[#333] bg-[#1a1a1a]" : "border-[#e0e0e0] bg-white"}`}>
+            <div className="flex justify-between items-center mb-[20px]">
+              <span className="font-semibold text-gray-500">Subtotal:</span>
+              <span className="text-xl font-bold text-[#00bcd4]">
                 ${totalPrice.toFixed(2)}
               </span>
             </div>
-            <button className="w-full py-[12px] bg-black text-white font-semibold rounded cursor-pointer hover:bg-[#333] transition-colors duration-200">
-              CHECKOUT • ${totalPrice.toFixed(2)}
+            <button className="w-full py-[14px] bg-black text-white font-bold rounded-xl cursor-pointer hover:bg-gray-800 transition-all shadow-md active:scale-[0.98]">
+              CHECKOUT
             </button>
           </div>
         )}

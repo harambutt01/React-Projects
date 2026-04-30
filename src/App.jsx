@@ -9,6 +9,8 @@ import Counter from "./components/Counter.jsx";
 import Dashboard from "./components/Dashboard.jsx";
 import ProductList from "./components/products/ProductList.jsx";
 import ProductDetail from "./components/products/ProductDetail.jsx";
+import Cart from "./components/Cart.jsx"; 
+
 import "./components/toggle/Toggle.css";
 
 function App() {
@@ -16,18 +18,20 @@ function App() {
     <BrowserRouter>
       <ThemeProvider>
         <CartProvider>
+          {/* Navbar har page par show hoga aur CartDrawer isi ke andar se trigger hoga */}
           <Navbar />
-          {/* <div className="main-content"> */}
-            <Routes>
-              <Route path="/"               element={<Home />}         />
-              <Route path="/about"          element={<About />}        />
-              <Route path="/contact"        element={<Contact />}      />
-              <Route path="/counter"        element={<Counter />}      />
-              <Route path="/dashboard"      element={<Dashboard />}    />
-              <Route path="/products"       element={<ProductList />}  />
-              <Route path="/products/:id"   element={<ProductDetail />}/>
-            </Routes>
-          {/* </div> */}
+          
+          <Routes>
+            <Route path="/"               element={<Home />}          />
+            <Route path="/about"          element={<About />}         />
+            <Route path="/contact"        element={<Contact />}       />
+            <Route path="/counter"        element={<Counter />}       />
+            <Route path="/dashboard"      element={<Dashboard />}      />
+            <Route path="/products"       element={<ProductList />}   />
+            <Route path="/products/:id"   element={<ProductDetail />} />
+            <Route path="/cart"           element={<Cart />}          />
+          </Routes>
+          
         </CartProvider>
       </ThemeProvider>
     </BrowserRouter>
