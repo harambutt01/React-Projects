@@ -4,7 +4,6 @@ import useFetch from "../../hooks/useFetch";
 import ProductCard from "./ProductCard";
 import ProductFilters from "./ProductFilters";
 
-// DummyJSON API use kar rahe hain taake Detail page se sync ho jaye
 const API_URL = "https://dummyjson.com/products?limit=0";
 
 function ProductList() {

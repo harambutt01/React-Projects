@@ -19,7 +19,6 @@ function ProductCard({ product }) {
           className="w-full h-full object-contain p-4 group-hover:scale-110 transition-transform duration-500"
         />
         
-        {/* Category: Ab left side par shift kar di hai */}
         <div className="absolute top-2 left-2">
           <p className={`font-black text-[10px] uppercase tracking-widest ${isDark ? "text-gray-400" : "text-gray-500"}`}>
             {product.category}
@@ -28,7 +27,6 @@ function ProductCard({ product }) {
       </div>
 
       <div className="space-y-2">
-        {/* Price: Black background badge */}
         <div className={`inline-block px-2 py-0.5 rounded text-xs font-black ${
           isDark ? "bg-white text-black" : "bg-black text-white"
         }`}>
@@ -39,7 +37,6 @@ function ProductCard({ product }) {
           {product.title}
         </h3>
         
-        {/* View Details Button */}
         <button className={`w-full mt-2 py-2 text-[11px] font-bold border rounded-lg transition-colors ${
           isDark ? "border-white text-white hover:bg-white hover:text-black" : "border-black text-black hover:bg-black hover:text-white"
         }`}>

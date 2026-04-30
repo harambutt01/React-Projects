@@ -11,14 +11,9 @@ function ProductFilters({ search, setSearch, category, setCategory, sort, setSor
     }`;
 
   return (
-    /* 
-       1. Mobile (default): grid-cols-[1fr_1fr_1fr] - Teeno ko barabar jagah di hai taake dropdowns na pichken.
-       2. Tablet/Desktop (sm): grid-cols-[2fr_1fr_1fr] - Wapis aapka purana layout.
-       3. Gap: Mobile par 'gap-1' rakha hai taake screen space bache.
-    */
+  
     <div className="grid grid-cols-[1fr_1fr_1fr] sm:grid-cols-[2fr_1fr_1fr] gap-1 sm:gap-3 mb-6 w-full">
 
-      {/* Search - Placeholder ko chota kiya mobile ke liye */}
       <input
         type="text"
         placeholder="Search..."
@@ -27,7 +22,6 @@ function ProductFilters({ search, setSearch, category, setCategory, sort, setSor
         className={inputClass}
       />
 
-      {/* Category Filter */}
       <select
         value={category}
         onChange={(e) => setCategory(e.target.value)}
@@ -41,7 +35,7 @@ function ProductFilters({ search, setSearch, category, setCategory, sort, setSor
         ))}
       </select>
 
-      {/* Sort */}
+      
       <select
         value={sort}
         onChange={(e) => setSort(e.target.value)}

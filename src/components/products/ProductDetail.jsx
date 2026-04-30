@@ -32,7 +32,7 @@ function ProductDetail() {
     <div className={`pt-24 pb-12 px-5 min-h-screen ${isDark ? "bg-[#121212]" : "bg-gray-50"}`}>
       <div className={`mx-auto max-w-6xl p-8 rounded-2xl border ${isDark ? "bg-[#1e1e1e] text-white border-[#333]" : "bg-white text-black border-gray-100"}`}>
         
-        {/* Back Button (Now Black/Gray) */}
+        
         <button onClick={() => navigate("/products")} className={`text-sm font-bold mb-8 bg-transparent border-none flex items-center gap-1 ${isDark ? "text-gray-400" : "text-black"}`}>
           ← BACK TO SHOP
         </button>
@@ -53,7 +53,7 @@ function ProductDetail() {
                   <button onClick={() => setQuantity(q => q + 1)} className="w-9 h-9 rounded-full border border-black">+</button>
                 </div>
               </div>
-              {/* Black Add to Cart Button */}
+              
               <button onClick={() => addToCart(product, quantity)} className={`w-full py-4 rounded-xl font-bold transition-all ${isDark ? "bg-white text-black" : "bg-black text-white"}`}>
                 ADD TO CART
               </button>
@@ -65,7 +65,7 @@ function ProductDetail() {
             <h1 className="text-3xl font-bold mb-4">{product.title}</h1>
             <p className="text-3xl font-black mb-8">${product.price.toFixed(2)}</p>
 
-            {/* Tabs (Now Black Highlight) */}
+            {/* Tabs */}
             <div className="flex gap-6 border-b border-gray-200 mb-6">
               <button onClick={() => setActiveTab("details")} className={`pb-2 text-sm font-bold ${activeTab === "details" ? (isDark ? "border-b-2 border-white" : "border-b-2 border-black") : "text-gray-400"}`}>DETAILS</button>
               <button onClick={() => setActiveTab("description")} className={`pb-2 text-sm font-bold ${activeTab === "description" ? (isDark ? "border-b-2 border-white" : "border-b-2 border-black") : "text-gray-400"}`}>DESCRIPTION</button>
