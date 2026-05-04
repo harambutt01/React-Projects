@@ -1,0 +1,35 @@
+.about-page {
+  padding: 20px;
+  text-align: center;
+  
+  /* ── New Changes to Center Everything ── */
+  margin: 0 auto;           /* Page ko horizontal center karne k liye */
+  margin-top: 80px;        /* Navbar se nechy rakhne k liye */
+  max-width: 800px;        /* Content boht phela hua na lage */
+  width: 90%;              /* Mobile pr b sahi dikhe */
+  
+  display: flex;           /* Flexbox use kren gy mazeed perfection k liye */
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.about-page h1 {
+  color: #333;
+  margin-bottom: 20px;
+}
+
+.about-btn {
+  padding: 10px 20px;
+  margin-top: 15px;
+  background-color: red;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: 0.3s; /* Smooth hover effect */
+}
+
+.about-btn:hover {
+  background-color: #0097a7;
+}

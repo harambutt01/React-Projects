@@ -1,80 +1,83 @@
 import { useCart } from "./CartContext";
 import { useTheme } from "./ThemeContext";
 import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify"; // Step 1: Toast import karein
 
 function Cart() {
-  const { cartItems, totalPrice, updateQuantity, removeFromCart } = useCart();
+  const { cartItems, removeFromCart, updateQuantity, totalPrice } = useCart();
   const { isDark } = useTheme();
   const navigate = useNavigate();
 
-  // Remove handler with notification
-  const handleRemove = (id, title) => {
-    removeFromCart(id);
-    toast.error(`${title} removed from cart`, {
-      icon: "🗑️",
-      position: "bottom-right"
-    });
-  };
+  if (cartItems.length === 0) {
+    return (
+      <div className="text-center mt-24">
+        <p className={`text-lg ${isDark ? "text-white" : "text-black"}`}>
+          Your cart is empty 🛒
+        </p>
+        <button
+          onClick={() => navigate("/products")}
+          className="mt-4 px-5 py-2 bg-black text-white rounded cursor-pointer hover:bg-[#333] transition-colors duration-200">
+          Shop Now
+        </button>
+      </div>
+    );
+  }
 
   return (
-    <div className={`min-h-screen pt-24 pb-12 px-6 transition-all duration-300 ${isDark ? "bg-[#121212] text-white" : "bg-[#f5f5f5] text-black"}`}>
-      <div className="max-w-4xl mx-auto">
-        <h1 className="text-3xl font-bold mb-8">Shopping Cart</h1>
+    <div className={`max-w-[700px] mx-auto mt-24 p-6 rounded-xl
+      ${isDark ? "bg-[#1e1e1e] text-white" : "bg-white text-black"}`}>
 
-        {cartItems.length === 0 ? (
-          <div className="text-center py-20">
-            <p className="text-xl mb-6">Your cart is empty 🛒</p>
-            <button 
-              onClick={() => navigate("/products")}
-              className="bg-[#00bcd4] text-white px-6 py-3 rounded-lg font-bold cursor-pointer">
-              Shop Now
-            </button>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 gap-6">
-            {/* Items List */}
-            <div className={`p-6 rounded-xl shadow-sm ${isDark ? "bg-[#1e1e1e]" : "bg-white"}`}>
-              {cartItems.map((item) => (
-                <div key={item.id} className="flex items-center gap-6 mb-6 pb-6 border-b border-gray-100 last:border-0 last:mb-0 last:pb-0">
-                  
-                  <img src={item.thumbnail} alt={item.title} className="w-20 h-20 object-contain rounded-md bg-gray-50" />
-                  
-                  <div className="flex-1">
-                    <h3 className="font-bold">{item.title}</h3>
-                    <p className="text-[#00bcd4] font-bold">${item.price.toFixed(2)}</p>
-                    
-                    <div className="flex items-center gap-4 mt-2">
-                      <button onClick={() => updateQuantity(item.id, item.quantity - 1)} className="px-2 border rounded cursor-pointer">-</button>
-                      <span>{item.quantity}</span>
-                      <button onClick={() => updateQuantity(item.id, item.quantity + 1)} className="px-2 border rounded cursor-pointer">+</button>
-                      
-                      <button 
-                        onClick={() => handleRemove(item.id, item.title)} 
-                        className="text-red-500 text-sm ml-4 cursor-pointer font-medium hover:underline">
-                        Remove
-                      </button>
-                    </div>
-                  </div>
-                  <p className="font-bold">${(item.price * item.quantity).toFixed(2)}</p>
-                </div>
-              ))}
-            </div>
+      <h1 className="text-2xl font-bold mb-6">Your Cart 🛒</h1>
 
-            <div className={`p-6 rounded-xl shadow-sm h-fit ${isDark ? "bg-[#1e1e1e]" : "bg-white"}`}>
-              <div className="flex justify-between items-center mb-6">
-                <span className="text-lg font-semibold">Order Total:</span>
-                <span className="text-2xl font-bold text-[#00bcd4]">${totalPrice.toFixed(2)}</span>
-              </div>
-              <button 
-                onClick={() => toast.info("Checkout functionality coming soon!")}
-                className="w-full bg-black text-white py-4 rounded-xl font-bold hover:bg-gray-800 transition-all cursor-pointer">
-                Proceed to Checkout
+      {cartItems.map((item) => (
+        <div key={item.id} className={`flex items-center gap-4 mb-4 p-4 rounded-xl border
+          ${isDark ? "border-[#333]" : "border-[#e0e0e0]"}`}>
+
+          <img src={item.image} alt={item.name} className="w-20 h-20 object-cover rounded-lg" />
+
+          <div className="flex-1">
+            <h3 className="font-semibold text-[0.95rem]">{item.name}</h3>
+            <p className="text-[#4f6ef7] font-bold">${item.price.toFixed(2)}</p>
+
+            <div className="flex items-center gap-2 mt-2">
+              <button
+                onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                className={`w-7 h-7 rounded border cursor-pointer font-bold
+                  ${isDark ? "border-[#555] bg-[#2a2a2a] text-white" : "border-[#ddd] bg-[#f5f5f5] text-black"}`}>
+                -
+              </button>
+              <span className="font-semibold">{item.quantity}</span>
+              <button
+                onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                className={`w-7 h-7 rounded border cursor-pointer font-bold
+                  ${isDark ? "border-[#555] bg-[#2a2a2a] text-white" : "border-[#ddd] bg-[#f5f5f5] text-black"}`}>
+                +
               </button>
             </div>
           </div>
-        )}
+
+          <div className="text-right">
+            <p className="font-bold">${(item.price * item.quantity).toFixed(2)}</p>
+            <button
+              onClick={() => removeFromCart(item.id)}
+              className="text-red-500 text-sm cursor-pointer bg-transparent border-none mt-2 hover:underline">
+              Remove
+            </button>
+          </div>
+
+        </div>
+      ))}
+
+      {/* Total */}
+      <div className={`border-t pt-4 mt-4 ${isDark ? "border-[#333]" : "border-[#e0e0e0]"}`}>
+        <div className="flex justify-between items-center mb-4">
+          <span className="text-lg font-semibold">Total:</span>
+          <span className="text-xl font-bold text-[#4f6ef7]">${totalPrice.toFixed(2)}</span>
+        </div>
+        <button className="w-full py-3 bg-black text-white rounded font-semibold cursor-pointer hover:bg-[#333] transition-colors duration-200">
+          Checkout
+        </button>
       </div>
+
     </div>
   );
 }

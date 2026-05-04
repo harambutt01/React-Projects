@@ -9,7 +9,6 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: #f4f4f4; /* Optional: halka sa background color */
 }
 
 code {
@@ -17,33 +16,14 @@ code {
     monospace;
 }
 
-/* ── Global Layout Fix ── */
- /* #root {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center; 
-}  */
 
-/* ── Main Content (Centered) ── */
-  /* .main-content {
-   margin-left: 220px;
-  margin: 0 auto;         
-  margin-top: 80px;      
-  padding: 20px;
-  width: 100%;
-  max-width: 1200px;     
-  display: flex;
-  flex-direction: column;
-  align-items: center;   
-  min-height: calc(100vh - 80px);
-}   */
 
-/* ── Tablet & Mobile ── */
- @media (max-width: 768px) {
-  .main-content {
-    margin-top: 64px;
-    padding: 15px;
-    width: 100%;
-  }
-} 
+/* Dots ko cards se neeche move karne ke liye */
+.product-swiper {
+  overflow: visible !important;
+  padding-bottom: 70px !important; 
+}
+
+.product-swiper .swiper-pagination {
+  bottom: 10px !important; 
+}
