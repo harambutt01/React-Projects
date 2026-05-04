@@ -1,8 +1,8 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "./components/ThemeContext";
 import { CartProvider } from "./components/CartContext";
-import { ToastContainer } from "react-toastify"; // Step 1: Import Container
-import "react-toastify/dist/ReactToastify.css"; // Step 2: Import CSS
+import { ToastContainer } from "react-toastify"; 
+import "react-toastify/dist/ReactToastify.css"; 
 import Navbar from "./components/Navbar";
 import Home from "./components/Home";
 import About from "./components/About";
@@ -34,15 +34,12 @@ function App() {
             <Route path="/cart"           element={<Cart />}          />
           </Routes>
 
-          {/* 
-              ToastContainer ko yahan rakha hai taake ye poori App mein 
-              kahin se bhi call ho sake. Sizing aur colors auto-adjust honge.
-          */}
+          {/*  ToastContainer  */}
           <ToastContainer 
-            position="bottom-right" 
+            position="top-right"      
             autoClose={2500} 
             hideProgressBar={false}
-            newestOnTop={false}
+            newestOnTop={true}        
             closeOnClick
             pauseOnFocusLoss
             draggable

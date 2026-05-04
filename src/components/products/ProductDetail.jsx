@@ -32,6 +32,11 @@ function ProductDetail() {
     return apiData?.products?.find((p) => p.id === parseInt(id));
   }, [apiData, id]);
 
+  // Memoized Sorting Logic (High rating first)
+  const sortedReviews = useMemo(() => {
+    return [...localReviews].sort((a, b) => b.rating - a.rating);
+  }, [localReviews]);
+
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'instant' });
     setQuantity(1);
@@ -49,7 +54,6 @@ function ProductDetail() {
     }
   }, [id, product]); 
 
-  // Reviews submission handler
   const handleReviewSubmit = (e) => {
     e.preventDefault();
     if (!newReview.reviewerName.trim() || !newReview.comment.trim()) {
@@ -68,7 +72,7 @@ function ProductDetail() {
   const handleAddToCart = () => {
     if (product) {
       addToCart(product, quantity);
-      toast.success(`${product.title} added to cart!`, { icon: "🛒", position: "bottom-right" });
+      toast.success(`${product.title} added to cart!`, { icon: "🛒" });
     }
   };
 
@@ -91,7 +95,6 @@ function ProductDetail() {
           ← BACK TO SHOP
         </button>
 
-        {/* Main Product Section */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 mb-16">
           <div className="flex flex-col gap-6">
             <div className={`rounded-2xl p-6 flex items-center justify-center min-h-[300px] md:min-h-[450px] overflow-hidden ${isDark ? "bg-white/5" : "bg-[#f9f9f9]"}`}>
@@ -114,7 +117,6 @@ function ProductDetail() {
             <h1 className="text-2xl md:text-4xl font-bold mb-4">{product.title}</h1>
             <p className="text-2xl md:text-3xl font-black mb-8">${product.price.toFixed(2)}</p>
 
-            {/* Tabs */}
             <div className="flex gap-4 md:gap-6 border-b border-gray-200 mb-6">
               {["details", "description", "reviews"].map((tab) => (
                 <button key={tab} onClick={() => setActiveTab(tab)} className={`pb-2 text-xs md:text-sm font-bold uppercase cursor-pointer transition-all ${activeTab === tab ? (isDark ? "border-b-2 border-white text-white" : "border-b-2 border-black text-black") : "text-gray-400"}`}>
@@ -123,7 +125,6 @@ function ProductDetail() {
               ))}
             </div>
 
-            {/* Tab Content */}
             <div className="min-h-[150px] text-sm leading-relaxed mb-8">
               {activeTab === "details" && (
                 <div className="space-y-2 opacity-80">
@@ -156,7 +157,7 @@ function ProductDetail() {
                   )}
 
                   <div className="max-h-[300px] overflow-y-auto pr-2 custom-scrollbar space-y-4">
-                    {localReviews.map((rev, i) => (
+                    {sortedReviews.map((rev, i) => (
                       <div key={i} className={`p-4 rounded-xl border ${isDark ? "bg-white/5 border-white/10" : "bg-gray-100 border-gray-200"}`}>
                         <div className="flex justify-between items-center mb-1">
                           <span className="font-bold text-xs">{rev.reviewerName}</span>
@@ -170,7 +171,6 @@ function ProductDetail() {
               )}
             </div>
 
-            {/* Qty & Add to Cart */}
             <div className="flex flex-col sm:flex-row items-center gap-4 mt-auto">
               <div className="flex items-center gap-4 border rounded-xl p-2 px-4 w-full sm:w-auto justify-between">
                 <span className="font-bold text-xs uppercase opacity-60">Qty</span>
@@ -187,13 +187,14 @@ function ProductDetail() {
           </div>
         </div>
 
+        {/* Related Products Section */}
         {relatedProducts.length > 0 && (
           <div className="mt-16 pt-12 border-t overflow-hidden">
             <h2 className="text-xl md:text-2xl font-bold mb-8 uppercase tracking-tight">You May Also Like</h2>
             <Swiper
               modules={[Navigation, Pagination]}
               spaceBetween={12}
-              slidesPerView={2} 
+              slidesPerView={1.3} 
               navigation={true} 
               pagination={{ clickable: true }}
               style={{ "--swiper-navigation-color": isDark ? "#fff" : "#000", "--swiper-pagination-color": isDark ? "#fff" : "#000" }}
