@@ -23,7 +23,7 @@ const Contact = () => {
 
       <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-12 gap-12">
         
-        {/* --- LEFT SIDE: QUICK SUPPORT CARDS --- */}
+        {/* --- left side support card --- */}
         <div className="lg:col-span-4 space-y-6">
           <div className="bg-[#f9f9f9] p-8 border-l-4 border-black transition-all hover:shadow-md">
             <h3 className="font-bold uppercase text-xs tracking-widest mb-2">Order Support</h3>
@@ -49,7 +49,7 @@ const Contact = () => {
           </div>
         </div>
 
-        {/* --- RIGHT SIDE: MODERN FORM --- */}
+        {/* --- right side form --- */}
         <div className="lg:col-span-8 bg-white border border-gray-100 p-8 md:p-12 shadow-2xl shadow-gray-100">
           <h2 className="text-2xl font-bold uppercase tracking-tight mb-8">Send a Message</h2>
           
@@ -101,7 +101,7 @@ const Contact = () => {
               </select>
             </div>
 
-            {/* Message Textarea */}
+            {/* Message Text area */}
             <div className="relative pt-4">
               <textarea 
                 rows="4" 
@@ -131,14 +131,9 @@ const Contact = () => {
 
       </div>
 
-      {/* --- STORE LOCATOR SECTION --- */}
-      <div className="max-w-7xl mx-auto px-6 mt-20">
-        <div className="w-full h-[350px] bg-gray-50 flex flex-col items-center justify-center border border-gray-200 rounded-sm">
-           <span className="text-gray-300 uppercase tracking-[5px] font-bold text-xs mb-2">Store Locator</span>
-           <p className="text-gray-400 text-[10px] uppercase">Google Maps Integration Coming Soon</p>
-        </div>
+      
       </div>
-    </div>
+    
   );
 };
 

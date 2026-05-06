@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom'; // Ye lazmi check karein
+import { Link } from 'react-router-dom'; 
 
 const About = () => {
   return (
@@ -28,7 +28,7 @@ const About = () => {
         {/* Eye-Catch Paragraph */}
         <div className="md:col-span-7 space-y-12 md:pr-10">
           <div className="relative">
-            <p className="text-2xl md:text-2xl font-light leading-relaxed italic text-gray-900 p-8 md:p-12 bg-gray-50 rounded-sm border-l-8 border-black shadow-sm">
+            <p className="text-2xl md:text-xl font-light leading-relaxed italic text-gray-900 p-8 md:p-12 bg-gray-50 rounded-sm border-l-8 border-black shadow-sm">
               Founded in 2018, we started with a simple mission: to bring quality products to customers worldwide while creating a shopping experience that feels personal and trustworthy.
               What began as a small team with big dreams has grown into a thriving community of passionate individuals dedicated to excellence in every aspect of our business.
               Today, we're proud to serve hundreds of thousands of customers across the globe, but we've never forgotten our roots or the values that got us here.
@@ -74,7 +74,7 @@ const About = () => {
         </div>
       </section>
 
-      {/* --- CALL TO ACTION (Ab ye button Products page pr le jaye ga) --- */}
+      {/* --- CALL TO ACTION  --- */}
       <section className="bg-black text-white py-24 px-6 text-center">
         <h2 className="text-2xl md:text-3xl font-light uppercase tracking-[8px] mb-10">
           Join the <span className="font-bold">Evolution</span>
