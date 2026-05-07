@@ -1,9 +1,26 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useState, useEffect } from "react";
 
 const CartContext = createContext();
 
 export function CartProvider({ children }) {
-  const [cartItems, setCartItems] = useState([]);
+  // 1. Initial State: LocalStorage se data uthana
+  const [cartItems, setCartItems] = useState(() => {
+    const savedCart = localStorage.getItem("cart");
+    return savedCart ? JSON.parse(savedCart) : [];
+  });
+
+  // 2. LocalStorage Sync: Jab bhi cartItems change hon, save karein
+  useEffect(() => {
+    localStorage.setItem("cart", JSON.stringify(cartItems));
+  }, [cartItems]);
+
+  // 3. Navbar Sync Logic: Taake external updates (ProductCard se) detect hon
+  const updateCartCount = () => {
+    const savedCart = localStorage.getItem("cart");
+    if (savedCart) {
+      setCartItems(JSON.parse(savedCart));
+    }
+  };
 
   function addToCart(product, quantity) {
     setCartItems((prev) => {
@@ -30,11 +47,22 @@ export function CartProvider({ children }) {
     );
   }
 
+  // Helpers
   const totalItems = cartItems.reduce((sum, item) => sum + item.quantity, 0);
   const totalPrice = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
   return (
-    <CartContext.Provider value={{ cartItems, addToCart, removeFromCart, updateQuantity, totalItems, totalPrice }}>
+    <CartContext.Provider 
+      value={{ 
+        cartItems, 
+        addToCart, 
+        removeFromCart, 
+        updateQuantity, 
+        totalItems, 
+        totalPrice,
+        updateCartCount // Ye Navbar mein use hoga
+      }}
+    >
       {children}
     </CartContext.Provider>
   );

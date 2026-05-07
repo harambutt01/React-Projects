@@ -3,7 +3,7 @@ import React from 'react';
 const Contact = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Logic for form submission goes here
+    //  form submission 
     alert("Message sent successfully! We will get back to you soon.");
   };
 

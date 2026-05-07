@@ -3,7 +3,10 @@ import { ThemeProvider } from "./components/ThemeContext";
 import { CartProvider } from "./components/CartContext";
 import { ToastContainer } from "react-toastify"; 
 import "react-toastify/dist/ReactToastify.css"; 
+
+// Components
 import Navbar from "./components/Navbar";
+import Footer from "./components/Footer"; 
 import Home from "./components/Home";
 import About from "./components/About";
 import Contact from "./components/Contact";
@@ -20,33 +23,30 @@ function App() {
     <BrowserRouter>
       <ThemeProvider>
         <CartProvider>
-          
           <Navbar />
           
-          <Routes>
-            <Route path="/"               element={<Home />}          />
-            <Route path="/about"          element={<About />}         />
-            <Route path="/contact"        element={<Contact />}       />
-            <Route path="/counter"        element={<Counter />}       />
-            <Route path="/dashboard"      element={<Dashboard />}      />
-            <Route path="/products"       element={<ProductList />}   />
-            <Route path="/products/:id"   element={<ProductDetail />} />
-            <Route path="/cart"           element={<Cart />}          />
-          </Routes>
+          <div className="flex flex-col min-h-screen">
+            <main className="flex-grow pt-[64px]"> 
+              <Routes>
+                <Route path="/"             element={<Home />}          />
+                <Route path="/about"          element={<About />}         />
+                <Route path="/contact"        element={<Contact />}       />
+                <Route path="/counter"        element={<Counter />}       />
+                <Route path="/dashboard"      element={<Dashboard />}      />
+                <Route path="/products"       element={<ProductList />}   />
+                <Route path="/products/:id"   element={<ProductDetail />} />
+                <Route path="/cart"           element={<Cart />}          />
+              </Routes>
+            </main>
 
-          {/*  ToastContainer  */}
+            <Footer />
+          </div>
+
           <ToastContainer 
             position="top-right"      
             autoClose={2500} 
-            hideProgressBar={false}
-            newestOnTop={true}        
-            closeOnClick
-            pauseOnFocusLoss
-            draggable
-            pauseOnHover
             theme="colored" 
           />
-          
         </CartProvider>
       </ThemeProvider>
     </BrowserRouter>
