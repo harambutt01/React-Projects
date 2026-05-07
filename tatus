@@ -1,0 +1,5 @@
+[33m3addb04[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mfeature/api-dashboard[m[33m, [m[1;31morigin/feature/api-dashboard[m[33m)[m fix: resolve merge conflict in Contact.css
+[33md364fca[m[33m ([m[1;31morigin/feature/form-validation[m[33m, [m[1;32mfeature/form-validation[m[33m)[m clean css code
+[33m31220b8[m fix: replace old contact code with form validation
+[33mbd0f177[m[33m ([m[1;31morigin/feature/product-list[m[33m, [m[1;32mfeature/product-list[m[33m)[m refactor: clean up ProductList formatting and remove unneccessary comments
+[33md9c0b0a[m fix: sidebar logo on mobile and tablet

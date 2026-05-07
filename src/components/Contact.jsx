@@ -1,182 +1,140 @@
-import { useState } from "react";
-import "./Contact.css";
+import React from 'react';
 
-function Contact() {
-  const [values, setValues] = useState({
-    name: "",
-    email: "",
-    password: "",
-    confirmPassword: "",
-  });
-
-  const [errors, setErrors] = useState({});
-  const [touched, setTouched] = useState({});
-
-  const validate = (name, value) => {
-    if (name === "name") {
-      if (!value.trim()) return "Name is required.";
-      if (value.trim().length < 2) return "Name must be at least 2 characters.";
-    }
-
-    if (name === "email") {
-      if (!value.trim()) return "Email is required.";
-      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) return "Enter a valid email.";
-    }
-
-    if (name === "password") {
-      if (!value) return "Password is required.";
-      if (value.length < 8) return "Password must be at least 8 characters.";
-    }
-
-    if (name === "confirmPassword") {
-      if (!value) return "Please confirm your password.";
-      if (value !== values.password) return "Passwords do not match.";
-    }
-
-    return "";
-  };
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setValues((prev) => ({ ...prev, [name]: value }));
-
-    if (touched[name]) {
-      setErrors((prev) => ({ ...prev, [name]: validate(name, value) }));
-    }
-  };
-
-  const handleBlur = (e) => {
-    const { name, value } = e.target;
-    setTouched((prev) => ({ ...prev, [name]: true }));
-    setErrors((prev) => ({ ...prev, [name]: validate(name, value) }));
-  };
-
-  const isFormValid = () => {
-    const fields = ["name", "email", "password", "confirmPassword"];
-    for (let i = 0; i < fields.length; i++) {
-      const key = fields[i];
-      if (!values[key].trim()) return false;
-      if (validate(key, values[key]) !== "") return false;
-    }
-    return true;
-  };
-
+const Contact = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
-
-    const fields = ["name", "email", "password", "confirmPassword"];
-    const newErrors = {};
-    const newTouched = {};
-
-    for (let i = 0; i < fields.length; i++) {
-      const key = fields[i];
-      newErrors[key] = validate(key, values[key]);
-      newTouched[key] = true;
-    }
-
-    setErrors(newErrors);
-    setTouched(newTouched);
-
-    let hasError = false;
-    for (let i = 0; i < fields.length; i++) {
-      if (newErrors[fields[i]] !== "") {
-        hasError = true;
-        break;
-      }
-    }
-
-    if (!hasError) {
-      alert("Registration successful!");
-      setValues({ name: "", email: "", password: "", confirmPassword: "" });
-      setErrors({});
-      setTouched({});
-    }
+    //  form submission 
+    alert("Message sent successfully! We will get back to you soon.");
   };
 
   return (
-    <div className="form-page">
-      <div className="form-card">
-        <h2 className="form-title">Create Account</h2>
-        <p className="form-subtitle">Fill in the details below to register.</p>
-
-        <form onSubmit={handleSubmit} noValidate>
-
-          <div className="field">
-            <label className="label">Name</label>
-            <input
-              type="text"
-              name="name"
-              value={values.name}
-              onChange={handleChange}
-              onBlur={handleBlur}
-              placeholder="Enter your name"
-              className={`input ${touched.name && errors.name ? "input-error" : ""}`}
-            />
-            {touched.name && errors.name && (
-              <span className="error">{errors.name}</span>
-            )}
-          </div>
-
-          <div className="field">
-            <label className="label">Email</label>
-            <input
-              type="email"
-              name="email"
-              value={values.email}
-              onChange={handleChange}
-              onBlur={handleBlur}
-              placeholder="Enter your email"
-              className={`input ${touched.email && errors.email ? "input-error" : ""}`}
-            />
-            {touched.email && errors.email && (
-              <span className="error">{errors.email}</span>
-            )}
-          </div>
-
-          <div className="field">
-            <label className="label">Password</label>
-            <input
-              type="password"
-              name="password"
-              value={values.password}
-              onChange={handleChange}
-              onBlur={handleBlur}
-              placeholder="Min. 8 characters"
-              className={`input ${touched.password && errors.password ? "input-error" : ""}`}
-            />
-            {touched.password && errors.password && (
-              <span className="error">{errors.password}</span>
-            )}
-          </div>
-
-          <div className="field">
-            <label className="label">Confirm Password</label>
-            <input
-              type="password"
-              name="confirmPassword"
-              value={values.confirmPassword}
-              onChange={handleChange}
-              onBlur={handleBlur}
-              placeholder="Re-enter your password"
-              className={`input ${touched.confirmPassword && errors.confirmPassword ? "input-error" : ""}`}
-            />
-            {touched.confirmPassword && errors.confirmPassword && (
-              <span className="error">{errors.confirmPassword}</span>
-            )}
-          </div>
-
-          <button
-            type="submit"
-            className="submit-btn"
-            disabled={!isFormValid()}
-          >
-            Register
-          </button>
-
-        </form>
+    <div className="bg-white min-h-screen pt-[100px] pb-20">
+      
+      {/* --- HEADER --- */}
+      <div className="max-w-4xl mx-auto text-center px-6 mb-16">
+        <h1 className="text-3xl md:text-5xl font-light uppercase tracking-[6px] mb-4 text-gray-900">
+          Contact <span className="font-bold">Us</span>
+        </h1>
+        <div className="w-16 h-1 bg-black mx-auto mb-6"></div>
+        <p className="text-gray-500 text-sm md:text-base leading-relaxed italic">
+          Have a question or need assistance? Our team is always here to help you.
+        </p>
       </div>
-    </div>
+
+      <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-12 gap-12">
+        
+        {/* --- left side support card --- */}
+        <div className="lg:col-span-4 space-y-6">
+          <div className="bg-[#f9f9f9] p-8 border-l-4 border-black transition-all hover:shadow-md">
+            <h3 className="font-bold uppercase text-xs tracking-widest mb-2">Order Support</h3>
+            <p className="text-sm text-gray-600 mb-4">Looking to track your package? Click the link below.</p>
+            <button className="text-xs font-bold underline uppercase hover:text-gray-500 transition-colors">
+              Track My Order
+            </button>
+          </div>
+
+          <div className="bg-[#f9f9f9] p-8 border-l-4 border-black transition-all hover:shadow-md">
+            <h3 className="font-bold uppercase text-xs tracking-widest mb-2">Customer Care</h3>
+            <p className="text-sm text-gray-600 mb-1">Monday - Saturday</p>
+            <p className="text-sm text-gray-900 font-bold mb-3">09:00 AM - 06:00 PM</p>
+            <p className="text-sm text-blue-600 font-medium">support@trendora.com</p>
+          </div>
+
+          <div className="bg-[#f9f9f9] p-8 border-l-4 border-black transition-all hover:shadow-md">
+            <h3 className="font-bold uppercase text-xs tracking-widest mb-2">Visit Our Store</h3>
+            <p className="text-sm text-gray-600 leading-relaxed">
+              123 Fashion Street, Gulberg III,<br />
+              Lahore, Pakistan.
+            </p>
+          </div>
+        </div>
+
+        {/* --- right side form --- */}
+        <div className="lg:col-span-8 bg-white border border-gray-100 p-8 md:p-12 shadow-2xl shadow-gray-100">
+          <h2 className="text-2xl font-bold uppercase tracking-tight mb-8">Send a Message</h2>
+          
+          <form onSubmit={handleSubmit} className="space-y-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              {/* Name Input */}
+              <div className="relative">
+                <input 
+                  type="text" 
+                  id="name" 
+                  required
+                  className="peer w-full border-b-2 border-gray-200 py-2 outline-none focus:border-black transition-colors placeholder-transparent bg-transparent" 
+                  placeholder="Name" 
+                />
+                <label 
+                  htmlFor="name" 
+                  className="absolute left-0 -top-4 text-xs font-bold uppercase text-gray-400 peer-placeholder-shown:text-sm peer-placeholder-shown:top-2 peer-focus:-top-4 peer-focus:text-xs transition-all cursor-text"
+                >
+                  Full Name
+                </label>
+              </div>
+
+              {/* Email Input */}
+              <div className="relative">
+                <input 
+                  type="email" 
+                  id="email" 
+                  required
+                  className="peer w-full border-b-2 border-gray-200 py-2 outline-none focus:border-black transition-colors placeholder-transparent bg-transparent" 
+                  placeholder="Email" 
+                />
+                <label 
+                  htmlFor="email" 
+                  className="absolute left-0 -top-4 text-xs font-bold uppercase text-gray-400 peer-placeholder-shown:text-sm peer-placeholder-shown:top-2 peer-focus:-top-4 peer-focus:text-xs transition-all cursor-text"
+                >
+                  Email Address
+                </label>
+              </div>
+            </div>
+
+            {/* Subject Select */}
+            <div className="relative pt-2">
+              <label className="text-xs font-bold uppercase text-gray-400 block mb-1">Subject</label>
+              <select className="w-full border-b-2 border-gray-200 py-2 outline-none focus:border-black transition-colors bg-transparent text-sm cursor-pointer">
+                <option>General Inquiry</option>
+                <option>Order Tracking</option>
+                <option>Return & Exchange</option>
+                <option>Complaint</option>
+              </select>
+            </div>
+
+            {/* Message Text area */}
+            <div className="relative pt-4">
+              <textarea 
+                rows="4" 
+                id="msg" 
+                required
+                className="peer w-full border-b-2 border-gray-200 py-2 outline-none focus:border-black transition-colors placeholder-transparent resize-none bg-transparent" 
+                placeholder="Message"
+              ></textarea>
+              <label 
+                htmlFor="msg" 
+                className="absolute left-0 -top-2 text-xs font-bold uppercase text-gray-400 peer-placeholder-shown:text-sm peer-placeholder-shown:top-2 peer-focus:-top-2 peer-focus:text-xs transition-all cursor-text"
+              >
+                How can we help?
+              </label>
+            </div>
+
+            {/* Submit Button */}
+            <button 
+              type="submit" 
+              className="group relative w-full md:w-auto bg-black text-white px-14 py-4 text-xs font-bold uppercase tracking-[4px] overflow-hidden transition-all active:scale-95"
+            >
+              <span className="relative z-10">Submit Now</span>
+              <div className="absolute inset-0 bg-[#333] translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
+            </button>
+          </form>
+        </div>
+
+      </div>
+
+      
+      </div>
+    
   );
-}
+};
 
 export default Contact;

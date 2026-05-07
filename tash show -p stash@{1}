@@ -1,0 +1,1060 @@
+[1mdiff --git a/package-lock.json b/package-lock.json[m
+[1mindex 6805b0a..9f2768b 100644[m
+[1m--- a/package-lock.json[m
+[1m+++ b/package-lock.json[m
+[36m@@ -12,11 +12,20 @@[m
+         "@testing-library/jest-dom": "^6.9.1",[m
+         "@testing-library/react": "^16.3.2",[m
+         "@testing-library/user-event": "^13.5.0",[m
+[32m+[m[32m        "autoprefixer": "^10.5.0",[m
+[32m+[m[32m        "postcss": "^8.5.10",[m
+         "react": "^19.2.5",[m
+         "react-dom": "^19.2.5",[m
+         "react-router-dom": "^7.14.1",[m
+         "react-scripts": "5.0.1",[m
+[32m+[m[32m        "tailwindcss": "3.4",[m
+         "web-vitals": "^2.1.4"[m
+[32m+[m[32m      },[m
+[32m+[m[32m      "devDependencies": {[m
+[32m+[m[32m        "@tailwindcss/postcss": "^4.2.4",[m
+[32m+[m[32m        "autoprefixer": "^10.5.0",[m
+[32m+[m[32m        "postcss": "^8.5.10",[m
+[32m+[m[32m        "tailwindcss": "^4.2.4"[m
+       }[m
+     },[m
+     "node_modules/@adobe/css-tools": {[m
+[36m@@ -3334,6 +3343,297 @@[m
+         "url": "https://github.com/sponsors/gregberge"[m
+       }[m
+     },[m
+[32m+[m[32m    "node_modules/@tailwindcss/node": {[m
+[32m+[m[32m      "version": "4.2.4",[m
+[32m+[m[32m      "resolved": "https://registry.npmjs.org/@tailwindcss/node/-/node-4.2.4.tgz",[m
+[32m+[m[32m      "integrity": "sha512-Ai7+yQPxz3ddrDQzFfBKdHEVBg0w3Zl83jnjuwxnZOsnH9pGn93QHQtpU0p/8rYWxvbFZHneni6p1BSLK4DkGA==",[m
+[32m+[m[32m      "dev": true,[m
+[32m+[m[32m      "license": "MIT",[m
+[32m+[m[32m      "dependencies": {[m
+[32m+[m[32m        "@jridgewell/remapping": "^2.3.5",[m
+[32m+[m[32m        "enhanced-resolve": "^5.19.0",[m
+[32m+[m[32m        "jiti": "^2.6.1",[m
+[32m+[m[32m        "lightningcss": "1.32.0",[m
+[32m+[m[32m        "magic-string": "^0.30.21",[m
+[32m+[m[32m        "source-map-js": "^1.2.1",[m
+[32m+[m[32m        "tailwindcss": "4.2.4"[m
+[32m+[m[32m      }[m
+[32m+[m[32m    },[m
+[32m+[m[32m    "node_modules/@tailwindcss/node/node_modules/jiti": {[m
+[32m+[m[32m      "version": "2.6.1",[m
+[32m+[m[32m      "resolved": "https://registry.npmjs.org/jiti/-/jiti-2.6.1.tgz",[m
+[32m+[m[32m      "integrity": "sha512-ekilCSN1jwRvIbgeg/57YFh8qQDNbwDb9xT/qu2DAHbFFZUicIl4ygVaAvzveMhMVr3LnpSKTNnwt8PoOfmKhQ==",[m
+[32m+[m[32m      "dev": true,[m
+[32m+[m[32m      "license": "MIT",[m
+[32m+[m[32m      "bin": {[m
+[32m+[m[32m        "jiti": "lib/jiti-cli.mjs"[m
+[32m+[m[32m      }[m
+[32m+[m[32m    },[m
+[32m+[m[32m    "node_modules/@tailwindcss/node/node_modules/magic-string": {[m
+[32m+[m[32m      "version": "0.30.21",[m
+[32m+[m[32m      "resolved": "https://registry.npmjs.org/magic-string/-/magic-string-0.30.21.tgz",[m
+[32m+[m[32m      "integrity": "sha512-vd2F4YUyEXKGcLHoq+TEyCjxueSeHnFxyyjNp80yg0XV4vUhnDer/lvvlqM/arB5bXQN5K2/3oinyCRyx8T2CQ==",[m
+[32m+[m[32m      "dev": true,[m
+[32m+[m[32m      "license": "MIT",[m
+[32m+[m[32m      "dependencies": {[m
+[32m+[m[32m        "@jridgewell/sourcemap-codec": "^1.5.5"[m
+[32m+[m[32m      }[m
+[32m+[m[32m    },[m
+[32m+[m[32m    "node_modules/@tailwindcss/oxide": {[m
+[32m+[m[32m      "version": "4.2.4",[m
+[32m+[m[32m      "resolved": "https://registry.npmjs.org/@tailwindcss/oxide/-/oxide-4.2.4.tgz",[m
+[32m+[m[32m      "integrity": "sha512-9El/iI069DKDSXwTvB9J4BwdO5JhRrOweGaK25taBAvBXyXqJAX+Jqdvs8r8gKpsI/1m0LeJLyQYTf/WLrBT1Q==",[m
+[32m+[m[32m      "dev": true,[m
+[32m+[m[32m      "license": "MIT",[m
+[32m+[m[32m      "engines": {[m
+[32m+[m[32m        "node": ">= 20"[m
+[32m+[m[32m      },[m
+[32m+[m[32m      "optionalDependencies": {[m
+[32m+[m[32m        "@tailwindcss/oxide-android-arm64": "4.2.4",[m
+[32m+[m[32m        "@tailwindcss/oxide-darwin-arm64": "4.2.4",[m
+[32m+[m[32m        "@tailwindcss/oxide-darwin-x64": "4.2.4",[m
+[32m+[m[32m        "@tailwindcss/oxide-freebsd-x64": "4.2.4",[m
+[32m+[m[32m        "@tailwindcss/oxide-linux-arm-gnueabihf": "4.2.4",[m
+[32m+[m[32m        "@tailwindcss/oxide-linux-arm64-gnu": "4.2.4",[m
+[32m+[m[32m        "@tailwindcss/oxide-linux-arm64-musl": "4.2.4",[m
+[32m+[m[32m        "@tailwindcss/oxide-linux-x64-gnu": "4.2.4",[m
+[32m+[m[32m        "@tailwindcss/oxide-linux-x64-musl": "4.2.4",[m
+[32m+[m[32m        "@tailwindcss/oxide-wasm32-wasi": "4.2.4",[m
+[32m+[m[32m        "@tailwindcss/oxide-win32-arm64-msvc": "4.2.4",[m
+[32m+[m[32m        "@tailwindcss/oxide-win32-x64-msvc": "4.2.4"[m
+[32m+[m[32m      }[m
+[32m+[m[32m    },[m
+[32m+[m[32m    "node_modules/@tailwindcss/oxide-android-arm64": {[m
+[32m+[m[32m      "version": "4.2.4",[m
+[32m+[m[32m      "resolved": "https://registry.npmjs.org/@tailwindcss/oxide-android-arm64/-/oxide-android-arm64-4.2.4.tgz",[m
+[32m+[m[32m      "integrity": "sha512-e7MOr1SAn9U8KlZzPi1ZXGZHeC5anY36qjNwmZv9pOJ8E4Q6jmD1vyEHkQFmNOIN7twGPEMXRHmitN4zCMN03g==",[m
+[32m+[m[32m      "cpu": [[m
+[32m+[m[32m        "arm64"[m
+[32m+[m[32m      ],[m
+[32m+[m[32m      "dev": true,[m
+[32m+[m[32m      "license": "MIT",[m
+[32m+[m[32m      "optional": true,[m
+[32m+[m[32m      "os": [[m
+[32m+[m[32m        "android"[m
+[32m+[m[32m      ],[m
+[32m+[m[32m      "engines": {[m
+[32m+[m[32m        "node": ">= 20"[m
+[32m+[m[32m      }[m
+[32m+[m[32m    },[m
+[32m+[m[32m    "node_modules/@tailwindcss/oxide-darwin-arm64": {[m
+[32m+[m[32m      "version": "4.2.4",[m
+[32m+[m[32m      "resolved": "https://registry.npmjs.org/@tailwindcss/oxide-darwin-arm64/-/oxide-darwin-arm64-4.2.4.tgz",[m
+[32m+[m[32m      "integrity": "sha512-tSC/Kbqpz/5/o/C2sG7QvOxAKqyd10bq+ypZNf+9Fi2TvbVbv1zNpcEptcsU7DPROaSbVgUXmrzKhurFvo5eDg==",[m
+[32m+[m[32m      "cpu": [[m
+[32m+[m[32m        "arm64"[m
+[32m+[m[32m      ],[m
+[32m+[m[32m      "dev": true,[m
+[32m+[m[32m      "license": "MIT",[m
+[32m+[m[32m      "optional": true,[m
+[32m+[m[32m      "os": [[m
+[32m+[m[32m        "darwin"[m
+[32m+[m[32m      ],[m
+[32m+[m[32m      "engines": {[m
+[32m+[m[32m        "node": ">= 20"[m
+[32m+[m[32m      }[m
+[32m+[m[32m    },[m
+[32m+[m[32m    "node_modules/@tailwindcss/oxide-darwin-x64": {[m
+[32m+[m[32m      "version": "4.2.4",[m
+[32m+[m[32m      "resolved": "https://registry.npmjs.org/@tailwindcss/oxide-darwin-x64/-/oxide-darwin-x64-4.2.4.tgz",[m
+[32m+[m[32m      "integrity": "sha512-yPyUXn3yO/ufR6+Kzv0t4fCg2qNr90jxXc5QqBpjlPNd0NqyDXcmQb/6weunH/MEDXW5dhyEi+agTDiqa3WsGg==",[m
+[32m+[m[32m      "cpu": [[m
+[32m+[m[32m        "x64"[m
+[32m+[m[32m      ],[m
+[32m+[m[32m      "dev": true,[m
+[32m+[m[32m      "license": "MIT",[m
+[32m+[m[32m      "optional": true,[m
+[32m+[m[32m      "os": [[m
+[32m+[m[32m        "darwin"[m
+[32m+[m[32m      ],[m
+[32m+[m[32m      "engines": {[m
+[32m+[m[32m        "node": ">= 20"[m
+[32m+[m[32m      }[m
+[32m+[m[32m    },[m
+[32m+[m[32m    "node_modules/@tailwindcss/oxide-freebsd-x64": {[m
+[32m+[m[32m      "version": "4.2.4",[m
+[32m+[m[32m      "resolved": "https://registry.npmjs.org/@tailwindcss/oxide-freebsd-x64/-/oxide-freebsd-x64-4.2.4.tgz",[m
+[32m+[m[32m      "integrity": "sha512-BoMIB4vMQtZsXdGLVc2z+P9DbETkiopogfWZKbWwM8b/1Vinbs4YcUwo+kM/KeLkX3Ygrf4/PsRndKaYhS8Eiw==",[m
+[32m+[m[32m      "cpu": [[m
+[32m+[m[32m        "x64"[m
+[32m+[m[32m      ],[m
+[32m+[m[32m      "dev": true,[m
+[32m+[m[32m      "license": "MIT",[m
+[32m+[m[32m      "optional": true,[m
+[32m+[m[32m      "os": [[m
+[32m+[m[32m        "freebsd"[m
+[32m+[m[32m      ],[m
+[32m+[m[32m      "engines": {[m
+[32m+[m[32m        "node": ">= 20"[m
+[32m+[m[32m      }[m
+[32m+[m[32m    },[m
+[32m+[m[32m    "node_modules/@tailwindcss/oxide-linux-arm-gnueabihf": {[m
+[32m+[m[32m      "version": "4.2.4",[m
+[32m+[m[32m      "resolved": "https://registry.npmjs.org/@tailwindcss/oxide-linux-arm-gnueabihf/-/oxide-linux-arm-gnueabihf-4.2.4.tgz",[m
+[32m+[m[32m      "integrity": "sha512-7pIHBLTHYRAlS7V22JNuTh33yLH4VElwKtB3bwchK/UaKUPpQ0lPQiOWcbm4V3WP2I6fNIJ23vABIvoy2izdwA==",[m
+[32m+[m[32m      "cpu": [[m
+[32m+[m[32m        "arm"[m
+[32m+[m[32m      ],[m
+[32m+[m[32m      "dev": true,[m
+[32m+[m[32m      "license": "MIT",[m
+[32m+[m[32m      "optional": true,[m
+[32m+[m[32m      "os": [[m
+[32m+[m[32m        "linux"[m
+[32m+[m[32m      ],[m
+[32m+[m[32m      "engines": {[m
+[32m+[m[32m        "node": ">= 20"[m
+[32m+[m[32m      }[m
+[32m+[m[32m    },[m
+[32m+[m[32m    "node_modules/@tailwindcss/oxide-linux-arm64-gnu": {[m
+[32m+[m[32m      "version": "4.2.4",[m
+[32m+[m[32m      "resolved": "https://registry.npmjs.org/@tailwindcss/oxide-linux-arm64-gnu/-/oxide-linux-arm64-gnu-4.2.4.tgz",[m
+[32m+[m[32m      "integrity": "sha512-+E4wxJ0ZGOzSH325reXTWB48l42i93kQqMvDyz5gqfRzRZ7faNhnmvlV4EPGJU3QJM/3Ab5jhJ5pCRUsKn6OQw==",[m
+[32m+[m[32m      "cpu": [[m
+[32m+[m[32m        "arm64"[m
+[32m+[m[32m      ],[m
+[32m+[m[32m      "dev": true,[m
+[32m+[m[32m      "license": "MIT",[m
+[32m+[m[32m      "optional": true,[m
+[32m+[m[32m      "os": [[m
+[32m+[m[32m        "linux"[m
+[32m+[m[32m      ],[m
+[32m+[m[32m      "engines": {[m
+[32m+[m[32m        "node": ">= 20"[m
+[32m+[m[32m      }[m
+[32m+[m[32m    },[m
+[32m+[m[32m    "node_modules/@tailwindcss/oxide-linux-arm64-musl": {[m
+[32m+[m[32m      "version": "4.2.4",[m
+[32m+[m[32m      "resolved": "https://registry.npmjs.org/@tailwindcss/oxide-linux-arm64-musl/-/oxide-linux-arm64-musl-4.2.4.tgz",[m
+[32m+[m[32m      "integrity": "sha512-bBADEGAbo4ASnppIziaQJelekCxdMaxisrk+fB7Thit72IBnALp9K6ffA2G4ruj90G9XRS2VQ6q2bCKbfFV82g==",[m
+[32m+[m[32m      "cpu": [[m
+[32m+[m[32m        "arm64"[m
+[32m+[m[32m      ],[m
+[32m+[m[32m      "dev": true,[m
+[32m+[m[32m      "license": "MIT",[m
+[32m+[m[32m      "optional": true,[m
+[32m+[m[32m      "os": [[m
+[32m+[m[32m        "linux"[m
+[32m+[m[32m      ],[m
+[32m+[m[32m      "engines": {[m
+[32m+[m[32m        "node": ">= 20"[m
+[32m+[m[32m      }[m
+[32m+[m[32m    },[m
+[32m+[m[32m    "node_modules/@tailwindcss/oxide-linux-x64-gnu": {[m
+[32m+[m[32m      "version": "4.2.4",[m
+[32m+[m[32m      "resolved": "https://registry.npmjs.org/@tailwindcss/oxide-linux-x64-gnu/-/oxide-linux-x64-gnu-4.2.4.tgz",[m
+[32m+[m[32m      "integrity": "sha512-7Mx25E4WTfnht0TVRTyC00j3i0M+EeFe7wguMDTlX4mRxafznw0CA8WJkFjWYH5BlgELd1kSjuU2JiPnNZbJDA==",[m
+[32m+[m[32m      "cpu": [[m
+[32m+[m[32m        "x64"[m
+[32m+[m[32m      ],[m
+[32m+[m[32m      "dev": true,[m
+[32m+[m[32m      "license": "MIT",[m
+[32m+[m[32m      "optional": true,[m
+[32m+[m[32m      "os": [[m
+[32m+[m[32m        "linux"[m
+[32m+[m[32m      ],[m
+[32m+[m[32m      "engines": {[m
+[32m+[m[32m        "node": ">= 20"[m
+[32m+[m[32m      }[m
+[32m+[m[32m    },[m
+[32m+[m[32m    "node_modules/@tailwindcss/oxide-linux-x64-musl": {[m
+[32m+[m[32m      "version": "4.2.4",[m
+[32m+[m[32m      "resolved": "https://registry.npmjs.org/@tailwindcss/oxide-linux-x64-musl/-/oxide-linux-x64-musl-4.2.4.tgz",[m
+[32m+[m[32m      "integrity": "sha512-2wwJRF7nyhOR0hhHoChc04xngV3iS+akccHTGtz965FwF0up4b2lOdo6kI1EbDaEXKgvcrFBYcYQQ/rrnWFVfA==",[m
+[32m+[m[32m      "cpu": [[m
+[32m+[m[32m        "x64"[m
+[32m+[m[32m      ],[m
+[32m+[m[32m      "dev": true,[m
+[32m+[m[32m      "license": "MIT",[m
+[32m+[m[32m      "optional": true,[m
+[32m+[m[32m      "os": [[m
+[32m+[m[32m        "linux"[m
+[32m+[m[32m      ],[m
+[32m+[m[32m      "engines": {[m
+[32m+[m[32m        "node": ">= 20"[m
+[32m+[m[32m      }[m
+[32m+[m[32m    },[m
+[32m+[m[32m    "node_modules/@tailwindcss/oxide-wasm32-wasi": {[m
+[32m+[m[32m      "version": "4.2.4",[m
+[32m+[m[32m      "resolved": "https://registry.npmjs.org/@tailwindcss/oxide-wasm32-wasi/-/oxide-wasm32-wasi-4.2.4.tgz",[m
+[32m+[m[32m      "integrity": "sha512-FQsqApeor8Fo6gUEklzmaa9994orJZZDBAlQpK2Mq+DslRKFJeD6AjHpBQ0kZFQohVr8o85PPh8eOy86VlSCmw==",[m
+[32m+[m[32m      "bundleDependencies": [[m
+[32m+[m[32m        "@napi-rs/wasm-runtime",[m
+[32m+[m[32m        "@emnapi/core",[m
+[32m+[m[32m        "@emnapi/runtime",[m
+[32m+[m[32m        "@tybys/wasm-util",[m
+[32m+[m[32m        "@emnapi/wasi-threads",[m
+[32m+[m[32m        "tslib"[m
+[32m+[m[32m      ],[m
+[32m+[m[32m      "cpu": [[m
+[32m+[m[32m        "wasm32"[m
+[32m+[m[32m      ],[m
+[32m+[m[32m      "dev": true,[m
+[32m+[m[32m      "license": "MIT",[m
+[32m+[m[32m      "optional": true,[m
+[32m+[m[32m      "dependencies": {[m
+[32m+[m[32m        "@emnapi/core": "^1.8.1",[m
+[32m+[m[32m        "@emnapi/runtime": "^1.8.1",[m
+[32m+[m[32m        "@emnapi/wasi-threads": "^1.1.0",[m
+[32m+[m[32m        "@napi-rs/wasm-runtime": "^1.1.1",[m
+[32m+[m[32m        "@tybys/wasm-util": "^0.10.1",[m
+[32m+[m[32m        "tslib": "^2.8.1"[m
+[32m+[m[32m      },[m
+[32m+[m[32m      "engines": {[m
+[32m+[m[32m        "node": ">=14.0.0"[m
+[32m+[m[32m      }[m
+[32m+[m[32m    },[m
+[32m+[m[32m    "node_modules/@tailwindcss/oxide-win32-arm64-msvc": {[m
+[32m+[m[32m      "version": "4.2.4",[m
+[32m+[m[32m      "resolved": "https://registry.npmjs.org/@tailwindcss/oxide-win32-arm64-msvc/-/oxide-win32-arm64-msvc-4.2.4.tgz",[m
+[32m+[m[32m      "integrity": "sha512-L9BXqxC4ToVgwMFqj3pmZRqyHEztulpUJzCxUtLjobMCzTPsGt1Fa9enKbOpY2iIyVtaHNeNvAK8ERP/64sqGQ==",[m
+[32m+[m[32m      "cpu": [[m
+[32m+[m[32m        "arm64"[m
+[32m+[m[32m      ],[m
+[32m+[m[32m      "dev": true,[m
+[32m+[m[32m      "license": "MIT",[m
+[32m+[m[32m      "optional": true,[m
+[32m+[m[32m      "os": [[m
+[32m+[m[32m        "win32"[m
+[32m+[m[32m      ],[m
+[32m+[m[32m      "engines": {[m
+[32m+[m[32m        "node": ">= 20"[m
+[32m+[m[32m      }[m
+[32m+[m[32m    },[m
+[32m+[m[32m    "node_modules/@tailwindcss/oxide-win32-x64-msvc": {[m
+[32m+[m[32m      "version": "4.2.4",[m
+[32m+[m[32m      "resolved": "https://registry.npmjs.org/@tailwindcss/oxide-win32-x64-msvc/-/oxide-win32-x64-msvc-4.2.4.tgz",[m
+[32m+[m[32m      "integrity": "sha512-ESlKG0EpVJQwRjXDDa9rLvhEAh0mhP1sF7sap9dNZT0yyl9SAG6T7gdP09EH0vIv0UNTlo6jPWyujD6559fZvw==",[m
+[32m+[m[32m      "cpu": [[m
+[32m+[m[32m        "x64"[m
+[32m+[m[32m      ],[m
+[32m+[m[32m      "dev": true,[m
+[32m+[m[32m      "license": "MIT",[m
+[32m+[m[32m      "optional": true,[m
+[32m+[m[32m      "os": [[m
+[32m+[m[32m        "win32"[m
+[32m+[m[32m      ],[m
+[32m+[m[32m      "engines": {[m
+[32m+[m[32m        "node": ">= 20"[m
+[32m+[m[32m      }[m
+[32m+[m[32m    },[m
+[32m+[m[32m    "node_modules/@tailwindcss/postcss": {[m
+[32m+[m[32m      "version": "4.2.4",[m
+[32m+[m[32m      "resolved": "https://registry.npmjs.org/@tailwindcss/postcss/-/postcss-4.2.4.tgz",[m
+[32m+[m[32m      "integrity": "sha512-wgAVj6nUWAolAu8YFvzT2cTBIElWHkjZwFYovF+xsqKsW2ADxM/X2opxj5NsF/qVccAOjRNe8X2IdPzMsWyHTg==",[m
+[32m+[m[32m      "dev": true,[m
+[32m+[m[32m      "license": "MIT",[m
+[32m+[m[32m      "dependencies": {[m
+[32m+[m[32m        "@alloc/quick-lru": "^5.2.0",[m
+[32m+[m[32m        "@tailwindcss/node": "4.2.4",[m
+[32m+[m[32m        "@tailwindcss/oxide": "4.2.4",[m
+[32m+[m[32m        "postcss": "^8.5.6",[m
+[32m+[m[32m        "tailwindcss": "4.2.4"[m
+[32m+[m[32m      }[m
+[32m+[m[32m    },[m
+     "node_modules/@testing-library/dom": {[m
+       "version": "10.4.1",[m
+       "resolved": "https://registry.npmjs.org/@testing-library/dom/-/dom-10.4.1.tgz",[m
+[36m@@ -6492,6 +6792,16 @@[m
+         "npm": "1.2.8000 || >= 1.4.16"[m
+       }[m
+     },[m
+[32m+[m[32m    "node_modules/detect-libc": {[m
+[32m+[m[32m      "version": "2.1.2",[m
+[32m+[m[32m      "resolved": "https://registry.npmjs.org/detect-libc/-/detect-libc-2.1.2.tgz",[m
+[32m+[m[32m      "integrity": "sha512-Btj2BOOO83o3WyH59e8MgXsxEQVcarkUOpEYrubB0urwnN10yQ364rsiByU11nZlqWYZm05i/of7io4mzihBtQ==",[m
+[32m+[m[32m      "dev": true,[m
+[32m+[m[32m      "license": "Apache-2.0",[m
+[32m+[m[32m      "engines": {[m
+[32m+[m[32m        "node": ">=8"[m
+[32m+[m[32m      }[m
+[32m+[m[32m    },[m
+     "node_modules/detect-newline": {[m
+       "version": "3.1.0",[m
+       "resolved": "https://registry.npmjs.org/detect-newline/-/detect-newline-3.1.0.tgz",[m
+[36m@@ -11006,6 +11316,267 @@[m
+         "node": ">= 0.8.0"[m
+       }[m
+     },[m
+[32m+[m[32m    "node_modules/lightningcss": {[m
+[32m+[m[32m      "version": "1.32.0",[m
+[32m+[m[32m      "resolved": "https://registry.npmjs.org/lightningcss/-/lightningcss-1.32.0.tgz",[m
+[32m+[m[32m      "integrity": "sha512-NXYBzinNrblfraPGyrbPoD19C1h9lfI/1mzgWYvXUTe414Gz/X1FD2XBZSZM7rRTrMA8JL3OtAaGifrIKhQ5yQ==",[m
+[32m+[m[32m      "dev": true,[m
+[32m+[m[32m      "license": "MPL-2.0",[m
+[32m+[m[32m      "dependencies": {[m
+[32m+[m[32m        "detect-libc": "^2.0.3"[m
+[32m+[m[32m      },[m
+[32m+[m[32m      "engines": {[m
+[32m+[m[32m        "node": ">= 12.0.0"[m
+[32m+[m[32m      },[m
+[32m+[m[32m      "funding": {[m
+[32m+[m[32m        "type": "opencollective",[m
+[32m+[m[32m        "url": "https://opencollective.com/parcel"[m
+[32m+[m[32m      },[m
+[32m+[m[32m      "optionalDependencies": {[m
+[32m+[m[32m        "lightningcss-android-arm64": "1.32.0",[m
+[32m+[m[32m        "lightningcss-darwin-arm64": "1.32.0",[m
+[32m+[m[32m        "lightningcss-darwin-x64": "1.32.0",[m
+[32m+[m[32m        "lightningcss-freebsd-x64": "1.32.0",[m
+[32m+[m[32m        "lightningcss-linux-arm-gnueabihf": "1.32.0",[m
+[32m+[m[32m        "lightningcss-linux-arm64-gnu": "1.32.0",[m
+[32m+[m[32m        "lightningcss-linux-arm64-musl": "1.32.0",[m
+[32m+[m[32m        "lightningcss-linux-x64-gnu": "1.32.0",[m
+[32m+[m[32m        "lightningcss-linux-x64-musl": "1.32.0",[m
+[32m+[m[32m        "lightningcss-win32-arm64-msvc": "1.32.0",[m
+[32m+[m[32m        "lightningcss-win32-x64-msvc": "1.32.0"[m
+[32m+[m[32m      }[m
+[32m+[m[32m    },[m
+[32m+[m[32m    "node_modules/lightningcss-android-arm64": {[m
+[32m+[m[32m      "version": "1.32.0",[m
+[32m+[m[32m      "resolved": "https://registry.npmjs.org/lightningcss-android-arm64/-/lightningcss-android-arm64-1.32.0.tgz",[m
+[32m+[m[32m      "integrity": "sha512-YK7/ClTt4kAK0vo6w3X+Pnm0D2cf2vPHbhOXdoNti1Ga0al1P4TBZhwjATvjNwLEBCnKvjJc2jQgHXH0NEwlAg==",[m
+[32m+[m[32m      "cpu": [[m
+[32m+[m[32m        "arm64"[m
+[32m+[m[32m      ],[m
+[32m+[m[32m      "dev": true,[m
+[32m+[m[32m      "license": "MPL-2.0",[m
+[32m+[m[32m      "optional": true,[m
+[32m+[m[32m      "os": [[m
+[32m+[m[32m        "android"[m
+[32m+[m[32m      ],[m
+[32m+[m[32m      "engines": {[m
+[32m+[m[32m        "node": ">= 12.0.0"[m
+[32m+[m[32m      },[m
+[32m+[m[32m      "funding": {[m
+[32m+[m[32m        "type": "opencollective",[m
+[32m+[m[32m        "url": "https://opencollective.com/parcel"[m
+[32m+[m[32m      }[m
+[32m+[m[32m    },[m
+[32m+[m[32m    "node_modules/lightningcss-darwin-arm64": {[m
+[32m+[m[32m      "version": "1.32.0",[m
+[32m+[m[32m      "resolved": "https://registry.npmjs.org/lightningcss-darwin-arm64/-/lightningcss-darwin-arm64-1.32.0.tgz",[m
+[32m+[m[32m      "integrity": "sha512-RzeG9Ju5bag2Bv1/lwlVJvBE3q6TtXskdZLLCyfg5pt+HLz9BqlICO7LZM7VHNTTn/5PRhHFBSjk5lc4cmscPQ==",[m
+[32m+[m[32m      "cpu": [[m
+[32m+[m[32m        "arm64"[m
+[32m+[m[32m      ],[m
+[32m+[m[32m      "dev": true,[m
+[32m+[m[32m      "license": "MPL-2.0",[m
+[32m+[m[32m      "optional": true,[m
+[32m+[m[32m      "os": [[m
+[32m+[m[32m        "darwin"[m
+[32m+[m[32m      ],[m
+[32m+[m[32m      "engines": {[m
+[32m+[m[32m        "node": ">= 12.0.0"[m
+[32m+[m[32m      },[m
+[32m+[m[32m      "funding": {[m
+[32m+[m[32m        "type": "opencollective",[m
+[32m+[m[32m        "url": "https://opencollective.com/parcel"[m
+[32m+[m[32m      }[m
+[32m+[m[32m    },[m
+[32m+[m[32m    "node_modules/lightningcss-darwin-x64": {[m
+[32m+[m[32m      "version": "1.32.0",[m
+[32m+[m[32m      "resolved": "https://registry.npmjs.org/lightningcss-darwin-x64/-/lightningcss-darwin-x64-1.32.0.tgz",[m
+[32m+[m[32m      "integrity": "sha512-U+QsBp2m/s2wqpUYT/6wnlagdZbtZdndSmut/NJqlCcMLTWp5muCrID+K5UJ6jqD2BFshejCYXniPDbNh73V8w==",[m
+[32m+[m[32m      "cpu": [[m
+[32m+[m[32m        "x64"[m
+[32m+[m[32m      ],[m
+[32m+[m[32m      "dev": true,[m
+[32m+[m[32m      "license": "MPL-2.0",[m
+[32m+[m[32m      "optional": true,[m
+[32m+[m[32m      "os": [[m
+[32m+[m[32m        "darwin"[m
+[32m+[m[32m      ],[m
+[32m+[m[32m      "engines": {[m
+[32m+[m[32m        "node": ">= 12.0.0"[m
+[32m+[m[32m      },[m
+[32m+[m[32m      "funding": {[m
+[32m+[m[32m        "type": "opencollective",[m
+[32m+[m[32m        "url": "https://opencollective.com/parcel"[m
+[32m+[m[32m      }[m
+[32m+[m[32m    },[m
+[32m+[m[32m    "node_modules/lightningcss-freebsd-x64": {[m
+[32m+[m[32m      "version": "1.32.0",[m
+[32m+[m[32m      "resolved": "https://registry.npmjs.org/lightningcss-freebsd-x64/-/lightningcss-freebsd-x64-1.32.0.tgz",[m
+[32m+[m[32m      "integrity": "sha512-JCTigedEksZk3tHTTthnMdVfGf61Fky8Ji2E4YjUTEQX14xiy/lTzXnu1vwiZe3bYe0q+SpsSH/CTeDXK6WHig==",[m
+[32m+[m[32m      "cpu": [[m
+[32m+[m[32m        "x64"[m
+[32m+[m[32m      ],[m
+[32m+[m[32m      "dev": true,[m
+[32m+[m[32m      "license": "MPL-2.0",[m
+[32m+[m[32m      "optional": true,[m
+[32m+[m[32m      "os": [[m
+[32m+[m[32m        "freebsd"[m
+[32m+[m[32m      ],[m
+[32m+[m[32m      "engines": {[m
+[32m+[m[32m        "node": ">= 12.0.0"[m
+[32m+[m[32m      },[m
+[32m+[m[32m      "funding": {[m
+[32m+[m[32m        "type": "opencollective",[m
+[32m+[m[32m        "url": "https://opencollective.com/parcel"[m
+[32m+[m[32m      }[m
+[32m+[m[32m    },[m
+[32m+[m[32m    "node_modules/lightningcss-linux-arm-gnueabihf": {[m
+[32m+[m[32m      "version": "1.32.0",[m
+[32m+[m[32m      "resolved": "https://registry.npmjs.org/lightningcss-linux-arm-gnueabihf/-/lightningcss-linux-arm-gnueabihf-1.32.0.tgz",[m
+[32m+[m[32m      "integrity": "sha512-x6rnnpRa2GL0zQOkt6rts3YDPzduLpWvwAF6EMhXFVZXD4tPrBkEFqzGowzCsIWsPjqSK+tyNEODUBXeeVHSkw==",[m
+[32m+[m[32m      "cpu": [[m
+[32m+[m[32m        "arm"[m
+[32m+[m[32m      ],[m
+[32m+[m[32m      "dev": true,[m
+[32m+[m[32m      "license": "MPL-2.0",[m
+[32m+[m[32m      "optional": true,[m
+[32m+[m[32m      "os": [[m
+[32m+[m[32m        "linux"[m
+[32m+[m[32m      ],[m
+[32m+[m[32m      "engines": {[m
+[32m+[m[32m        "node": ">= 12.0.0"[m
+[32m+[m[32m      },[m
+[32m+[m[32m      "funding": {[m
+[32m+[m[32m        "type": "opencollective",[m
+[32m+[m[32m        "url": "https://opencollective.com/parcel"[m
+[32m+[m[32m      }[m
+[32m+[m[32m    },[m
+[32m+[m[32m    "node_modules/lightningcss-linux-arm64-gnu": {[m
+[32m+[m[32m      "version": "1.32.0",[m
+[32m+[m[32m      "resolved": "https://registry.npmjs.org/lightningcss-linux-arm64-gnu/-/lightningcss-linux-arm64-gnu-1.32.0.tgz",[m
+[32m+[m[32m      "integrity": "sha512-0nnMyoyOLRJXfbMOilaSRcLH3Jw5z9HDNGfT/gwCPgaDjnx0i8w7vBzFLFR1f6CMLKF8gVbebmkUN3fa/kQJpQ==",[m
+[32m+[m[32m      "cpu": [[m
+[32m+[m[32m        "arm64"[m
+[32m+[m[32m      ],[m
+[32m+[m[32m      "dev": true,[m
+[32m+[m[32m      "license": "MPL-2.0",[m
+[32m+[m[32m      "optional": true,[m
+[32m+[m[32m      "os": [[m
+[32m+[m[32m        "linux"[m
+[32m+[m[32m      ],[m
+[32m+[m[32m      "engines": {[m
+[32m+[m[32m        "node": ">= 12.0.0"[m
+[32m+[m[32m      },[m
+[32m+[m[32m      "funding": {[m
+[32m+[m[32m        "type": "opencollective",[m
+[32m+[m[32m        "url": "https://opencollective.com/parcel"[m
+[32m+[m[32m      }[m
+[32m+[m[32m    },[m
+[32m+[m[32m    "node_modules/lightningcss-linux-arm64-musl": {[m
+[32m+[m[32m      "version": "1.32.0",[m
+[32m+[m[32m      "resolved": "https://registry.npmjs.org/lightningcss-linux-arm64-musl/-/lightningcss-linux-arm64-musl-1.32.0.tgz",[m
+[32m+[m[32m      "integrity": "sha512-UpQkoenr4UJEzgVIYpI80lDFvRmPVg6oqboNHfoH4CQIfNA+HOrZ7Mo7KZP02dC6LjghPQJeBsvXhJod/wnIBg==",[m
+[32m+[m[32m      "cpu": [[m
+[32m+[m[32m        "arm64"[m
+[32m+[m[32m      ],[m
+[32m+[m[32m      "dev": true,[m
+[32m+[m[32m      "license": "MPL-2.0",[m
+[32m+[m[32m      "optional": true,[m
+[32m+[m[32m      "os": [[m
+[32m+[m[32m        "linux"[m
+[32m+[m[32m      ],[m
+[32m+[m[32m      "engines": {[m
+[32m+[m[32m        "node": ">= 12.0.0"[m
+[32m+[m[32m      },[m
+[32m+[m[32m      "funding": {[m
+[32m+[m[32m        "type": "opencollective",[m
+[32m+[m[32m        "url": "https://opencollective.com/parcel"[m
+[32m+[m[32m      }[m
+[32m+[m[32m    },[m
+[32m+[m[32m    "node_modules/lightningcss-linux-x64-gnu": {[m
+[32m+[m[32m      "version": "1.32.0",[m
+[32m+[m[32m      "resolved": "https://registry.npmjs.org/lightningcss-linux-x64-gnu/-/lightningcss-linux-x64-gnu-1.32.0.tgz",[m
+[32m+[m[32m      "integrity": "sha512-V7Qr52IhZmdKPVr+Vtw8o+WLsQJYCTd8loIfpDaMRWGUZfBOYEJeyJIkqGIDMZPwPx24pUMfwSxxI8phr/MbOA==",[m
+[32m+[m[32m      "cpu": [[m
+[32m+[m[32m        "x64"[m
+[32m+[m[32m      ],[m
+[32m+[m[32m      "dev": true,[m
+[32m+[m[32m      "license": "MPL-2.0",[m
+[32m+[m[32m      "optional": true,[m
+[32m+[m[32m      "os": [[m
+[32m+[m[32m        "linux"[m
+[32m+[m[32m      ],[m
+[32m+[m[32m      "engines": {[m
+[32m+[m[32m        "node": ">= 12.0.0"[m
+[32m+[m[32m      },[m
+[32m+[m[32m      "funding": {[m
+[32m+[m[32m        "type": "opencollective",[m
+[32m+[m[32m        "url": "https://opencollective.com/parcel"[m
+[32m+[m[32m      }[m
+[32m+[m[32m    },[m
+[32m+[m[32m    "node_modules/lightningcss-linux-x64-musl": {[m
+[32m+[m[32m      "version": "1.32.0",[m
+[32m+[m[32m      "resolved": "https://registry.npmjs.org/lightningcss-linux-x64-musl/-/lightningcss-linux-x64-musl-1.32.0.tgz",[m
+[32m+[m[32m      "integrity": "sha512-bYcLp+Vb0awsiXg/80uCRezCYHNg1/l3mt0gzHnWV9XP1W5sKa5/TCdGWaR/zBM2PeF/HbsQv/j2URNOiVuxWg==",[m
+[32m+[m[32m      "cpu": [[m
+[32m+[m[32m        "x64"[m
+[32m+[m[32m      ],[m
+[32m+[m[32m      "dev": true,[m
+[32m+[m[32m      "license": "MPL-2.0",[m
+[32m+[m[32m      "optional": true,[m
+[32m+[m[32m      "os": [[m
+[32m+[m[32m        "linux"[m
+[32m+[m[32m      ],[m
+[32m+[m[32m      "engines": {[m
+[32m+[m[32m        "node": ">= 12.0.0"[m
+[32m+[m[32m      },[m
+[32m+[m[32m      "funding": {[m
+[32m+[m[32m        "type": "opencollective",[m
+[32m+[m[32m        "url": "https://opencollective.com/parcel"[m
+[32m+[m[32m      }[m
+[32m+[m[32m    },[m
+[32m+[m[32m    "node_modules/lightningcss-win32-arm64-msvc": {[m
+[32m+[m[32m      "version": "1.32.0",[m
+[32m+[m[32m      "resolved": "https://registry.npmjs.org/lightningcss-win32-arm64-msvc/-/lightningcss-win32-arm64-msvc-1.32.0.tgz",[m
+[32m+[m[32m      "integrity": "sha512-8SbC8BR40pS6baCM8sbtYDSwEVQd4JlFTOlaD3gWGHfThTcABnNDBda6eTZeqbofalIJhFx0qKzgHJmcPTnGdw==",[m
+[32m+[m[32m      "cpu": [[m
+[32m+[m[32m        "arm64"[m
+[32m+[m[32m      ],[m
+[32m+[m[32m      "dev": true,[m
+[32m+[m[32m      "license": "MPL-2.0",[m
+[32m+[m[32m      "optional": true,[m
+[32m+[m[32m      "os": [[m
+[32m+[m[32m        "win32"[m
+[32m+[m[32m      ],[m
+[32m+[m[32m      "engines": {[m
+[32m+[m[32m        "node": ">= 12.0.0"[m
+[32m+[m[32m      },[m
+[32m+[m[32m      "funding": {[m
+[32m+[m[32m        "type": "opencollective",[m
+[32m+[m[32m        "url": "https://opencollective.com/parcel"[m
+[32m+[m[32m      }[m
+[32m+[m[32m    },[m
+[32m+[m[32m    "node_modules/lightningcss-win32-x64-msvc": {[m
+[32m+[m[32m      "version": "1.32.0",[m
+[32m+[m[32m      "resolved": "https://registry.npmjs.org/lightningcss-win32-x64-msvc/-/lightningcss-win32-x64-msvc-1.32.0.tgz",[m
+[32m+[m[32m      "integrity": "sha512-Amq9B/SoZYdDi1kFrojnoqPLxYhQ4Wo5XiL8EVJrVsB8ARoC1PWW6VGtT0WKCemjy8aC+louJnjS7U18x3b06Q==",[m
+[32m+[m[32m      "cpu": [[m
+[32m+[m[32m        "x64"[m
+[32m+[m[32m      ],[m
+[32m+[m[32m      "dev": true,[m
+[32m+[m[32m      "license": "MPL-2.0",[m
+[32m+[m[32m      "optional": true,[m
+[32m+[m[32m      "os": [[m
+[32m+[m[32m        "win32"[m
+[32m+[m[32m      ],[m
+[32m+[m[32m      "engines": {[m
+[32m+[m[32m        "node": ">= 12.0.0"[m
+[32m+[m[32m      },[m
+[32m+[m[32m      "funding": {[m
+[32m+[m[32m        "type": "opencollective",[m
+[32m+[m[32m        "url": "https://opencollective.com/parcel"[m
+[32m+[m[32m      }[m
+[32m+[m[32m    },[m
+     "node_modules/lilconfig": {[m
+       "version": "2.1.0",[m
+       "resolved": "https://registry.npmjs.org/lilconfig/-/lilconfig-2.1.0.tgz",[m
+[36m@@ -13887,6 +14458,97 @@[m
+         }[m
+       }[m
+     },[m
+[32m+[m[32m    "node_modules/react-scripts/node_modules/lilconfig": {[m
+[32m+[m[32m      "version": "3.1.3",[m
+[32m+[m[32m      "resolved": "https://registry.npmjs.org/lilconfig/-/lilconfig-3.1.3.tgz",[m
+[32m+[m[32m      "integrity": "sha512-/vlFKAoH5Cgt3Ie+JLhRbwOsCQePABiU3tJ1egGvyQ+33R/vcwM2Zl2QR/LzjsBeItPt3oSVXapn+m4nQDvpzw==",[m
+[32m+[m[32m      "license": "MIT",[m
+[32m+[m[32m      "engines": {[m
+[32m+[m[32m        "node": ">=14"[m
+[32m+[m[32m      },[m
+[32m+[m[32m      "funding": {[m
+[32m+[m[32m        "url": "https://github.com/sponsors/antonk52"[m
+[32m+[m[32m      }[m
+[32m+[m[32m    },[m
+[32m+[m[32m    "node_modules/react-scripts/node_modules/postcss-load-config": {[m
+[32m+[m[32m      "version": "6.0.1",[m
+[32m+[m[32m      "resolved": "https://registry.npmjs.org/postcss-load-config/-/postcss-load-config-6.0.1.tgz",[m
+[32m+[m[32m      "integrity": "sha512-oPtTM4oerL+UXmx+93ytZVN82RrlY/wPUV8IeDxFrzIjXOLF1pN+EmKPLbubvKHT2HC20xXsCAH2Z+CKV6Oz/g==",[m
+[32m+[m[32m      "funding": [[m
+[32m+[m[32m        {[m
+[32m+[m[32m          "type": "opencollective",[m
+[32m+[m[32m          "url": "https://opencollective.com/postcss/"[m
+[32m+[m[32m        },[m
+[32m+[m[32m        {[m
+[32m+[m[32m          "type": "github",[m
+[32m+[m[32m          "url": "https://github.com/sponsors/ai"[m
+[32m+[m[32m        }[m
+[32m+[m[32m      ],[m
+[32m+[m[32m      "license": "MIT",[m
+[32m+[m[32m      "dependencies": {[m
+[32m+[m[32m        "lilconfig": "^3.1.1"[m
+[32m+[m[32m      },[m
+[32m+[m[32m      "engines": {[m
+[32m+[m[32m        "node": ">= 18"[m
+[32m+[m[32m      },[m
+[32m+[m[32m      "peerDependencies": {[m
+[32m+[m[32m        "jiti": ">=1.21.0",[m
+[32m+[m[32m        "postcss": ">=8.0.9",[m
+[32m+[m[32m        "tsx": "^4.8.1",[m
+[32m+[m[32m        "yaml": "^2.4.2"[m
+[32m+[m[32m      },[m
+[32m+[m[32m      "peerDependenciesMeta": {[m
+[32m+[m[32m        "jiti": {[m
+[32m+[m[32m          "optional": true[m
+[32m+[m[32m        },[m
+[32m+[m[32m        "postcss": {[m
+[32m+[m[32m          "optional": true[m
+[32m+[m[32m        },[m
+[32m+[m[32m        "tsx": {[m
+[32m+[m[32m          "optional": true[m
+[32m+[m[32m        },[m
+[32m+[m[32m        "yaml": {[m
+[32m+[m[32m          "optional": true[m
+[32m+[m[32m        }[m
+[32m+[m[32m      }[m
+[32m+[m[32m    },[m
+[32m+[m[32m    "node_modules/react-scripts/node_modules/tailwindcss": {[m
+[32m+[m[32m      "version": "3.4.19",[m
+[32m+[m[32m      "resolved": "https://registry.npmjs.org/tailwindcss/-/tailwindcss-3.4.19.tgz",[m
+[32m+[m[32m      "integrity": "sha512-3ofp+LL8E+pK/JuPLPggVAIaEuhvIz4qNcf3nA1Xn2o/7fb7s/TYpHhwGDv1ZU3PkBluUVaF8PyCHcm48cKLWQ==",[m
+[32m+[m[32m      "license": "MIT",[m
+[32m+[m[32m      "dependencies": {[m
+[32m+[m[32m        "@alloc/quick-lru": "^5.2.0",[m
+[32m+[m[32m        "arg": "^5.0.2",[m
+[32m+[m[32m        "chokidar": "^3.6.0",[m
+[32m+[m[32m        "didyoumean": "^1.2.2",[m
+[32m+[m[32m        "dlv": "^1.1.3",[m
+[32m+[m[32m        "fast-glob": "^3.3.2",[m
+[32m+[m[32m        "glob-parent": "^6.0.2",[m
+[32m+[m[32m        "is-glob": "^4.0.3",[m
+[32m+[m[32m        "jiti": "^1.21.7",[m
+[32m+[m[32m        "lilconfig": "^3.1.3",[m
+[32m+[m[32m        "micromatch": "^4.0.8",[m
+[32m+[m[32m        "normalize-path": "^3.0.0",[m
+[32m+[m[32m        "object-hash": "^3.0.0",[m
+[32m+[m[32m        "picocolors": "^1.1.1",[m
+[32m+[m[32m        "postcss": "^8.4.47",[m
+[32m+[m[32m        "postcss-import": "^15.1.0",[m
+[32m+[m[32m        "postcss-js": "^4.0.1",[m
+[32m+[m[32m        "postcss-load-config": "^4.0.2 || ^5.0 || ^6.0",[m
+[32m+[m[32m        "postcss-nested": "^6.2.0",[m
+[32m+[m[32m        "postcss-selector-parser": "^6.1.2",[m
+[32m+[m[32m        "resolve": "^1.22.8",[m
+[32m+[m[32m        "sucrase": "^3.35.0"[m
+[32m+[m[32m      },[m
+[32m+[m[32m      "bin": {[m
+[32m+[m[32m        "tailwind": "lib/cli.js",[m
+[32m+[m[32m        "tailwindcss": "lib/cli.js"[m
+[32m+[m[32m      },[m
+[32m+[m[32m      "engines": {[m
+[32m+[m[32m        "node": ">=14.0.0"[m
+[32m+[m[32m      }[m
+[32m+[m[32m    },[m
+     "node_modules/read-cache": {[m
+       "version": "1.0.0",[m
+       "resolved": "https://registry.npmjs.org/read-cache/-/read-cache-1.0.0.tgz",[m
+[36m@@ -15563,95 +16225,11 @@[m
+       "license": "MIT"[m
+     },[m
+     "node_modules/tailwindcss": {[m
+[31m-      "version": "3.4.19",[m
+[31m-      "resolved": "https://registry.npmjs.org/tailwindcss/-/tailwindcss-3.4.19.tgz",[m
+[31m-      "integrity": "sha512-3ofp+LL8E+pK/JuPLPggVAIaEuhvIz4qNcf3nA1Xn2o/7fb7s/TYpHhwGDv1ZU3PkBluUVaF8PyCHcm48cKLWQ==",[m
+[31m-      "license": "MIT",[m
+[31m-      "dependencies": {[m
+[31m-        "@alloc/quick-lru": "^5.2.0",[m
+[31m-        "arg": "^5.0.2",[m
+[31m-        "chokidar": "^3.6.0",[m
+[31m-        "didyoumean": "^1.2.2",[m
+[31m-        "dlv": "^1.1.3",[m
+[31m-        "fast-glob": "^3.3.2",[m
+[31m-        "glob-parent": "^6.0.2",[m
+[31m-        "is-glob": "^4.0.3",[m
+[31m-        "jiti": "^1.21.7",[m
+[31m-        "lilconfig": "^3.1.3",[m
+[31m-        "micromatch": "^4.0.8",[m
+[31m-        "normalize-path": "^3.0.0",[m
+[31m-        "object-hash": "^3.0.0",[m
+[31m-        "picocolors": "^1.1.1",[m
+[31m-        "postcss": "^8.4.47",[m
+[31m-        "postcss-import": "^15.1.0",[m
+[31m-        "postcss-js": "^4.0.1",[m
+[31m-        "postcss-load-config": "^4.0.2 || ^5.0 || ^6.0",[m
+[31m-        "postcss-nested": "^6.2.0",[m
+[31m-        "postcss-selector-parser": "^6.1.2",[m
+[31m-        "resolve": "^1.22.8",[m
+[31m-        "sucrase": "^3.35.0"[m
+[31m-      },[m
+[31m-      "bin": {[m
+[31m-        "tailwind": "lib/cli.js",[m
+[31m-        "tailwindcss": "lib/cli.js"[m
+[31m-      },[m
+[31m-      "engines": {[m
+[31m-        "node": ">=14.0.0"[m
+[31m-      }[m
+[31m-    },[m
+[31m-    "node_modules/tailwindcss/node_modules/lilconfig": {[m
+[31m-      "version": "3.1.3",[m
+[31m-      "resolved": "https://registry.npmjs.org/lilconfig/-/lilconfig-3.1.3.tgz",[m
+[31m-      "integrity": "sha512-/vlFKAoH5Cgt3Ie+JLhRbwOsCQePABiU3tJ1egGvyQ+33R/vcwM2Zl2QR/LzjsBeItPt3oSVXapn+m4nQDvpzw==",[m
+[31m-      "license": "MIT",[m
+[31m-      "engines": {[m
+[31m-        "node": ">=14"[m
+[31m-      },[m
+[31m-      "funding": {[m
+[31m-        "url": "https://github.com/sponsors/antonk52"[m
+[31m-      }[m
+[31m-    },[m
+[31m-    "node_modules/tailwindcss/node_modules/postcss-load-config": {[m
+[31m-      "version": "6.0.1",[m
+[31m-      "resolved": "https://registry.npmjs.org/postcss-load-config/-/postcss-load-config-6.0.1.tgz",[m
+[31m-      "integrity": "sha512-oPtTM4oerL+UXmx+93ytZVN82RrlY/wPUV8IeDxFrzIjXOLF1pN+EmKPLbubvKHT2HC20xXsCAH2Z+CKV6Oz/g==",[m
+[31m-      "funding": [[m
+[31m-        {[m
+[31m-          "type": "opencollective",[m
+[31m-          "url": "https://opencollective.com/postcss/"[m
+[31m-        },[m
+[31m-        {[m
+[31m-          "type": "github",[m
+[31m-          "url": "https://github.com/sponsors/ai"[m
+[31m-        }[m
+[31m-      ],[m
+[31m-      "license": "MIT",[m
+[31m-      "dependencies": {[m
+[31m-        "lilconfig": "^3.1.1"[m
+[31m-      },[m
+[31m-      "engines": {[m
+[31m-        "node": ">= 18"[m
+[31m-      },[m
+[31m-      "peerDependencies": {[m
+[31m-        "jiti": ">=1.21.0",[m
+[31m-        "postcss": ">=8.0.9",[m
+[31m-        "tsx": "^4.8.1",[m
+[31m-        "yaml": "^2.4.2"[m
+[31m-      },[m
+[31m-      "peerDependenciesMeta": {[m
+[31m-        "jiti": {[m
+[31m-          "optional": true[m
+[31m-        },[m
+[31m-        "postcss": {[m
+[31m-          "optional": true[m
+[31m-        },[m
+[31m-        "tsx": {[m
+[31m-          "optional": true[m
+[31m-        },[m
+[31m-        "yaml": {[m
+[31m-          "optional": true[m
+[31m-        }[m
+[31m-      }[m
+[32m+[m[32m      "version": "4.2.4",[m
+[32m+[m[32m      "resolved": "https://registry.npmjs.org/tailwindcss/-/tailwindcss-4.2.4.tgz",[m
+[32m+[m[32m      "integrity": "sha512-HhKppgO81FQof5m6TEnuBWCZGgfRAWbaeOaGT00KOy/Pf/j6oUihdvBpA7ltCeAvZpFhW3j0PTclkxsd4IXYDA==",[m
+[32m+[m[32m      "dev": true,[m
+[32m+[m[32m      "license": "MIT"[m
+     },[m
+     "node_modules/tapable": {[m
+       "version": "2.3.2",[m
+[1mdiff --git a/package.json b/package.json[m
+[1mindex 7f40ada..0911da2 100644[m
+[1m--- a/package.json[m
+[1m+++ b/package.json[m
+[36m@@ -7,10 +7,13 @@[m
+     "@testing-library/jest-dom": "^6.9.1",[m
+     "@testing-library/react": "^16.3.2",[m
+     "@testing-library/user-event": "^13.5.0",[m
+[32m+[m[32m    "autoprefixer": "^10.5.0",[m
+[32m+[m[32m    "postcss": "^8.5.10",[m
+     "react": "^19.2.5",[m
+     "react-dom": "^19.2.5",[m
+     "react-router-dom": "^7.14.1",[m
+     "react-scripts": "5.0.1",[m
+[32m+[m[32m    "tailwindcss": "3.4",[m
+     "web-vitals": "^2.1.4"[m
+   },[m
+   "scripts": {[m
+[36m@@ -36,5 +39,11 @@[m
+       "last 1 firefox version",[m
+       "last 1 safari version"[m
+     ][m
+[32m+[m[32m  },[m
+[32m+[m[32m  "devDependencies": {[m
+[32m+[m[32m    "@tailwindcss/postcss": "^4.2.4",[m
+[32m+[m[32m    "autoprefixer": "^10.5.0",[m
+[32m+[m[32m    "postcss": "^8.5.10",[m
+[32m+[m[32m    "tailwindcss": "^4.2.4"[m
+   }[m
+ }[m
+[1mdiff --git a/postcss.config.js b/postcss.config.js[m
+[1mindex 351fe75..96bb01e 100644[m
+[1m--- a/postcss.config.js[m
+[1m+++ b/postcss.config.js[m
+[36m@@ -1,6 +1,6 @@[m
+ module.exports = {[m
+   plugins: {[m
+[31m-    '@tailwindcss/postcss': {},[m
+[32m+[m[32m    tailwindcss: {},[m
+     autoprefixer: {},[m
+[31m-  }[m
+[32m+[m[32m  },[m
+ }[m
+\ No newline at end of file[m
+[1mdiff --git a/src/App.jsx b/src/App.jsx[m
+[1mindex 7282c6e..c615bab 100644[m
+[1m--- a/src/App.jsx[m
+[1m+++ b/src/App.jsx[m
+[36m@@ -1,5 +1,5 @@[m
+ import { BrowserRouter, Routes, Route } from "react-router-dom";[m
+[31m-[m
+[32m+[m[32mimport { ThemeProvider } from "./components/ThemeContext";[m
+ import Navbar from "./components/Navbar";[m
+ import Home from "./components/Home";[m
+ import About from "./components/About";[m
+[36m@@ -8,28 +8,34 @@[m [mimport Counter from "./components/Counter.jsx";[m
+ import Toggle from "./components/toggle/Toggle.jsx";[m
+ import Input from "./components/Input";[m
+ import UseEffect from "./components/UseEffect";[m
+[31m-[m
+[31m-import { ThemeProvider } from "./components/ThemeContext"; // ← sirf yeh badla[m
+[32m+[m[32mimport Dashboard from "./components/Dashboard.jsx";[m
+[32m+[m[32mimport ProductList from "./components/products/ProductList.jsx";[m
+[32m+[m[32mimport TailwindTest from "./components/Playground/TailwindTest.jsx";[m[41m [m
+[32m+[m[32mimport "./components/toggle/Toggle.css";[m
+ [m
+ function App() {[m
+   return ([m
+     <BrowserRouter>[m
+[31m-      <ThemeProvider> {/* ← pehle ThemeContext.Provider tha, ab ThemeProvider hai */}[m
+[31m-[m
+[32m+[m[32m      <ThemeProvider>[m
+         <Navbar />[m
+ [m
+         <div style={{ marginLeft: "220px", padding: "20px" }}>[m
+           <Routes>[m
+[31m-            <Route path="/"          element={<Home />}      />[m
+[31m-            <Route path="/about"     element={<About />}     />[m
+[31m-            <Route path="/contact"   element={<Contact />}   />[m
+[31m-            <Route path="/counter"   element={<Counter />}   />[m
+[31m-            <Route path="/toggle"    element={<Toggle />}    />[m
+[31m-            <Route path="/input"     element={<Input />}     />[m
+[31m-            <Route path="/useeffect" element={<UseEffect />} />[m
+[32m+[m[32m            <Route path="/"          element={<Home />}        />[m
+[32m+[m[32m            <Route path="/about"     element={<About />}       />[m
+[32m+[m[32m            <Route path="/contact"   element={<Contact />}     />[m
+[32m+[m[32m            <Route path="/counter"   element={<Counter />}     />[m
+[32m+[m[32m            <Route path="/toggle"    element={<Toggle />}      />[m
+[32m+[m[32m            <Route path="/input"     element={<Input />}       />[m
+[32m+[m[32m            <Route path="/useeffect" element={<UseEffect />}  />[m
+[32m+[m[32m            <Route path="/practice" element={<TailwindTest />}   />[m
+[32m+[m[32m            <Route path="/dashboard" element={<Dashboard />}   />[m
+[32m+[m[32m            <Route path="/products"  element={<ProductList />} />[m
+[32m+[m[41m            [m
+[32m+[m[32m            {/* Tailwind practice */}[m
+[32m+[m[32m            <Route path="/practice"  element={<TailwindTest />} />[m[41m [m
+           </Routes>[m
+         </div>[m
+[31m-[m
+       </ThemeProvider>[m
+     </BrowserRouter>[m
+   );[m
+[1mdiff --git a/src/components/Playground/TailwindTest.jsx b/src/components/Playground/TailwindTest.jsx[m
+[1mindex ca3fd3c..abed975 100644[m
+[1m--- a/src/components/Playground/TailwindTest.jsx[m
+[1m+++ b/src/components/Playground/TailwindTest.jsx[m
+[36m@@ -1,33 +1,14 @@[m
+[31m-import React from 'react'[m
+[32m+[m[32mimport React from 'react';[m
+ [m
+ const TailwindTest = () => {[m
+   return ([m
+[31m-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50 p-6">[m
+[31m-      {/* Ek Pyara sa Card */}[m
+[31m-      <div className="max-w-md w-full bg-white rounded-3xl shadow-2xl overflow-hidden transform transition hover:scale-105 duration-300">[m
+[31m-        <div className="bg-gradient-to-r from-blue-500 to-purple-600 p-6">[m
+[31m-          <h2 className="text-white text-2xl font-bold">Tailwind Practice 🚀</h2>[m
+[31m-          <p className="text-blue-100 text-sm">Testing my new skills</p>[m
+[31m-        </div>[m
+[31m-        [m
+[31m-        <div className="p-6 space-y-4">[m
+[31m-          <p className="text-gray-600">[m
+[31m-            Ye component bilkul alag hai. Yahan main jo marzi design karun, [m
+[31m-            mere purane Dashboard par koi asar nahi parega![m
+[31m-          </p>[m
+[31m-          [m
+[31m-          <div className="flex gap-2">[m
+[31m-            <span className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs font-semibold">Active</span>[m
+[31m-            <span className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-semibold">Learning</span>[m
+[31m-          </div>[m
+[31m-[m
+[31m-          <button className="w-full bg-blue-600 text-white py-3 rounded-xl font-bold hover:bg-blue-700 active:bg-blue-800 transition shadow-lg shadow-blue-200">[m
+[31m-            Try Hovering Me![m
+[31m-          </button>[m
+[31m-        </div>[m
+[31m-      </div>[m
+[32m+[m[32m    <div className="p-10 bg-blue-100 min-h-screen">[m
+[32m+[m[32m      <h1 className="text-3xl font-bold text-blue-700">Tailwind 3.4 is Live!</h1>[m
+[32m+[m[32m      <p className="mt-4 bg-white p-4 shadow-lg rounded-lg">[m
+[32m+[m[32m        Agar ye blue box aur shadow nazar aa rahi hai, to aapka setup perfect hai.[m
+[32m+[m[32m      </p>[m
+     </div>[m
+[31m-  )[m
+[31m-}[m
+[32m+[m[32m  );[m
+[32m+[m[32m};[m
+ [m
+[31m-export default TailwindTest[m
+\ No newline at end of file[m
+[32m+[m[32mexport default TailwindTest;[m
+\ No newline at end of file[m
+[1mdiff --git a/src/components/UseEffect.jsx b/src/components/UseEffect.jsx[m
+[1mindex 1a01eb5..1d55658 100644[m
+[1m--- a/src/components/UseEffect.jsx[m
+[1m+++ b/src/components/UseEffect.jsx[m
+[36m@@ -1,6 +1,6 @@[m
+ import { useState, useEffect } from "react";[m
+ [m
+[31m-function EffectExample() {[m
+[32m+[m[32mfunction UseEffect() {[m
+   const [count, setCount] = useState(0);[m
+ [m
+   useEffect(() => {[m
+[36m@@ -15,4 +15,4 @@[m [mfunction EffectExample() {[m
+   );[m
+ }[m
+ [m
+[31m-export default EffectExample;[m
+\ No newline at end of file[m
+[32m+[m[32mexport default UseEffect;[m
+\ No newline at end of file[m
+[1mdiff --git a/src/hooks/useFetch.jsx b/src/hooks/useFetch.jsx[m
+[1mnew file mode 100644[m
+[1mindex 0000000..353da48[m
+[1m--- /dev/null[m
+[1m+++ b/src/hooks/useFetch.jsx[m
+[36m@@ -0,0 +1,28 @@[m
+[32m+[m[32mimport { useState, useEffect } from "react";[m
+[32m+[m[32mimport axios from "axios";[m
+[32m+[m
+[32m+[m[32mfunction useFetch(url) {[m
+[32m+[m[32m  const [data, setData] = useState([]);[m
+[32m+[m[32m  const [loading, setLoading] = useState(true);[m
+[32m+[m[32m  const [error, setError] = useState(null);[m
+[32m+[m
+[32m+[m[32m  useEffect(() => {[m
+[32m+[m[32m    // Ek simple async function banaya[m
+[32m+[m[32m    const getApiData = async () => {[m
+[32m+[m[32m      try {[m
+[32m+[m[32m        const res = await axios.get(url);[m
+[32m+[m[32m        setData(res.data);[m
+[32m+[m[32m        setLoading(false);[m
+[32m+[m[32m      } catch (err) {[m
+[32m+[m[32m        setError("Something went wrong. Please try again.");[m
+[32m+[m[32m        setLoading(false);[m
+[32m+[m[32m      }[m
+[32m+[m[32m    };[m
+[32m+[m
+[32m+[m[32m    getApiData();[m
+[32m+[m[32m  }, [url]);[m
+[32m+[m
+[32m+[m[32m  return { data, loading, error };[m
+[32m+[m[32m}[m
+[32m+[m
+[32m+[m[32mexport default useFetch;[m
+\ No newline at end of file[m
+[1mdiff --git a/src/index.css b/src/index.css[m
+[1mindex ec2585e..ac79405 100644[m
+[1m--- a/src/index.css[m
+[1m+++ b/src/index.css[m
+[36m@@ -1,3 +1,10 @@[m
+[32m+[m[32mbody {[m
+[32m+[m[32m  background-color: yellow !important;[m
+[32m+[m[32m}[m
+[32m+[m[32m@tailwind base;[m
+[32m+[m[32m@tailwind components;[m
+[32m+[m[32m@tailwind utilities;[m
+[32m+[m
+ body {[m
+   margin: 0;[m
+   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',[m
+[36m@@ -11,3 +18,16 @@[m [mcode {[m
+   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',[m
+     monospace;[m
+ }[m
+[32m+[m
+[32m+[m[32m.main-content {[m
+[32m+[m[32m  margin-left: 220px;[m
+[32m+[m[32m  padding: 20px;[m
+[32m+[m[32m}[m
+[32m+[m
+[32m+[m[32m@media (max-width: 768px) {[m
+[32m+[m[32m  .main-content {[m
+[32m+[m[32m    margin-left: 0;[m
+[32m+[m[32m    padding: 0;[m
+[32m+[m[32m    margin-top: 56px;[m
+[32m+[m[32m  }[m
+[32m+[m[32m}[m
+[1mdiff --git a/tailwind.config.js b/tailwind.config.js[m
+[1mindex ea9df9b..5a66654 100644[m
+[1m--- a/tailwind.config.js[m
+[1m+++ b/tailwind.config.js[m
+[36m@@ -1,7 +1,8 @@[m
+ /** @type {import('tailwindcss').Config} */[m
+ module.exports = {[m
+[31m- content: ["./src/**/*.{js,jsx,ts,tsx}"],[m
+[31m-  [m
+[32m+[m[32m  content: [[m
+[32m+[m[32m    "./src/**/*.{js,jsx,ts,tsx}",[m
+[32m+[m[32m  ],[m
+   theme: {[m
+     extend: {},[m
+   },[m
