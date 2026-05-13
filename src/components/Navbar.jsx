@@ -72,7 +72,6 @@ function Navbar() {
         <AnnouncementBar />
       </div>
 
-      {/* 2. Header shifted down by 35px (Announcement Bar height) */}
       <header className="flex justify-between items-center px-[15px] sm:px-[25px] md:px-[40px] h-[64px] bg-[#222] text-white fixed top-[35px] left-0 w-full z-[1001] shadow-lg border-b border-white/5 transition-all">
         
         {/* --- LEFT SECTION --- */}
