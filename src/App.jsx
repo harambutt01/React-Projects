@@ -15,6 +15,8 @@ import Dashboard from "./components/Dashboard.jsx";
 import ProductList from "./components/products/ProductList.jsx";
 import ProductDetail from "./components/products/ProductDetail.jsx";
 import Cart from "./components/Cart.jsx"; 
+import LoginSignup from "./LoginSignup.jsx"; 
+import Wishlist from "./components/Wishlist.jsx"; // 1. Wishlist import kiya
 
 import "./components/toggle/Toggle.css";
 
@@ -28,14 +30,20 @@ function App() {
           <div className="flex flex-col min-h-screen">
             <main className="flex-grow pt-[64px]"> 
               <Routes>
-                <Route path="/"             element={<Home />}          />
-                <Route path="/about"          element={<About />}         />
-                <Route path="/contact"        element={<Contact />}       />
-                <Route path="/counter"        element={<Counter />}       />
+                <Route path="/"               element={<Home />}           />
+                <Route path="/about"          element={<About />}          />
+                <Route path="/contact"        element={<Contact />}        />
+                <Route path="/counter"        element={<Counter />}        />
                 <Route path="/dashboard"      element={<Dashboard />}      />
-                <Route path="/products"       element={<ProductList />}   />
-                <Route path="/products/:id"   element={<ProductDetail />} />
-                <Route path="/cart"           element={<Cart />}          />
+                <Route path="/products"       element={<ProductList />}    />
+                <Route path="/products/:id"   element={<ProductDetail />}  />
+                <Route path="/cart"           element={<Cart />}           />
+                
+                {/* 2. Wishlist Route add kiya */}
+                <Route path="/wishlist"       element={<Wishlist />}       />
+                
+                {/* Login Route */}
+                <Route path="/login"          element={<LoginSignup />}    />
               </Routes>
             </main>
 
@@ -46,6 +54,7 @@ function App() {
             position="top-right"      
             autoClose={2500} 
             theme="colored" 
+            style={{ zIndex: 99999 }} 
           />
         </CartProvider>
       </ThemeProvider>

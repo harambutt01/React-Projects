@@ -3,26 +3,16 @@ import { createContext, useContext, useState, useEffect } from "react";
 const CartContext = createContext();
 
 export function CartProvider({ children }) {
-  // 1. Initial State: LocalStorage se data uthana
   const [cartItems, setCartItems] = useState(() => {
-    const savedCart = localStorage.getItem("cart");
-    return savedCart ? JSON.parse(savedCart) : [];
+    const saved = localStorage.getItem("cart");
+    return saved ? JSON.parse(saved) : [];
   });
 
-  // 2. LocalStorage Sync: Jab bhi cartItems change hon, save karein
   useEffect(() => {
     localStorage.setItem("cart", JSON.stringify(cartItems));
   }, [cartItems]);
 
-  // 3. Navbar Sync Logic: Taake external updates (ProductCard se) detect hon
-  const updateCartCount = () => {
-    const savedCart = localStorage.getItem("cart");
-    if (savedCart) {
-      setCartItems(JSON.parse(savedCart));
-    }
-  };
-
-  function addToCart(product, quantity) {
+  const addToCart = (product, quantity) => {
     setCartItems((prev) => {
       const existing = prev.find((item) => item.id === product.id);
       if (existing) {
@@ -34,35 +24,24 @@ export function CartProvider({ children }) {
       }
       return [...prev, { ...product, quantity }];
     });
-  }
+  };
 
-  function removeFromCart(id) {
+  const removeFromCart = (id) => {
     setCartItems((prev) => prev.filter((item) => item.id !== id));
-  }
+  };
 
-  function updateQuantity(id, quantity) {
+  const updateQuantity = (id, quantity) => {
     if (quantity < 1) return;
     setCartItems((prev) =>
       prev.map((item) => (item.id === id ? { ...item, quantity } : item))
     );
-  }
+  };
 
-  // Helpers
   const totalItems = cartItems.reduce((sum, item) => sum + item.quantity, 0);
   const totalPrice = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
   return (
-    <CartContext.Provider 
-      value={{ 
-        cartItems, 
-        addToCart, 
-        removeFromCart, 
-        updateQuantity, 
-        totalItems, 
-        totalPrice,
-        updateCartCount // Ye Navbar mein use hoga
-      }}
-    >
+    <CartContext.Provider value={{ cartItems, addToCart, removeFromCart, updateQuantity, totalItems, totalPrice }}>
       {children}
     </CartContext.Provider>
   );

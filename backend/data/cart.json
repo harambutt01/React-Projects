@@ -1,0 +1,20 @@
+{
+  "items": [
+    {
+      "productId": 1,
+      "title": "Essence Mascara Lash Princess",
+      "price": 999,
+      "quantity": 10,
+      "thumbnail": null,
+      "total": 9990
+    },
+    {
+      "productId": 2,
+      "title": "Gucci Bloom Eau de Parfum",
+      "price": 8500,
+      "quantity": 4,
+      "thumbnail": null,
+      "total": 34000
+    }
+  ]
+}
