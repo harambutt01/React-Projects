@@ -4,7 +4,8 @@ import useFetch from "../../hooks/useFetch";
 import ProductCard from "./ProductCard";
 import ProductFilters from "./ProductFilters";
 
-const API_URL = "https://dummyjson.com/products?limit=0";
+// Aapki local backend API ka URL
+const API_URL = "http://localhost:4000/api/products?page=1&limit=20";
 
 function ProductList() {
   const { isDark } = useTheme();
@@ -14,25 +15,33 @@ function ProductList() {
   const [category, setCategory] = useState("");
   const [sort, setSort] = useState("");
 
-  const productsData = useMemo(() => apiData?.products || [], [apiData]);
+  // API response handle kar rahe hain (agar array direct hai ya 'products' object ke andar hai)
+  const productsData = useMemo(() => {
+    if (Array.isArray(apiData)) return apiData;
+    return apiData?.products || [];
+  }, [apiData]);
 
+  // Categories nikalne ke liye database ke 'category_name' ya 'category' field ko use karein
   const categories = useMemo(() => {
-    return [...new Set(productsData.map((p) => p.category))];
+    return [...new Set(productsData.map((p) => p.category_name || p.category))].filter(Boolean);
   }, [productsData]);
 
   const filteredProducts = useMemo(() => {
     let result = [...productsData];
 
+    // Search mapping
     if (search.trim()) {
       result = result.filter((p) =>
-        p.title.toLowerCase().includes(search.toLowerCase())
+        (p.name || p.title).toLowerCase().includes(search.toLowerCase())
       );
     }
 
+    // Category mapping
     if (category) {
-      result = result.filter((p) => p.category === category);
+      result = result.filter((p) => (p.category_name || p.category) === category);
     }
 
+    // Price sorting
     if (sort === "asc") result.sort((a, b) => a.price - b.price);
     else if (sort === "desc") result.sort((a, b) => b.price - a.price);
 
@@ -63,7 +72,7 @@ function ProductList() {
         />
       )}
 
-      {error && <p className="text-red-500 text-center py-10">{error}</p>}
+      {error && <p className="text-red-500 text-center py-10">Error: {error}</p>}
 
       <div className="grid gap-[30px] w-full mt-8 grid-cols-[repeat(auto-fill,minmax(280px,1fr))] lg:grid-cols-[repeat(auto-fill,minmax(250px,1fr))] md:grid-cols-[repeat(auto-fill,minmax(220px,1fr))] sm:grid-cols-1">
         {loading ? (

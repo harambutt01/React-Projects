@@ -1,0 +1,103 @@
+
+endpoint:
+http://localhost:4000/api/products?page=5&limit=50
+
+
+response of endpoint:
+{
+    "products": [
+        {
+            "id": 91,
+            "name": "Sapphire Blue Crystal Pendant",
+            "price": "9500.00",
+            "category_id": 10,
+            "category": "Accessories",
+            "seller_id": 1,
+            "seller": "Trendora Official",
+            "image": "assets/images/Sapphire Blue Crystal Pendant.jfif"
+        },
+        {
+            "id": 92,
+            "name": "Luxury Men's Gold Watch",
+            "price": "75000.00",
+            "category_id": 10,
+            "category": "Accessories",
+            "seller_id": 1,
+            "seller": "Trendora Official",
+            "image": "assets/images/Luxury Men's Gold Watch.jfif"
+        },
+        {
+            "id": 93,
+            "name": "Antique Jhumka Earrings",
+            "price": "4200.00",
+            "category_id": 10,
+            "category": "Accessories",
+            "seller_id": 1,
+            "seller": "Trendora Official",
+            "image": "assets/images/Antique Jhumka Earrings.jfif"
+        },
+        {
+            "id": 94,
+            "name": "Cubic Zirconia Engagement Ring",
+            "price": "15000.00",
+            "category_id": 10,
+            "category": "Accessories",
+            "seller_id": 1,
+            "seller": "Trendora Official",
+            "image": "assets/images/Cubic Zirconia Engagement Ring.jfif"
+        },
+        {
+            "id": 96,
+            "name": "Bohemian Style Beaded Anklet",
+            "price": "1800.00",
+            "category_id": 10,
+            "category": "Accessories",
+            "seller_id": 1,
+            "seller": "Trendora Official",
+            "image": "assets/images/Bohemian Style Beaded Anklet.jfif"
+        },
+        {
+            "id": 97,
+            "name": "Classic Hoops Gold Plated",
+            "price": "2500.00",
+            "category_id": 10,
+            "category": "Accessories",
+            "seller_id": 1,
+            "seller": "Trendora Official",
+            "image": "assets/images/Classic Hoops Gold Plated.jfif"
+        },
+        {
+            "id": 98,
+            "name": "Velvet Jewelry Organizer Box",
+            "price": "3500.00",
+            "category_id": 10,
+            "category": "Accessories",
+            "seller_id": 1,
+            "seller": "Trendora Official",
+            "image": "assets/images/Velvet Jewelry Organizer Box.webp"
+        },
+        {
+            "id": 99,
+            "name": "Nose Pin with Real Diamond",
+            "price": "18000.00",
+            "category_id": 10,
+            "category": "Accessories",
+            "seller_id": 1,
+            "seller": "Trendora Official",
+            "image": "assets/images/Nose Pin with Real Diamond.jfif"
+        },
+        {
+            "id": 100,
+            "name": "Silver Choker Necklace",
+            "price": "6800.00",
+            "category_id": 10,
+            "category": "Accessories",
+            "seller_id": 1,
+            "seller": "Trendora Official",
+            "image": "assets/images/Silver Choker Necklace.jfif"
+        }
+    ],
+    "total": 89,
+    "page": 5,
+    "pageSize": 20
+}
