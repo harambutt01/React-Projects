@@ -2,12 +2,13 @@ const express = require('express');
 const db = require('../db');
 const router = express.Router();
 
-// --- 🟢 EXISTING GET ALL PRODUCTS ---
+// --- 🟢 UPDATED GET ALL PRODUCTS (Limit 100) ---
 router.get('/', async (req, res) => {
   try {
-    const { search, category, sort, page = '1', pageSize = '20' } = req.query;
+    // Senior's Request: Default pageSize ko 20 se barha kar 100 kar diya
+    const { search, category, sort, page = '1', pageSize = '100' } = req.query; 
     const pageNumber = Math.max(1, parseInt(page, 10) || 1);
-    const limit = Math.max(1, parseInt(pageSize, 10) || 20);
+    const limit = Math.max(1, parseInt(pageSize, 10) || 100); 
     const offset = (pageNumber - 1) * limit;
 
     let whereClauses = [];
@@ -27,10 +28,12 @@ router.get('/', async (req, res) => {
       ? `ORDER BY p.price ${sort.toUpperCase()}`
       : 'ORDER BY p.id ASC';
 
+    // Count Total
     const countSql = `SELECT COUNT(*) AS total FROM products p LEFT JOIN categories c ON p.category_id = c.id ${where}`;
     const [countResult] = await db.query(countSql, params);
     const total = countResult[0]?.total || 0;
 
+    // Fetch Products
     const sql = `
       SELECT
         p.id,
@@ -64,19 +67,15 @@ router.get('/', async (req, res) => {
   }
 });
 
-// --- 🟢 NEW POST METHOD (Senior's Shortcut) ---
+// --- 🟢 NEW POST METHOD ---
 router.post('/', async (req, res) => {
   try {
     const { name, price, category_id, seller_id, image_url } = req.body;
-
-    // Validation
     if (!name || !price || !category_id || !seller_id) {
       return res.status(400).json({ error: 'All fields are required' });
     }
-
     const sql = `INSERT INTO products (name, price, category_id, seller_id, image_url) VALUES (?, ?, ?, ?, ?)`;
     const [result] = await db.query(sql, [name, price, category_id, seller_id, image_url || null]);
-
     res.status(201).json({
       message: 'Product added successfully!',
       productId: result.insertId
@@ -87,7 +86,7 @@ router.post('/', async (req, res) => {
   }
 });
 
-// --- 🟢 EXISTING GET BY ID ---
+// --- 🟢 GET BY ID ---
 router.get('/:id', async (req, res) => {
   try {
     const { id } = req.params;
@@ -100,12 +99,8 @@ router.get('/:id', async (req, res) => {
       LEFT JOIN sellers s ON p.seller_id = s.id
       WHERE p.id = ?
     `;
-
     const [rows] = await db.query(sql, [id]);
-    if (!rows.length) {
-      return res.status(404).json({ error: 'Product not found' });
-    }
-
+    if (!rows.length) return res.status(404).json({ error: 'Product not found' });
     res.json(rows[0]);
   } catch (error) {
     console.error(error);
