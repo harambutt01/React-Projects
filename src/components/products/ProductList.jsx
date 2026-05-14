@@ -5,7 +5,7 @@ import ProductCard from "./ProductCard";
 import ProductFilters from "./ProductFilters";
 
 // Aapki local backend API ka URL
-const API_URL = "http://localhost:4000/api/products?page=1&limit=20";
+const API_URL = "http://localhost:4000/api/products?page=1&limit=100";
 
 function ProductList() {
   const { isDark } = useTheme();

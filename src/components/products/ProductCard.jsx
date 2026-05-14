@@ -9,7 +9,7 @@ function ProductCard({ product }) {
   const navigate = useNavigate();
   const [isInWishlist, setIsInWishlist] = useState(false);
 
-  const { id, thumbnail, title, category, price } = product;
+  const { id, image, title, category, price } = product;
 
   useEffect(() => {
     const wishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
@@ -111,7 +111,7 @@ function ProductCard({ product }) {
         </button>
 
         <img
-          src={thumbnail}
+          src={image}
           alt={title}
           className="w-full h-full object-contain p-4 group-hover:scale-110 transition-transform duration-500"
         />

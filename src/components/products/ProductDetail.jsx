@@ -16,8 +16,8 @@ function ProductDetail() {
   const { isDark } = useTheme();
   const { addToCart } = useCart();
 
-  const { data: apiData, loading, error } = useFetch(`https://dummyjson.com/products?limit=0`);
-
+  const { data: apiData, loading, error } = useFetch(`http://localhost:4000/api/products/${id}`);
+  
   const [quantity, setQuantity] = useState(1);
   const [activeTab, setActiveTab] = useState("details");
   const [selectedImage, setSelectedImage] = useState(null);
@@ -25,8 +25,24 @@ function ProductDetail() {
   const [showReviewForm, setShowReviewForm] = useState(false);
   const [newReview, setNewReview] = useState({ reviewerName: "", comment: "", rating: 5 });
 
+  // --- Image Path Helper (Apni API ke liye) ---
+  const displayImage = (img) => {
+    if (!img) return "https://via.placeholder.com/400?text=No+Image";
+    if (img.startsWith("http")) return img;
+    // Aapka backend local server path
+    return `http://localhost:4000/${img}`;
+  };
+
   const product = useMemo(() => {
-    return apiData?.products?.find((p) => p.id === parseInt(id));
+    if (!apiData) return null;
+    // Agar apiData mein products array hai (dummyjson style)
+    if (apiData.products && Array.isArray(apiData.products)) {
+      return apiData.products.find((p) => p.id === parseInt(id));
+    }
+    // Agar array hai direct
+    if (Array.isArray(apiData)) return apiData[0];
+    // Agar direct object hai (MySQL style)
+    return apiData;
   }, [apiData, id]);
 
   const sortedReviews = useMemo(() => {
@@ -35,7 +51,9 @@ function ProductDetail() {
 
   const relatedProducts = useMemo(() => {
     if (!product || !apiData) return [];
-    return apiData.products
+    // Agar data list ki shakal mein hai to filter karein
+    const list = apiData.products || (Array.isArray(apiData) ? apiData : []);
+    return list
       .filter((p) => p.category === product.category && p.id !== product.id)
       .slice(0, 8);
   }, [product, apiData]);
@@ -46,7 +64,11 @@ function ProductDetail() {
     setQuantity(1);
     setActiveTab("details");
     setShowReviewForm(false);
-    setSelectedImage(product.thumbnail);
+    
+    // MySQL backend mapping
+    const mainImg = product.image || product.thumbnail || product.img_url;
+    setSelectedImage(mainImg);
+    
     const saved = localStorage.getItem(`reviews_${id}`);
     setLocalReviews(saved ? JSON.parse(saved) : product.reviews || []);
   }, [id, product]);
@@ -98,7 +120,7 @@ function ProductDetail() {
   const handleAddToCart = () => {
     if (!product) return;
     addToCart(product, quantity);
-    toast.success(`${product.title} added to cart!`, { icon: "🛒" });
+    toast.success(`${product.title || product.name} added to cart!`, { icon: "🛒" });
   };
 
   const handleRelatedProductClick = (productId) => {
@@ -129,16 +151,17 @@ function ProductDetail() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 mb-16">
 
-          {/* Images */}
+          {/* Main Product Image */}
           <div className="flex flex-col gap-6">
             <div className={`rounded-2xl p-6 flex items-center justify-center min-h-[300px] md:min-h-[450px] ${imgBg}`}>
               <img
-                src={selectedImage || product.thumbnail}
-                alt={product.title}
+                src={displayImage(selectedImage)}
+                alt={product.title || product.name}
                 className="max-h-[280px] md:max-h-[400px] object-contain hover:scale-105 transition-all duration-500"
               />
             </div>
 
+            {/* Thumbnail Gallery */}
             {product.images?.length > 1 && (
               <div className="flex gap-3 overflow-x-auto pb-2">
                 {product.images.map((img, i) => (
@@ -151,7 +174,7 @@ function ProductDetail() {
                         : "border-transparent opacity-50 hover:opacity-100"
                       }`}
                   >
-                    <img src={img} alt="" className="w-full h-full object-contain" />
+                    <img src={displayImage(img)} alt="" className="w-full h-full object-contain" />
                   </div>
                 ))}
               </div>
@@ -163,8 +186,8 @@ function ProductDetail() {
             <span className={`text-xs font-black uppercase tracking-widest mb-2 ${isDark ? "text-gray-400" : "text-gray-500"}`}>
               {product.category}
             </span>
-            <h1 className="text-2xl md:text-4xl font-bold mb-4">{product.title}</h1>
-            <p className="text-2xl md:text-3xl font-black mb-8">${product.price.toFixed(2)}</p>
+            <h1 className="text-2xl md:text-4xl font-bold mb-4">{product.title || product.name}</h1>
+            <p className="text-2xl md:text-3xl font-black mb-8">${Number(product.price).toFixed(2)}</p>
 
             {/* Tabs */}
             <div className="flex gap-6 border-b border-gray-200 mb-6">
@@ -188,7 +211,7 @@ function ProductDetail() {
               {activeTab === "details" && (
                 <div className="space-y-2 opacity-80">
                   <p><b>Brand:</b> {product.brand || "Generic"}</p>
-                  <p><b>Rating:</b> ⭐ {product.rating}</p>
+                  <p><b>Rating:</b> ⭐ {product.rating || "N/A"}</p>
                   <p><b>Stock:</b> {product.stock > 0 ? `${product.stock} units left` : "Out of Stock"}</p>
                 </div>
               )}
@@ -263,20 +286,14 @@ function ProductDetail() {
               )}
             </div>
 
-            {/* Quantity + Cart */}
+            {/* Action Buttons */}
             <div className="flex flex-col sm:flex-row items-center gap-4 mt-auto">
               <div className="flex items-center gap-4 border rounded-xl p-2 px-4 w-full sm:w-auto justify-between">
                 <span className="font-bold text-xs uppercase opacity-60">Qty</span>
                 <div className="flex items-center gap-4">
-                  <button
-                    onClick={handleQuantityDecrease}
-                    className="w-8 h-8 rounded-full border flex items-center justify-center hover:bg-black hover:text-white"
-                  >-</button>
+                  <button onClick={handleQuantityDecrease} className="w-8 h-8 rounded-full border flex items-center justify-center hover:bg-black hover:text-white">-</button>
                   <span className="font-bold w-4 text-center">{quantity}</span>
-                  <button
-                    onClick={handleQuantityIncrease}
-                    className="w-8 h-8 rounded-full border flex items-center justify-center hover:bg-black hover:text-white"
-                  >+</button>
+                  <button onClick={handleQuantityIncrease} className="w-8 h-8 rounded-full border flex items-center justify-center hover:bg-black hover:text-white">+</button>
                 </div>
               </div>
 
@@ -285,13 +302,6 @@ function ProductDetail() {
                 className={`w-full py-4 rounded-xl font-bold transition-all shadow-lg active:scale-95 ${isDark ? "bg-white text-black hover:bg-gray-200" : "bg-black text-white"}`}
               >
                 ADD TO CART
-              </button>
-
-              <button
-                onClick={handleAddToCart}
-                className={`w-full py-4 rounded-xl font-bold transition-all shadow-lg active:scale-95 ${isDark ? "bg-white text-black hover:bg-gray-200" : "bg-black text-white"}`}
-              >
-                BUY IT NOW
               </button>
             </div>
           </div>
@@ -307,7 +317,6 @@ function ProductDetail() {
               slidesPerView={1.3}
               navigation
               pagination={{ clickable: true }}
-              style={{ "--swiper-navigation-color": isDark ? "#fff" : "#000", "--swiper-pagination-color": isDark ? "#fff" : "#000" }}
               breakpoints={{ 640: { slidesPerView: 2 }, 768: { slidesPerView: 3 }, 1024: { slidesPerView: 4 } }}
               className="product-swiper pb-14"
             >
@@ -318,10 +327,14 @@ function ProductDetail() {
                     className={`group cursor-pointer p-3 md:p-4 rounded-2xl transition-all h-full border ${isDark ? "bg-[#252525] border-[#333] hover:border-white" : "bg-white border-gray-100 shadow-sm hover:shadow-lg"}`}
                   >
                     <div className={`aspect-[3/4] rounded-lg overflow-hidden mb-4 flex items-center justify-center p-4 ${imgBg}`}>
-                      <img src={rp.thumbnail} alt={rp.title} className="max-h-full w-full object-contain group-hover:scale-110 transition-transform duration-500" />
+                      <img 
+                        src={displayImage(rp.image || rp.thumbnail)} 
+                        alt={rp.title || rp.name} 
+                        className="max-h-full w-full object-contain group-hover:scale-110 transition-transform duration-500" 
+                      />
                     </div>
-                    <h3 className="font-bold text-[12px] md:text-sm truncate mb-1 uppercase tracking-tighter">{rp.title}</h3>
-                    <p className="font-bold text-sm">${rp.price.toFixed(2)}</p>
+                    <h3 className="font-bold text-[12px] md:text-sm truncate mb-1 uppercase tracking-tighter">{rp.title || rp.name}</h3>
+                    <p className="font-bold text-sm">${Number(rp.price).toFixed(2)}</p>
                   </div>
                 </SwiperSlide>
               ))}
