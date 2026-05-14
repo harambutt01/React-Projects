@@ -89,7 +89,7 @@ function CartDrawer({ isOpen, onClose }) {
                     {item.title || item.name}
                   </h3>
                   <p className="text-[13px] text-[#00bcd4] font-bold mb-2">
-                    ${item.price.toFixed(2)}
+                    ${Number(item.price).toFixed(2)}
                   </p>
 
                   <div className="flex items-center gap-3">

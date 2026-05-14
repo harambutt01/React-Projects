@@ -14,7 +14,7 @@ function ProductDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { isDark } = useTheme();
-  const { addToCart } = useCart();
+  const { addToCart } = useCart(); // Local context for UI update
 
   const { data: apiData, loading, error } = useFetch(`http://localhost:4000/api/products/${id}`);
   
@@ -51,7 +51,6 @@ function ProductDetail() {
       try {
         const response = await fetch(`http://localhost:4000/api/products/${id}/reviews`);
         const data = await response.json();
-        // Backend se { productId, reviews: [] } aa raha hai
         setLocalReviews(data.reviews || []);
       } catch (err) {
         console.error("Failed to fetch reviews:", err);
@@ -102,10 +101,8 @@ function ProductDetail() {
       });
 
       if (response.ok) {
-        // Refresh reviews list from DB
         const updatedData = await fetch(`http://localhost:4000/api/products/${id}/reviews`).then(res => res.json());
         setLocalReviews(updatedData.reviews || []);
-        
         setNewReview({ reviewerName: "", comment: "", rating: 5 });
         setShowReviewForm(false);
         toast.success("Review saved to database!");
@@ -115,7 +112,7 @@ function ProductDetail() {
     }
   };
 
-  // --- REST OF YOUR HANDLERS ---
+  // --- HANDLERS ---
   const handleImageSelect = (img) => setSelectedImage(img);
   const handleTabChange = (tab) => setActiveTab(tab);
   const handleQuantityIncrease = () => setQuantity((q) => q + 1);
@@ -128,11 +125,51 @@ function ProductDetail() {
     setNewReview((prev) => ({ ...prev, rating: parseInt(e.target.value) }));
   };
   const toggleReviewForm = () => setShowReviewForm((prev) => !prev);
-  const handleAddToCart = () => {
+
+  // --- 🟢 DATABASE DRIVEN ADD TO CART ---
+  const handleAddToCart = async () => {
     if (!product) return;
-    addToCart(product, quantity);
-    toast.success(`${product.title || product.name} added to cart!`, { icon: "🛒" });
+
+    // LocalStorage se logged-in user ki details lena
+    const savedUser = JSON.parse(localStorage.getItem("user"));
+
+    if (!savedUser || !savedUser.id) {
+      toast.error("Please login first to add items to cart!");
+      navigate("/login");
+      return;
+    }
+
+    // Payload
+    const cartPayload = {
+      user_id: savedUser.id,
+      productId: product.id,
+      price: product.price,
+      category: product.category,
+      quantity: quantity
+    };
+
+    try {
+      const response = await fetch('http://localhost:4000/api/cart', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(cartPayload)
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        toast.success(`${product.name || product.title} added to database cart!`, { icon: "🛒" });
+        // Local state update (optional)
+        addToCart(product, quantity);
+      } else {
+        toast.error(result.error || "Failed to add to cart");
+      }
+    } catch (err) {
+      console.error("Cart API Error:", err);
+      toast.error("Connection to server failed");
+    }
   };
+
   const handleRelatedProductClick = (productId) => navigate(`/products/${productId}`);
   const handleBackToShop = () => navigate("/products");
 

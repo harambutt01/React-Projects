@@ -12,9 +12,17 @@
       "productId": 2,
       "title": "Gucci Bloom Eau de Parfum",
       "price": 8500,
-      "quantity": 4,
+      "quantity": 5,
       "thumbnail": null,
-      "total": 34000
+      "total": 42500
+    },
+    {
+      "productId": 24,
+      "title": "Adidas Ultraboost Light",
+      "price": 42000,
+      "quantity": 2,
+      "thumbnail": null,
+      "total": 84000
     }
   ]
 }

@@ -1,112 +1,79 @@
 const express = require('express');
-const fs = require('fs');
-const path = require('path');
-const db = require('../db');
 const router = express.Router();
+const db = require('../server'); // server.js se database connection import
 
-const cartPath = path.join(__dirname, '../data/cart.json');
-
-function loadCart() {
-  try {
-    const raw = fs.readFileSync(cartPath, 'utf-8');
-    return JSON.parse(raw);
-  } catch (error) {
-    return { items: [] };
-  }
-}
-
-function saveCart(cart) {
-  fs.writeFileSync(cartPath, JSON.stringify(cart, null, 2));
-}
-
-function buildCartItem(product, quantity) {
-  return {
-    productId: product.id,
-    title: product.name,
-    price: Number(product.price),
-    quantity,
-    thumbnail: null,
-    total: Number((product.price * quantity).toFixed(2))
-  };
-}
-
-router.get('/', async (req, res) => {
-  const cart = loadCart();
-  const totalItems = cart.items.reduce((sum, item) => sum + item.quantity, 0);
-  const totalPrice = cart.items.reduce((sum, item) => sum + item.total, 0);
-  res.json({ items: cart.items, totalItems, totalPrice });
+// --- 1. GET CART (Database se user ka cart lana) ---
+router.get('/:user_id', (req, res) => {
+    const { user_id } = req.params;
+    const sql = "SELECT * FROM cart WHERE user_id = ?";
+    
+    db.query(sql, [user_id], (err, results) => {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json(results);
+    });
 });
 
-router.post('/', async (req, res) => {
-  try {
-    const { productId, quantity = 1 } = req.body;
-    if (!productId) {
-      return res.status(400).json({ error: 'productId is required' });
+// --- 2. POST (Add to Cart with Auto-Quantity & Auto-Total) ---
+router.post('/', (req, res) => {
+    const { user_id, productId, price, category, quantity } = req.body;
+
+    // Validation
+    if (!user_id || !productId || !price) {
+        return res.status(400).json({ error: "Required fields are missing (user_id, productId, or price)" });
     }
 
-    const [rows] = await db.query('SELECT id, name, price FROM products WHERE id = ?', [productId]);
-    if (!rows.length) {
-      return res.status(404).json({ error: 'Product not found' });
-    }
+    // Initial total price calculation for first-time insert
+    const currentTotal = Number(price) * Number(quantity);
 
-    const product = rows[0];
-    const cart = loadCart();
-    const existing = cart.items.find((item) => item.productId === product.id);
+    /**
+     * SQL Logic Explanation for Senior:
+     * 1. INSERT: Nayi row bnanay ki koshish karta hai.
+     * 2. ON DUPLICATE KEY UPDATE: Agar user_id aur product_id pehle se mojood hain:
+     *    - Quantity ko purani quantity mein jama (+) karta hai.
+     *    - Total Price ko (New Quantity * Price) karke update karta hai.
+     */
+    const sql = `
+        INSERT INTO cart (user_id, product_id, price, total_price, category, quantity) 
+        VALUES (?, ?, ?, ?, ?, ?) 
+        ON DUPLICATE KEY UPDATE 
+            quantity = quantity + VALUES(quantity),
+            total_price = (quantity + VALUES(quantity)) * price
+    `;
+    
+    const values = [user_id, productId, price, currentTotal, category, quantity];
 
-    if (existing) {
-      existing.quantity += quantity;
-      existing.total = Number((existing.price * existing.quantity).toFixed(2));
-      saveCart(cart);
-      return res.json({ message: 'Cart updated', cartItem: existing });
-    }
-
-    const cartItem = buildCartItem(product, quantity);
-    cart.items.push(cartItem);
-    saveCart(cart);
-    res.status(201).json({ message: 'Item added to cart', cartItem });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Unable to update cart' });
-  }
+    db.query(sql, values, (err, result) => {
+        if (err) {
+            console.error("MySQL Error:", err);
+            return res.status(500).json({ error: "Database operation failed" });
+        }
+        res.status(201).json({ 
+            message: "Cart updated successfully!", 
+            details: result 
+        });
+    });
 });
 
-router.put('/:productId', async (req, res) => {
-  try {
-    const productId = Number(req.params.productId);
-    const { quantity } = req.body;
+// --- 3. DELETE (Remove single item) ---
+router.delete('/:id', (req, res) => {
+    const { id } = req.params;
+    const sql = "DELETE FROM cart WHERE id = ?";
 
-    if (!Number.isInteger(quantity) || quantity < 1) {
-      return res.status(400).json({ error: 'Quantity must be a positive integer' });
-    }
-
-    const cart = loadCart();
-    const item = cart.items.find((entry) => entry.productId === productId);
-    if (!item) {
-      return res.status(404).json({ error: 'Item not found in cart' });
-    }
-
-    item.quantity = quantity;
-    item.total = Number((item.price * quantity).toFixed(2));
-    saveCart(cart);
-    res.json({ message: 'Cart updated', cartItem: item });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Unable to update cart' });
-  }
+    db.query(sql, [id], (err, result) => {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json({ message: "Item removed from cart" });
+    });
 });
 
-router.delete('/:productId', (req, res) => {
-  const productId = Number(req.params.productId);
-  const cart = loadCart();
-  const index = cart.items.findIndex((item) => item.productId === productId);
+// --- 4. CLEAR CART (Optional: Checkout ke baad use hoga) ---
+router.delete('/clear/:user_id', (req, res) => {
+    const { user_id } = req.params;
+    const sql = "DELETE FROM cart WHERE user_id = ?";
 
-  if (index === -1) {
-    return res.status(404).json({ error: 'Item not found in cart' });
-  }
-
-  cart.items.splice(index, 1);
-  saveCart(cart);
-  res.json({ message: 'Item removed from cart' });
+    db.query(sql, [user_id], (err, result) => {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json({ message: "Cart cleared" });
+    });
 });
 
 module.exports = router;
