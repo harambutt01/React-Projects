@@ -2,10 +2,9 @@ const express = require('express');
 const db = require('../db');
 const router = express.Router();
 
-// --- 🟢 UPDATED GET ALL PRODUCTS (Limit 100) ---
+// --- 🟢 GET ALL PRODUCTS (Limit 100) ---
 router.get('/', async (req, res) => {
   try {
-    // Senior's Request: Default pageSize ko 20 se barha kar 100 kar diya
     const { search, category, sort, page = '1', pageSize = '100' } = req.query; 
     const pageNumber = Math.max(1, parseInt(page, 10) || 1);
     const limit = Math.max(1, parseInt(pageSize, 10) || 100); 
@@ -67,22 +66,27 @@ router.get('/', async (req, res) => {
   }
 });
 
-// --- 🟢 NEW POST METHOD ---
-router.post('/', async (req, res) => {
+// --- 🟢 RELATED PRODUCTS (New Endpoint for Senior's Request) ---
+router.get('/related/:category/:id', async (req, res) => {
   try {
-    const { name, price, category_id, seller_id, image_url } = req.body;
-    if (!name || !price || !category_id || !seller_id) {
-      return res.status(400).json({ error: 'All fields are required' });
-    }
-    const sql = `INSERT INTO products (name, price, category_id, seller_id, image_url) VALUES (?, ?, ?, ?, ?)`;
-    const [result] = await db.query(sql, [name, price, category_id, seller_id, image_url || null]);
-    res.status(201).json({
-      message: 'Product added successfully!',
-      productId: result.insertId
-    });
+    const { category, id } = req.params;
+
+    // Same category ke random products uthayega current ID ko chhor kar
+    const sql = `
+      SELECT 
+        p.id, p.name, p.price, p.image_url AS image, c.name AS category
+      FROM products p
+      LEFT JOIN categories c ON p.category_id = c.id
+      WHERE c.name = ? AND p.id != ?
+      ORDER BY RAND() 
+      LIMIT 8
+    `;
+
+    const [rows] = await db.query(sql, [category, id]);
+    res.json(rows);
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Failed to add product to database' });
+    console.error("Error in related products API:", error);
+    res.status(500).json({ error: 'Unable to fetch related products' });
   }
 });
 
@@ -105,6 +109,25 @@ router.get('/:id', async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Unable to fetch product' });
+  }
+});
+
+// --- 🟢 POST METHOD ---
+router.post('/', async (req, res) => {
+  try {
+    const { name, price, category_id, seller_id, image_url } = req.body;
+    if (!name || !price || !category_id || !seller_id) {
+      return res.status(400).json({ error: 'All fields are required' });
+    }
+    const sql = `INSERT INTO products (name, price, category_id, seller_id, image_url) VALUES (?, ?, ?, ?, ?)`;
+    const [result] = await db.query(sql, [name, price, category_id, seller_id, image_url || null]);
+    res.status(201).json({
+      message: 'Product added successfully!',
+      productId: result.insertId
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Failed to add product to database' });
   }
 });
 

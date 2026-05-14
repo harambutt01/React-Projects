@@ -24,24 +24,22 @@ function ProductDetail() {
   const [localReviews, setLocalReviews] = useState([]);
   const [showReviewForm, setShowReviewForm] = useState(false);
   const [newReview, setNewReview] = useState({ reviewerName: "", comment: "", rating: 5 });
+  
+  // --- NEW STATE FOR RELATED PRODUCTS ---
+  const [relatedProducts, setRelatedProducts] = useState([]);
 
-  // --- Image Path Helper (Apni API ke liye) ---
   const displayImage = (img) => {
     if (!img) return "https://via.placeholder.com/400?text=No+Image";
     if (img.startsWith("http")) return img;
-    // Aapka backend local server path
     return `http://localhost:4000/${img}`;
   };
 
   const product = useMemo(() => {
     if (!apiData) return null;
-    // Agar apiData mein products array hai (dummyjson style)
     if (apiData.products && Array.isArray(apiData.products)) {
       return apiData.products.find((p) => p.id === parseInt(id));
     }
-    // Agar array hai direct
     if (Array.isArray(apiData)) return apiData[0];
-    // Agar direct object hai (MySQL style)
     return apiData;
   }, [apiData, id]);
 
@@ -49,14 +47,22 @@ function ProductDetail() {
     return [...localReviews].sort((a, b) => b.rating - a.rating);
   }, [localReviews]);
 
-  const relatedProducts = useMemo(() => {
-    if (!product || !apiData) return [];
-    // Agar data list ki shakal mein hai to filter karein
-    const list = apiData.products || (Array.isArray(apiData) ? apiData : []);
-    return list
-      .filter((p) => p.category === product.category && p.id !== product.id)
-      .slice(0, 8);
-  }, [product, apiData]);
+  // --- UPDATED: FETCH RELATED PRODUCTS FROM BACKEND ---
+  useEffect(() => {
+    if (product && product.category) {
+      const fetchRelated = async () => {
+        try {
+          // Backend API call using category and current ID
+          const response = await fetch(`http://localhost:4000/api/products/related/${product.category}/${id}`);
+          const data = await response.json();
+          setRelatedProducts(data);
+        } catch (err) {
+          console.error("Related products fetch error:", err);
+        }
+      };
+      fetchRelated();
+    }
+  }, [product, id]);
 
   useEffect(() => {
     if (!product) return;
@@ -65,7 +71,6 @@ function ProductDetail() {
     setActiveTab("details");
     setShowReviewForm(false);
     
-    // MySQL backend mapping
     const mainImg = product.image || product.thumbnail || product.img_url;
     setSelectedImage(mainImg);
     
@@ -73,21 +78,10 @@ function ProductDetail() {
     setLocalReviews(saved ? JSON.parse(saved) : product.reviews || []);
   }, [id, product]);
 
-  const handleImageSelect = (img) => {
-    setSelectedImage(img);
-  };
-
-  const handleTabChange = (tab) => {
-    setActiveTab(tab);
-  };
-
-  const handleQuantityIncrease = () => {
-    setQuantity((q) => q + 1);
-  };
-
-  const handleQuantityDecrease = () => {
-    setQuantity((q) => Math.max(1, q - 1));
-  };
+  const handleImageSelect = (img) => setSelectedImage(img);
+  const handleTabChange = (tab) => setActiveTab(tab);
+  const handleQuantityIncrease = () => setQuantity((q) => q + 1);
+  const handleQuantityDecrease = () => setQuantity((q) => Math.max(1, q - 1));
 
   const handleReviewInput = (e) => {
     const { name, value } = e.target;
@@ -98,9 +92,7 @@ function ProductDetail() {
     setNewReview((prev) => ({ ...prev, rating: parseInt(e.target.value) }));
   };
 
-  const toggleReviewForm = () => {
-    setShowReviewForm((prev) => !prev);
-  };
+  const toggleReviewForm = () => setShowReviewForm((prev) => !prev);
 
   const handleReviewSubmit = async (e) => {
     e.preventDefault();
@@ -127,9 +119,7 @@ function ProductDetail() {
     navigate(`/products/${productId}`);
   };
 
-  const handleBackToShop = () => {
-    navigate("/products");
-  };
+  const handleBackToShop = () => navigate("/products");
 
   if (loading) return <div className="pt-32 text-center min-h-screen font-bold">Loading...</div>;
   if (error) return <div className="pt-32 text-center text-red-500">{error}</div>;
@@ -150,8 +140,6 @@ function ProductDetail() {
         </button>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 mb-16">
-
-          {/* Main Product Image */}
           <div className="flex flex-col gap-6">
             <div className={`rounded-2xl p-6 flex items-center justify-center min-h-[300px] md:min-h-[450px] ${imgBg}`}>
               <img
@@ -160,28 +148,8 @@ function ProductDetail() {
                 className="max-h-[280px] md:max-h-[400px] object-contain hover:scale-105 transition-all duration-500"
               />
             </div>
-
-            {/* Thumbnail Gallery */}
-            {product.images?.length > 1 && (
-              <div className="flex gap-3 overflow-x-auto pb-2">
-                {product.images.map((img, i) => (
-                  <div
-                    key={i}
-                    onClick={() => handleImageSelect(img)}
-                    className={`w-16 h-16 md:w-20 md:h-20 flex-shrink-0 rounded-xl border-2 cursor-pointer p-1.5 transition-all flex items-center justify-center
-                      ${selectedImage === img
-                        ? isDark ? "border-white bg-white/10 scale-105" : "border-black bg-gray-100 scale-105"
-                        : "border-transparent opacity-50 hover:opacity-100"
-                      }`}
-                  >
-                    <img src={displayImage(img)} alt="" className="w-full h-full object-contain" />
-                  </div>
-                ))}
-              </div>
-            )}
           </div>
 
-          {/* Product Info */}
           <div className="flex flex-col">
             <span className={`text-xs font-black uppercase tracking-widest mb-2 ${isDark ? "text-gray-400" : "text-gray-500"}`}>
               {product.category}
@@ -189,7 +157,7 @@ function ProductDetail() {
             <h1 className="text-2xl md:text-4xl font-bold mb-4">{product.title || product.name}</h1>
             <p className="text-2xl md:text-3xl font-black mb-8">${Number(product.price).toFixed(2)}</p>
 
-            {/* Tabs */}
+            {/* Tabs & Content (Details, Reviews etc.) */}
             <div className="flex gap-6 border-b border-gray-200 mb-6">
               {["details", "description", "reviews"].map((tab) => (
                 <button
@@ -206,7 +174,6 @@ function ProductDetail() {
               ))}
             </div>
 
-            {/* Tab Content */}
             <div className="min-h-[150px] text-sm leading-relaxed mb-8">
               {activeTab === "details" && (
                 <div className="space-y-2 opacity-80">
@@ -215,99 +182,46 @@ function ProductDetail() {
                   <p><b>Stock:</b> {product.stock > 0 ? `${product.stock} units left` : "Out of Stock"}</p>
                 </div>
               )}
-
-              {activeTab === "description" && (
-                <p className="opacity-80">{product.description}</p>
-              )}
-
+              {activeTab === "description" && <p className="opacity-80">{product.description}</p>}
               {activeTab === "reviews" && (
                 <div className="space-y-4">
-                  <div className="flex justify-between items-center">
+                   <div className="flex justify-between items-center">
                     <h4 className="font-bold">Reviews</h4>
-                    <button
-                      onClick={toggleReviewForm}
-                      className={`text-[10px] px-3 py-1.5 rounded-lg font-bold border transition-all
-                        ${isDark ? "border-white hover:bg-white hover:text-black" : "border-black hover:bg-black hover:text-white"}`}
-                    >
+                    <button onClick={toggleReviewForm} className="text-[10px] px-3 py-1.5 rounded-lg font-bold border">
                       {showReviewForm ? "CANCEL" : "WRITE A REVIEW"}
                     </button>
                   </div>
-
-                  {showReviewForm && (
-                    <form
-                      onSubmit={handleReviewSubmit}
-                      className={`p-4 rounded-xl border space-y-3 ${isDark ? "bg-white/5 border-white/10" : "bg-gray-50 border-gray-200"}`}
-                    >
-                      <input
-                        type="text"
-                        name="reviewerName"
-                        placeholder="Your Name"
-                        value={newReview.reviewerName}
-                        onChange={handleReviewInput}
-                        className={`w-full p-2 rounded-lg bg-transparent border text-xs outline-none ${isDark ? "border-white/20" : "border-black/20"}`}
-                      />
-                      <textarea
-                        name="comment"
-                        placeholder="Your Comment..."
-                        rows="3"
-                        value={newReview.comment}
-                        onChange={handleReviewInput}
-                        className={`w-full p-2 rounded-lg bg-transparent border text-xs outline-none ${isDark ? "border-white/20" : "border-black/20"}`}
-                      />
-                      <div className="flex items-center gap-3">
-                        <select
-                          value={newReview.rating}
-                          onChange={handleRatingChange}
-                          className={`bg-transparent text-xs p-1 rounded border outline-none ${isDark ? "border-white/20 bg-[#1e1e1e]" : "border-black/20 bg-white"}`}
-                        >
-                          {[5, 4, 3, 2, 1].map((n) => (
-                            <option key={n} value={n}>{n} Stars</option>
-                          ))}
-                        </select>
-                        <button type="submit" className="ml-auto px-6 py-2 rounded-lg text-[10px] font-bold bg-green-600 text-white hover:bg-green-700">
-                          SUBMIT
-                        </button>
+                  {/* Review mapping same as before */}
+                  {sortedReviews.map((rev, i) => (
+                    <div key={i} className="p-4 rounded-xl border mb-2">
+                      <div className="flex justify-between mb-1">
+                        <span className="font-bold text-xs">{rev.reviewerName}</span>
+                        <span className="text-yellow-500 text-[10px]">{"⭐".repeat(rev.rating)}</span>
                       </div>
-                    </form>
-                  )}
-
-                  <div className="max-h-[300px] overflow-y-auto pr-2 space-y-4">
-                    {sortedReviews.map((rev, i) => (
-                      <div key={i} className={`p-4 rounded-xl border ${isDark ? "bg-white/5 border-white/10" : "bg-gray-100 border-gray-200"}`}>
-                        <div className="flex justify-between items-center mb-1">
-                          <span className="font-bold text-xs">{rev.reviewerName}</span>
-                          <span className="text-yellow-500 text-[10px]">{"⭐".repeat(rev.rating)}</span>
-                        </div>
-                        <p className={`text-xs italic ${isDark ? "text-gray-300" : "text-gray-600"}`}>"{rev.comment}"</p>
-                      </div>
-                    ))}
-                  </div>
+                      <p className="text-xs italic">"{rev.comment}"</p>
+                    </div>
+                  ))}
                 </div>
               )}
             </div>
 
-            {/* Action Buttons */}
             <div className="flex flex-col sm:flex-row items-center gap-4 mt-auto">
               <div className="flex items-center gap-4 border rounded-xl p-2 px-4 w-full sm:w-auto justify-between">
                 <span className="font-bold text-xs uppercase opacity-60">Qty</span>
                 <div className="flex items-center gap-4">
-                  <button onClick={handleQuantityDecrease} className="w-8 h-8 rounded-full border flex items-center justify-center hover:bg-black hover:text-white">-</button>
+                  <button onClick={handleQuantityDecrease} className="w-8 h-8 rounded-full border">-</button>
                   <span className="font-bold w-4 text-center">{quantity}</span>
-                  <button onClick={handleQuantityIncrease} className="w-8 h-8 rounded-full border flex items-center justify-center hover:bg-black hover:text-white">+</button>
+                  <button onClick={handleQuantityIncrease} className="w-8 h-8 rounded-full border">+</button>
                 </div>
               </div>
-
-              <button
-                onClick={handleAddToCart}
-                className={`w-full py-4 rounded-xl font-bold transition-all shadow-lg active:scale-95 ${isDark ? "bg-white text-black hover:bg-gray-200" : "bg-black text-white"}`}
-              >
+              <button onClick={handleAddToCart} className="w-full py-4 rounded-xl font-bold bg-black text-white">
                 ADD TO CART
               </button>
             </div>
           </div>
         </div>
 
-        {/* Related Products */}
+        {/* RELATED PRODUCTS SECTION */}
         {relatedProducts.length > 0 && (
           <div className="mt-16 pt-12 border-t overflow-hidden">
             <h2 className="text-xl md:text-2xl font-bold mb-8 uppercase tracking-tight">You May Also Like</h2>
@@ -324,16 +238,12 @@ function ProductDetail() {
                 <SwiperSlide key={rp.id}>
                   <div
                     onClick={() => handleRelatedProductClick(rp.id)}
-                    className={`group cursor-pointer p-3 md:p-4 rounded-2xl transition-all h-full border ${isDark ? "bg-[#252525] border-[#333] hover:border-white" : "bg-white border-gray-100 shadow-sm hover:shadow-lg"}`}
+                    className={`group cursor-pointer p-3 md:p-4 rounded-2xl border ${isDark ? "bg-[#252525] border-[#333]" : "bg-white shadow-sm"}`}
                   >
                     <div className={`aspect-[3/4] rounded-lg overflow-hidden mb-4 flex items-center justify-center p-4 ${imgBg}`}>
-                      <img 
-                        src={displayImage(rp.image || rp.thumbnail)} 
-                        alt={rp.title || rp.name} 
-                        className="max-h-full w-full object-contain group-hover:scale-110 transition-transform duration-500" 
-                      />
+                      <img src={displayImage(rp.image)} alt={rp.name} className="max-h-full w-full object-contain group-hover:scale-110 transition-transform duration-500" />
                     </div>
-                    <h3 className="font-bold text-[12px] md:text-sm truncate mb-1 uppercase tracking-tighter">{rp.title || rp.name}</h3>
+                    <h3 className="font-bold text-[12px] md:text-sm truncate mb-1 uppercase">{rp.name}</h3>
                     <p className="font-bold text-sm">${Number(rp.price).toFixed(2)}</p>
                   </div>
                 </SwiperSlide>
