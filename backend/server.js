@@ -15,7 +15,6 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 // --- 2. STATIC ASSETS (IMAGES) ---
-// IMPORTANT: Ye line routes aur 404 handler se pehle honi chahiye
 app.use('/assets', express.static(path.join(__dirname, '../public/assets')));
 
 // --- 3. DATABASE CONNECTION ---
@@ -33,6 +32,9 @@ db.connect((err) => {
   }
   console.log('Connected to MariaDB/MySQL');
 });
+
+// IMPORTANT: Exporting db so other routes can use it
+module.exports = db; 
 
 // --- 4. ROUTES IMPORT ---
 const productRoutes = require('./routes/products');
@@ -90,7 +92,6 @@ app.get('/api/health', (req, res) => {
 });
 
 // --- 8. 404 HANDLER (MUST BE LAST) ---
-// Agar upar koi route ya static file nahi mili, tab ye chalay ga
 app.use((req, res) => {
   res.status(404).json({ error: 'Endpoint not found' });
 });

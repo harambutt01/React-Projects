@@ -2,7 +2,7 @@ const express = require('express');
 const db = require('../db');
 const router = express.Router();
 
-// --- 🟢 GET ALL PRODUCTS (Limit 100) ---
+// --- 🟢 GET ALL PRODUCTS (Updated to include description) ---
 router.get('/', async (req, res) => {
   try {
     const { search, category, sort, page = '1', pageSize = '100' } = req.query; 
@@ -32,12 +32,13 @@ router.get('/', async (req, res) => {
     const [countResult] = await db.query(countSql, params);
     const total = countResult[0]?.total || 0;
 
-    // Fetch Products
+    // Fetch Products (Added p.description here)
     const sql = `
       SELECT
         p.id,
         p.name,
         p.price,
+        p.description,
         p.category_id,
         c.name AS category,
         p.seller_id,
@@ -66,12 +67,11 @@ router.get('/', async (req, res) => {
   }
 });
 
-// --- 🟢 RELATED PRODUCTS (New Endpoint for Senior's Request) ---
+// --- 🟢 RELATED PRODUCTS ---
 router.get('/related/:category/:id', async (req, res) => {
   try {
     const { category, id } = req.params;
 
-    // Same category ke random products uthayega current ID ko chhor kar
     const sql = `
       SELECT 
         p.id, p.name, p.price, p.image_url AS image, c.name AS category
@@ -90,14 +90,21 @@ router.get('/related/:category/:id', async (req, res) => {
   }
 });
 
-// --- 🟢 GET BY ID ---
+// --- 🟢 GET BY ID (Crucial fix for Description Tab) ---
 router.get('/:id', async (req, res) => {
   try {
     const { id } = req.params;
     const sql = `
       SELECT
-        p.id, p.name, p.price, p.category_id,
-        c.name AS category, p.seller_id, s.store_name AS seller, p.image_url AS image
+        p.id, 
+        p.name, 
+        p.price, 
+        p.description, 
+        p.category_id,
+        c.name AS category, 
+        p.seller_id, 
+        s.store_name AS seller, 
+        p.image_url AS image
       FROM products p
       LEFT JOIN categories c ON p.category_id = c.id
       LEFT JOIN sellers s ON p.seller_id = s.id
@@ -112,15 +119,15 @@ router.get('/:id', async (req, res) => {
   }
 });
 
-// --- 🟢 POST METHOD ---
+// --- 🟢 POST METHOD (Added description to INSERT) ---
 router.post('/', async (req, res) => {
   try {
-    const { name, price, category_id, seller_id, image_url } = req.body;
+    const { name, price, description, category_id, seller_id, image_url } = req.body;
     if (!name || !price || !category_id || !seller_id) {
       return res.status(400).json({ error: 'All fields are required' });
     }
-    const sql = `INSERT INTO products (name, price, category_id, seller_id, image_url) VALUES (?, ?, ?, ?, ?)`;
-    const [result] = await db.query(sql, [name, price, category_id, seller_id, image_url || null]);
+    const sql = `INSERT INTO products (name, price, description, category_id, seller_id, image_url) VALUES (?, ?, ?, ?, ?, ?)`;
+    const [result] = await db.query(sql, [name, price, description || null, category_id, seller_id, image_url || null]);
     res.status(201).json({
       message: 'Product added successfully!',
       productId: result.insertId
