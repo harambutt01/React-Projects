@@ -13,34 +13,33 @@ router.get('/:user_id', (req, res) => {
     });
 });
 
-// --- 2. POST (Add to Cart with Auto-Quantity & Auto-Total) ---
+// --- 2. POST (Add to Cart with Image, Auto-Quantity & Auto-Total) ---
 router.post('/', (req, res) => {
-    const { user_id, productId, price, category, quantity } = req.body;
+    // req.body mein ab "image" bhi receive ho rahi hai
+    const { user_id, productId, image, price, category, quantity } = req.body;
 
     // Validation
     if (!user_id || !productId || !price) {
         return res.status(400).json({ error: "Required fields are missing (user_id, productId, or price)" });
     }
 
-    // Initial total price calculation for first-time insert
+    // Initial total price calculation
     const currentTotal = Number(price) * Number(quantity);
 
     /**
-     * SQL Logic Explanation for Senior:
-     * 1. INSERT: Nayi row bnanay ki koshish karta hai.
-     * 2. ON DUPLICATE KEY UPDATE: Agar user_id aur product_id pehle se mojood hain:
-     *    - Quantity ko purani quantity mein jama (+) karta hai.
-     *    - Total Price ko (New Quantity * Price) karke update karta hai.
+     * SQL Logic:
+     * 1. Agar user aur product ka combo naya hai, toh image ke sath insert hoga.
+     * 2. Agar duplicate hai, toh sirf quantity aur total_price update honge.
      */
     const sql = `
-        INSERT INTO cart (user_id, product_id, price, total_price, category, quantity) 
-        VALUES (?, ?, ?, ?, ?, ?) 
+        INSERT INTO cart (user_id, product_id, image, price, total_price, category, quantity) 
+        VALUES (?, ?, ?, ?, ?, ?, ?) 
         ON DUPLICATE KEY UPDATE 
             quantity = quantity + VALUES(quantity),
             total_price = (quantity + VALUES(quantity)) * price
     `;
     
-    const values = [user_id, productId, price, currentTotal, category, quantity];
+    const values = [user_id, productId, image, price, currentTotal, category, quantity];
 
     db.query(sql, values, (err, result) => {
         if (err) {
@@ -48,7 +47,7 @@ router.post('/', (req, res) => {
             return res.status(500).json({ error: "Database operation failed" });
         }
         res.status(201).json({ 
-            message: "Cart updated successfully!", 
+            message: "Cart updated successfully with image!", 
             details: result 
         });
     });
@@ -65,7 +64,7 @@ router.delete('/:id', (req, res) => {
     });
 });
 
-// --- 4. CLEAR CART (Optional: Checkout ke baad use hoga) ---
+// --- 4. CLEAR CART ---
 router.delete('/clear/:user_id', (req, res) => {
     const { user_id } = req.params;
     const sql = "DELETE FROM cart WHERE user_id = ?";

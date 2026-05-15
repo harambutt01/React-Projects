@@ -29,6 +29,7 @@ function ProductDetail() {
   const displayImage = (img) => {
     if (!img) return "https://via.placeholder.com/400?text=No+Image";
     if (img.startsWith("http")) return img;
+    // Correct the relative path based on your API response
     return `http://localhost:4000/${img}`;
   };
 
@@ -113,7 +114,7 @@ function ProductDetail() {
   };
 
   // --- HANDLERS ---
-  const handleImageSelect = (img) => setSelectedImage(img);
+  const handleImageSelect = (product) => setSelectedImage(product.image || product.thumbnail || product.img_url );
   const handleTabChange = (tab) => setActiveTab(tab);
   const handleQuantityIncrease = () => setQuantity((q) => q + 1);
   const handleQuantityDecrease = () => setQuantity((q) => Math.max(1, q - 1));
@@ -144,6 +145,7 @@ function ProductDetail() {
       user_id: savedUser.id,
       productId: product.id,
       price: product.price,
+      image: product.image || product.thumbnail || product.img_url,
       category: product.category,
       quantity: quantity
     };

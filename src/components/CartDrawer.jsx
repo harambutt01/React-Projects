@@ -1,10 +1,12 @@
 import { useCart } from "./CartContext";
 import { useTheme } from "./ThemeContext";
-import { toast } from "react-toastify"; // 1. Toast import kiya
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom"; // 1. Navigate import kiya
 
 function CartDrawer({ isOpen, onClose }) {
   const { cartItems, removeFromCart, updateQuantity, totalPrice } = useCart();
   const { isDark } = useTheme();
+  const navigate = useNavigate(); // 2. Navigate initialize kiya
 
   const handleQuantityDecrease = (id, currentQty) => {
     updateQuantity(id, currentQty - 1);
@@ -14,7 +16,6 @@ function CartDrawer({ isOpen, onClose }) {
     updateQuantity(id, currentQty + 1);
   };
 
-  // 2. Updated function to accept title
   const handleRemoveItem = (id, title) => {
     removeFromCart(id);
     toast.error(`${title} removed from cart`, {
@@ -25,8 +26,10 @@ function CartDrawer({ isOpen, onClose }) {
     });
   };
 
+  // 3. Checkout function ko update kiya
   const handleCheckout = () => {
-    alert("Checkout coming soon!");
+    onClose(); // Drawer band karne ke liye
+    navigate("/checkout"); // Checkout page par bhejne ke liye
   };
 
   const borderColor = isDark ? "border-[#333]" : "border-[#e0e0e0]";
@@ -79,7 +82,7 @@ function CartDrawer({ isOpen, onClose }) {
                     src={item.thumbnail || item.image}
                     alt={item.title}
                     className="w-full h-full object-contain p-1"
-                    onError={(e) => { e.target.src = "https://via.placeholder.com/150?text=No+Image"; }}
+                    onError={(e) => { e.target.src = "https://placehold.co/150?text=No+Image"; }}
                   />
                 </div>
 
@@ -109,7 +112,6 @@ function CartDrawer({ isOpen, onClose }) {
                       </button>
                     </div>
                     <button
-                      // 4. Item title yahan pass kiya
                       onClick={() => handleRemoveItem(item.id, item.title || item.name)}
                       className="text-red-500 text-[11px] sm:text-xs cursor-pointer bg-transparent border-none hover:underline font-medium"
                     >
@@ -138,7 +140,7 @@ function CartDrawer({ isOpen, onClose }) {
               <span className="text-xl font-bold text-[#00bcd4]">${totalPrice.toFixed(2)}</span>
             </div>
             <button
-              onClick={handleCheckout}
+              onClick={handleCheckout} // Ab ye navigate karega
               className="w-full py-[14px] bg-black text-white font-bold rounded-xl cursor-pointer hover:bg-gray-800 transition-all shadow-md active:scale-[0.98]"
             >
               CHECKOUT

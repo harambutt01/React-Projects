@@ -2,44 +2,84 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTheme } from "../ThemeContext";
 import { Heart, ShoppingCart } from "lucide-react";
-import { toast } from "react-toastify"; 
+import { toast } from "react-toastify";
 
 function ProductCard({ product }) {
   const { isDark } = useTheme();
   const navigate = useNavigate();
   const [isInWishlist, setIsInWishlist] = useState(false);
 
-  const { id, image, title, category, price } = product;
+  // Variable Destructuring (id, title, etc. nikalna)
+  const { id, title, category, price, image, thumbnail, images } = product;
 
+  // --- SAFE IMAGE LOGIC ---
+  const productImage = image || thumbnail || (images && images[0]) || "";
+  console.log(productImage)
   useEffect(() => {
     const wishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
     setIsInWishlist(wishlist.some((item) => item.id === id));
   }, [id]);
 
+  //  HANDLE ADD TO CART (Database + LocalStorage) ---
   const handleAddToCart = async (e) => {
     e.stopPropagation();
-    try {
-      const cart = JSON.parse(localStorage.getItem("cart")) || [];
-      const existingIndex = cart.findIndex((item) => item.id === id);
 
-      if (existingIndex > -1) {
-        cart[existingIndex].quantity += 1;
+    //  User login check
+    const loggedInUser = JSON.parse(localStorage.getItem("user"));
+    if (!loggedInUser) {
+      toast.error("Please login first!", { theme: "colored" });
+      return;
+    }
+
+    //   MySQL API
+    const cartData = {
+  user_id: loggedInUser.id, 
+  productId: id,
+  image: productImage, 
+  price: price,
+  category: category,
+  quantity: 1
+};
+
+// Debugging  console check
+console.log("Sending Payload to Database:", cartData);
+    try {
+      // Custom API (Backend)
+      const response = await fetch('http://localhost:4000/api/cart', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(cartData)
+      });
+console.log("Sending Payload to Database:", cartData);
+      if (response.ok) {
+        // 4. Update LocalStorage (for CartDrawer UI sync)
+        const cart = JSON.parse(localStorage.getItem("cart")) || [];
+        const existingIndex = cart.findIndex((item) => item.id === id);
+
+        if (existingIndex > -1) {
+          cart[existingIndex].quantity += 1;
+        } else {
+          // Pura product object bhej rahe hain taake local cart mein bhi details rahein
+          cart.push({ ...product, quantity: 1, image: productImage });
+        }
+
+        localStorage.setItem("cart", JSON.stringify(cart));
+        
+        // Custom event to refresh UI
+        window.dispatchEvent(new Event("cartUpdate"));
+        
+        toast.success(`${title} added to cart!`, {
+          position: "top-right",
+          autoClose: 2000,
+          theme: isDark ? "dark" : "light",
+        });
       } else {
-        cart.push({ ...product, quantity: 1 });
+        toast.error("Failed to sync with database");
       }
 
-      localStorage.setItem("cart", JSON.stringify(cart));
-      window.dispatchEvent(new Event("cartUpdate"));
-      
-      toast.success(`${title} added to cart!`, {
-        position: "top-right",
-        autoClose: 2000,
-        theme: isDark ? "dark" : "light",
-      });
-
     } catch (err) {
-      console.error("Cart update failed:", err);
-      toast.error("Failed to add item to cart");
+      console.error("Cart API Error:", err);
+      toast.error("Server connection failed");
     }
   };
 
@@ -111,7 +151,7 @@ function ProductCard({ product }) {
         </button>
 
         <img
-          src={image}
+          src={productImage} // Updated to use the safe image variable
           alt={title}
           className="w-full h-full object-contain p-4 group-hover:scale-110 transition-transform duration-500"
         />
@@ -127,8 +167,6 @@ function ProductCard({ product }) {
 
       {/* Info Section */}
       <div className="space-y-2">
-
-        {/* Price */}
         <div className="flex items-center gap-2 flex-wrap">
           {isSale ? (
             <>

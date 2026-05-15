@@ -16,7 +16,8 @@ import ProductList from "./components/products/ProductList.jsx";
 import ProductDetail from "./components/products/ProductDetail.jsx";
 import Cart from "./components/Cart.jsx"; 
 import LoginSignup from "./LoginSignup.jsx"; 
-import Wishlist from "./components/Wishlist.jsx"; // 1. Wishlist import kiya
+import Wishlist from "./components/Wishlist.jsx"; 
+import Checkout from "./components/Checkout.jsx";
 
 import "./components/toggle/Toggle.css";
 
@@ -38,11 +39,8 @@ function App() {
                 <Route path="/products"       element={<ProductList />}    />
                 <Route path="/products/:id"   element={<ProductDetail />}  />
                 <Route path="/cart"           element={<Cart />}           />
-                
-                {/* 2. Wishlist Route add kiya */}
                 <Route path="/wishlist"       element={<Wishlist />}       />
-                
-                {/* Login Route */}
+                <Route path="/checkout"       element={<Checkout />} />
                 <Route path="/login"          element={<LoginSignup />}    />
               </Routes>
             </main>
