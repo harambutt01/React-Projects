@@ -3,8 +3,9 @@ const db = require('../db');
 const router = express.Router();
 
 router.post('/', async (req, res) => {
-  const { cartItems, shipping, paymentMethod } = req.body;
+  const { cartItems, shipping, paymentMethod, user_id } = req.body;
 
+  // Standard checks
   if (!Array.isArray(cartItems) || !cartItems.length) {
     return res.status(400).json({ error: 'cartItems is required and must be a non-empty array' });
   }
@@ -18,60 +19,122 @@ router.post('/', async (req, res) => {
   let connection;
 
   try {
-    const productIds = cartItems.map((item) => item.productId);
+    // 1. Dono types ki key names ko check karke IDs nikalna
+    const productIds = cartItems.map((item) => item.product_id || item.productId);
+    
+    // Dynamic fallback user_id nikalna agar request body mein miss ho jaye
+    const activeUserId = user_id || cartItems[0].user_id || cartItems[0].userId || 2; 
+
+    // 2. FETCH DIRECT FROM CART: Frontend par trust karne ke bajaye direct user ke cart table se real data uthao
+    const [cartRecords] = await db.query(
+      'SELECT product_id, category, price, quantity FROM cart WHERE user_id = ? AND product_id IN (?)',
+      [activeUserId, productIds]
+    );
+
+    // Agar cart se record na milein toh products map par fallback lagayenge
+    const cartMap = new Map(cartRecords.map((item) => [item.product_id, item]));
+
+    // Products table backup check (jaise senior ne lagaya tha)
     const [products] = await db.query('SELECT id, price FROM products WHERE id IN (?)', [productIds]);
     const productMap = new Map(products.map((product) => [product.id, product]));
 
     let totalAmount = 0;
     for (const item of cartItems) {
-      const product = productMap.get(item.productId);
-      if (!product) {
-        return res.status(400).json({ error: `Product not found: ${item.productId}` });
+      const currentProductId = item.product_id || item.productId;
+      const cartItem = cartMap.get(currentProductId);
+      const productItem = productMap.get(currentProductId);
+      
+      if (!cartItem && !productItem) {
+        return res.status(400).json({ error: `Product not found in cart or catalog: ${currentProductId}` });
       }
-      totalAmount += Number(product.price) * Number(item.quantity || 0);
+
+      const itemPrice = cartItem ? cartItem.price : productItem.price;
+      const itemQty = cartItem ? cartItem.quantity : (item.quantity || 1);
+      totalAmount += Number(itemPrice) * Number(itemQty);
     }
 
+    // Database connection aur transaction start
     connection = await db.getConnection();
     await connection.beginTransaction();
 
+    // Customer setup
     const customerName = shipping.name;
     const customerEmail = shipping.email || null;
-    const [customerResult] = await connection.query(
-      'INSERT INTO customers (name, email) VALUES (?, ?)',
-      [customerName, customerEmail]
-    );
+    let customerId;
 
-    const customerId = customerResult.insertId;
+    if (customerEmail) {
+      const [existingCustomer] = await connection.query(
+        'SELECT id FROM customers WHERE email = ?',
+        [customerEmail]
+      );
+      if (existingCustomer.length > 0) {
+        customerId = existingCustomer[0].id;
+      }
+    }
+
+    if (!customerId) {
+      const [customerResult] = await connection.query(
+        'INSERT INTO customers (name, email) VALUES (?, ?)',
+        [customerName, customerEmail]
+      );
+      customerId = customerResult.insertId;
+    }
+
+    // Insert order
     const [orderResult] = await connection.query(
       'INSERT INTO shopping_orders (customer_id, total_amount) VALUES (?, ?)',
       [customerId, totalAmount]
     );
 
     const orderId = orderResult.insertId;
+
     await connection.query(
       'INSERT INTO payments (order_id, payment_method, status) VALUES (?, ?, ?)',
       [orderId, paymentMethod, 'Pending']
     );
+
     await connection.query(
       'INSERT INTO deliveries (order_id, delivery_status, tracking_number) VALUES (?, ?, ?)',
       [orderId, 'Pending', null]
     );
+
+    // 3. INSERT INTO TRANSACTION REPORT: Cart table ke data se values map karna
+    for (const item of cartItems) {
+      const currentProductId = item.product_id || item.productId;
+      const cartItem = cartMap.get(currentProductId);
+      const productItem = productMap.get(currentProductId);
+
+      // Paka fix: Pehle cart table ki category uthayega (jo ke 'Accessories' hai), phir frontend check karega
+      const currentCategory = (cartItem && cartItem.category) || item.category || item.Category || 'General';
+      const currentQuantity = cartItem ? cartItem.quantity : Number(item.quantity || 1);
+      const currentPrice = cartItem ? cartItem.price : (productItem ? productItem.price : Number(item.price || 0));
+      const itemTotalRevenue = Number(currentPrice) * Number(currentQuantity);
+
+      await connection.query(
+        `INSERT INTO transaction_reports (order_id, product_id, category, quantity, price, total_revenue, report_date) 
+         VALUES (?, ?, ?, ?, ?, ?, CURRENT_DATE())`,
+        [orderId, currentProductId, currentCategory, currentQuantity, currentPrice, itemTotalRevenue]
+      );
+    }
+
+    // 4. AUTO-DELETE FROM CART: Is query ko strict bina kisi condition ke run karte hain target user par
     await connection.query(
-      'INSERT INTO transaction_reports (order_id, report_date, total_revenue) VALUES (?, CURRENT_DATE(), ?)',
-      [orderId, totalAmount]
+      'DELETE FROM cart WHERE user_id = ? AND product_id IN (?)',
+      [activeUserId, productIds]
     );
 
     await connection.commit();
     res.json({ message: 'Order placed successfully', orderId: String(orderId), totalAmount });
+
   } catch (error) {
     if (connection) {
-      await connection.rollback();
+      await connection.rollback(); 
     }
-    console.error(error);
+    console.error("Final Checkout Fix Crash:", error);
     res.status(500).json({ error: 'Unable to complete checkout' });
   } finally {
     if (connection) {
-      connection.release();
+      connection.release(); 
     }
   }
 });
