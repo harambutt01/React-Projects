@@ -18,7 +18,7 @@ import Cart from "./components/Cart.jsx";
 import LoginSignup from "./LoginSignup.jsx"; 
 import Wishlist from "./components/Wishlist.jsx"; 
 import Checkout from "./components/Checkout.jsx";
-
+import Payment from "./components/Payment";
 import "./components/toggle/Toggle.css";
 
 function App() {
@@ -42,6 +42,7 @@ function App() {
                 <Route path="/wishlist"       element={<Wishlist />}       />
                 <Route path="/checkout"       element={<Checkout />} />
                 <Route path="/login"          element={<LoginSignup />}    />
+                <Route path="/payment" element={<Payment />} />
               </Routes>
             </main>
 

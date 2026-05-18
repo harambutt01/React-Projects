@@ -3,7 +3,8 @@ const db = require('../db');
 const router = express.Router();
 
 router.post('/', async (req, res) => {
-  const { cartItems, shipping, paymentMethod, user_id } = req.body;
+  // 🟢 Frontend se bhejha hua paymentStatus yahan req.body se receive kiya
+  const { cartItems, shipping, paymentMethod, user_id, paymentStatus } = req.body;
 
   // Standard checks
   if (!Array.isArray(cartItems) || !cartItems.length) {
@@ -82,9 +83,12 @@ router.post('/', async (req, res) => {
 
     const orderId = orderResult.insertId;
 
+    // 🟢 Agar online payment se 'Paid' aaya hai toh payments table mein bhi update ho jaye
+    const currentPaymentStatus = paymentStatus || 'Pending';
+
     await connection.query(
       'INSERT INTO payments (order_id, payment_method, status) VALUES (?, ?, ?)',
-      [orderId, paymentMethod, 'Pending']
+      [orderId, paymentMethod, currentPaymentStatus]
     );
 
     await connection.query(
@@ -102,10 +106,11 @@ router.post('/', async (req, res) => {
       const currentPrice = cartItem ? cartItem.price : (productItem ? productItem.price : Number(item.price || 0));
       const itemTotalRevenue = Number(currentPrice) * Number(currentQuantity);
 
+      // 🟢 TRANSACTION_REPORTS QUERY UPDATED WITH PAYMENT_STATUS COLUMN
       await connection.query(
-        `INSERT INTO transaction_reports (order_id, product_id, category, quantity, price, total_revenue, report_date) 
-         VALUES (?, ?, ?, ?, ?, ?, CURRENT_DATE())`,
-        [orderId, currentProductId, currentCategory, currentQuantity, currentPrice, itemTotalRevenue]
+        `INSERT INTO transaction_reports (order_id, product_id, category, quantity, price, total_revenue, report_date, payment_status) 
+         VALUES (?, ?, ?, ?, ?, ?, CURRENT_DATE(), ?)`,
+        [orderId, currentProductId, currentCategory, currentQuantity, currentPrice, itemTotalRevenue, currentPaymentStatus]
       );
     }
 

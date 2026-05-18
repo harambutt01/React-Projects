@@ -33,7 +33,6 @@ function Checkout() {
       // Fallback agar user direct URL access kar le aur staging khali ho
       const savedCart = JSON.parse(localStorage.getItem("cart")) || [];
       if (savedCart.length === 0) {
-        // Pop-up remove kar diya hai, ab yeh bina alert ke homepage par redirect karega
         navigate("/");
         return;
       }
@@ -52,6 +51,7 @@ function Checkout() {
 
     const currentUserId = 2; 
 
+    // Payload structure ready kiya
     const orderPayload = {
       user_id: currentUserId,
       cartItems: cartItems.map(item => ({
@@ -61,9 +61,18 @@ function Checkout() {
         category: item.category || 'General'
       })),
       shipping: shipping,
-      paymentMethod: paymentMethod
+      paymentMethod: paymentMethod,
+      total: total // Total payment page ke liye send kar rahe hain
     };
 
+    // 🟢 DUMMY PAYMENT ROUTING (SENIOR'S REQUIREMENT)
+    if (paymentMethod === "Online Payment") {
+      // Agar online payment hai toh payload router state mein daal kar redirect kar do
+      navigate("/payment", { state: { orderPayload } });
+      return; 
+    }
+
+    // 🟢 CASH ON DELIVERY ROUTE (Purana database saving code)
     try {
       const response = await fetch("http://localhost:4000/api/checkout", {
         method: "POST",
@@ -74,7 +83,6 @@ function Checkout() {
       const result = await response.json();
 
       if (response.ok) {
-        // Success pop-up bilkul waise hi barkarar hai
         toast.success(`🎉 Order Placed! ID: ${result.orderId}`);
 
         // LOCAL STORAGE STORAGE MATCH & FILTER CLEANING
@@ -84,7 +92,7 @@ function Checkout() {
         
         // Cache updates
         localStorage.setItem("cart", JSON.stringify(remainingCartItems));
-        localStorage.removeItem("checkout_staging"); // Remove temp cache data
+        localStorage.removeItem("checkout_staging"); 
         
         window.dispatchEvent(new Event("cartUpdate")); 
         navigate("/"); 
@@ -130,7 +138,7 @@ function Checkout() {
               type="submit" 
               className="w-full py-4 mt-6 bg-[#00bcd4] text-black font-black rounded-xl hover:opacity-80 transition-all uppercase tracking-widest shadow-lg"
             >
-              Confirm Order (${total.toFixed(2)})
+              {paymentMethod === "Online Payment" ? "Proceed to Payment" : `Confirm Order ($${total.toFixed(2)})`}
             </button>
           </form>
         </div>
