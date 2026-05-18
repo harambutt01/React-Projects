@@ -8,45 +8,49 @@ export function CartProvider({ children }) {
     return saved ? JSON.parse(saved) : [];
   });
 
+  // Nayi State: Jo select kiye huay products ki IDs track karegi
+  const [selectedItems, setSelectedItems] = useState([]);
+
   useEffect(() => {
     localStorage.setItem("cart", JSON.stringify(cartItems));
+    // Jab cart items badlein, toh jo items cart mein nahi hain unhein selection se nikal dein
+    setSelectedItems((prev) => prev.filter((id) => cartItems.some((item) => item.id === id)));
   }, [cartItems]);
 
   const addToCart = async (product, quantity) => {
-  const updatedCart = [...cartItems];
-  const existing = updatedCart.find((item) => item.id === product.id);
+    const updatedCart = [...cartItems];
+    const existing = updatedCart.find((item) => item.id === product.id);
 
-  if (existing) {
-    existing.quantity += quantity;
-  } else {
-    updatedCart.push({ ...product, quantity });
-  }
-
-  setCartItems(updatedCart);
-
-  // Send the updated cart item to the backend
-  try {
-    const response = await fetch("http://localhost:4000/api/cart", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        id: product.id,
-        name: product.name,
-        price: product.price,
-        image: product.image, // Ensure the image URL is included
-        quantity,
-      }),
-    });
-
-    if (!response.ok) {
-      throw new Error("Failed to add item to the database");
+    if (existing) {
+      existing.quantity += quantity;
+    } else {
+      updatedCart.push({ ...product, quantity });
     }
-  } catch (error) {
-    console.error("Error adding item to the database:", error);
-  }
-};
+
+    setCartItems(updatedCart);
+
+    try {
+      const response = await fetch("http://localhost:4000/api/cart", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          id: product.id,
+          name: product.name,
+          price: product.price,
+          image: product.image,
+          quantity,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to add item to the database");
+      }
+    } catch (error) {
+      console.error("Error adding item to the database:", error);
+    }
+  };
 
   const removeFromCart = (id) => {
     setCartItems((prev) => prev.filter((item) => item.id !== id));
@@ -59,11 +63,65 @@ export function CartProvider({ children }) {
     );
   };
 
+  const toggleSelectItem = (id) => {
+    if (selectedItems.includes(id)) {
+      setSelectedItems(selectedItems.filter((itemIds) => itemIds !== id));
+    } else {
+      setSelectedItems([...selectedItems, id]);
+    }
+  };
+
+  const toggleSelectAll = () => {
+    if (selectedItems.length === cartItems.length) {
+      setSelectedItems([]); // Agar sab pehle se select hain, toh khali kar do
+    } else {
+      setSelectedItems(cartItems.map((item) => item.id)); // Sab ki IDs add kar do
+    }
+  };
+
+  const deleteSelectedFromCart = async () => {
+    if (selectedItems.length === 0) return;
+
+    // Frontend State se delete karna
+    setCartItems((prev) => prev.filter((item) => !selectedItems.includes(item.id)));
+
+    try {
+      const response = await fetch("http://localhost:4000/api/cart/delete-multiple", {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ ids: selectedItems }), 
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to delete selected items from database");
+      }
+
+      setSelectedItems([]);
+    } catch (error) {
+      console.error("Error deleting multiple items:", error);
+    }
+  };
+
   const totalItems = cartItems.reduce((sum, item) => sum + item.quantity, 0);
   const totalPrice = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
   return (
-    <CartContext.Provider value={{ cartItems, addToCart, removeFromCart, updateQuantity, totalItems, totalPrice }}>
+    <CartContext.Provider
+      value={{
+        cartItems,
+        selectedItems, 
+        addToCart,
+        removeFromCart,
+        updateQuantity,
+        toggleSelectItem, 
+        toggleSelectAll,  
+        deleteSelectedFromCart, 
+        totalItems,
+        totalPrice,
+      }}
+    >
       {children}
     </CartContext.Provider>
   );

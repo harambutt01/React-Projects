@@ -2,7 +2,7 @@ import { useCart } from "./CartContext";
 import { useTheme } from "./ThemeContext";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom"; 
-import Swal from "sweetalert2"; // SweetAlert2 imported
+import Swal from "sweetalert2"; 
 
 function CartDrawer({ isOpen, onClose }) {
   const { 
@@ -37,7 +37,7 @@ function CartDrawer({ isOpen, onClose }) {
     });
   };
 
-  // SweetAlert2 wala Ultra-Compact Handler
+  // SweetAlert2 
   const handleDeleteSelectedClick = () => {
     Swal.fire({
       title: 'Remove from cart?',
@@ -52,7 +52,6 @@ function CartDrawer({ isOpen, onClose }) {
       background: isDark ? '#242424' : '#fff', 
       color: isDark ? '#fff' : '#000',          
       
-      // Tight paddings and margins to reduce box height
       customClass: {
         popup: 'rounded-lg p-3 pb-4 flex flex-col items-center justify-center m-0', 
         title: 'text-sm font-bold p-0 m-0 mt-1 text-center w-full leading-tight', 
@@ -65,13 +64,12 @@ function CartDrawer({ isOpen, onClose }) {
       didOpen: () => {
         const container = Swal.getContainer();
         if (container) {
-          container.style.zIndex = '99999'; // To bring it above everything
+          container.style.zIndex = '99999'; 
         }
         
-        // Circular warning icon tight adjustment
         const icon = Swal.getIcon();
         if (icon) {
-          icon.style.transform = 'scale(0.6)'; // Scaled down to 60%
+          icon.style.transform = 'scale(0.6)'; 
           icon.style.margin = '5px auto 0px auto'; 
         }
       }
