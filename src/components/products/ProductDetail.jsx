@@ -14,7 +14,7 @@ function ProductDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { isDark } = useTheme();
-  const { addToCart } = useCart(); // Local context for UI update
+  const { addToCart } = useCart(); 
 
   const { data: apiData, loading, error } = useFetch(`http://localhost:4000/api/products/${id}`);
   
@@ -29,7 +29,6 @@ function ProductDetail() {
   const displayImage = (img) => {
     if (!img) return "https://via.placeholder.com/400?text=No+Image";
     if (img.startsWith("http")) return img;
-    // Correct the relative path based on your API response
     return `http://localhost:4000/${img}`;
   };
 
@@ -106,7 +105,7 @@ function ProductDetail() {
         setLocalReviews(updatedData.reviews || []);
         setNewReview({ reviewerName: "", comment: "", rating: 5 });
         setShowReviewForm(false);
-        toast.success("Review saved to database!");
+        toast.success("Review saved!");
       }
     } catch (err) {
       toast.error("Failed to save review");
@@ -160,8 +159,7 @@ function ProductDetail() {
       const result = await response.json();
 
       if (response.ok) {
-        toast.success(`${product.name || product.title} added to database cart!`, { icon: "🛒" });
-        // Local state update (optional)
+        toast.success(`${product.name || product.title} added to cart!`, { icon: "🛒" });
         addToCart(product, quantity);
       } else {
         toast.error(result.error || "Failed to add to cart");

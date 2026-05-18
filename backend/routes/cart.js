@@ -1,8 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const db = require('../server'); // server.js se database connection import
+const db = require('../server'); 
 
-// --- 1. GET CART (Database se user ka cart lana) ---
 router.get('/:user_id', (req, res) => {
     const { user_id } = req.params;
     const sql = "SELECT * FROM cart WHERE user_id = ?";
@@ -13,7 +12,6 @@ router.get('/:user_id', (req, res) => {
     });
 });
 
-// --- 2. POST (Add to Cart with Image, Auto-Quantity & Auto-Total) ---
 router.post('/', (req, res) => {
     const { user_id, productId, image, price, category, quantity } = req.body;
 
@@ -41,14 +39,12 @@ router.post('/', (req, res) => {
             return res.status(500).json({ error: "Database operation failed" });
         }
         res.status(201).json({ 
-            message: "Cart updated successfully with image!", 
+            message: "Cart updated successfully", 
             details: result 
         });
     });
 });
 
-// --- 3. MULTI-DELETE (Database Column Fixed to product_id) ---
-// Note: Isay single delete se upar hi rakha hai taake route break na ho
 router.delete('/delete-multiple', (req, res) => {
     const { ids } = req.body; 
 
@@ -57,23 +53,21 @@ router.delete('/delete-multiple', (req, res) => {
         return res.status(400).json({ status: "Error", message: "No product IDs provided for deletion" });
     }
 
-    // FIXED: 'id' ki jagah 'product_id' kiya taake database table ke sahi column se matching ho sake
     const sql = `DELETE FROM cart WHERE product_id IN (${ids.join(',')})`;
 
     db.query(sql, (err, result) => {
         if (err) {
-            console.error("Database error during bulk delete:", err);
+            console.error("Error during bulk delete:", err);
             return res.status(500).json({ status: "Error", error: err.message });
         }
         res.json({ 
             status: "Success", 
-            message: "Selected items removed from database", 
+            message: "Selected items removed from cart", 
             affectedRows: result.affectedRows 
         });
     });
 });
 
-// --- 4. DELETE (Remove single item) ---
 router.delete('/:id', (req, res) => {
     const { id } = req.params;
     const sql = "DELETE FROM cart WHERE id = ?";
@@ -84,7 +78,6 @@ router.delete('/:id', (req, res) => {
     });
 });
 
-// --- 5. CLEAR CART ---
 router.delete('/clear/:user_id', (req, res) => {
     const { user_id } = req.params;
     const sql = "DELETE FROM cart WHERE user_id = ?";

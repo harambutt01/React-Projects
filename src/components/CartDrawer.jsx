@@ -10,7 +10,6 @@ function CartDrawer({ isOpen, onClose }) {
     selectedItems, 
     removeFromCart, 
     updateQuantity, 
-    totalPrice,
     toggleSelectItem,
     toggleSelectAll,
     deleteSelectedFromCart
@@ -37,13 +36,13 @@ function CartDrawer({ isOpen, onClose }) {
     });
   };
 
-  // SweetAlert2 
+  // SweetAlert2 for bulk deletion
   const handleDeleteSelectedClick = () => {
     Swal.fire({
       title: 'Remove from cart?',
       text: `Are you sure you want to delete these ${selectedItems.length} item(s)?`,
       icon: 'warning',
-      width: '300px', // Squeezed width
+      width: '300px', 
       showCancelButton: true,
       confirmButtonColor: '#00bcd4', 
       cancelButtonColor: '#d33',
@@ -85,7 +84,30 @@ function CartDrawer({ isOpen, onClose }) {
     });
   };
 
+  // SMART DYNAMIC TOTAL: Sirf selected (ticked) items ka total calculate karna
+  const dynamicTotalPrice = cartItems
+    .filter(item => selectedItems.includes(item.id))
+    .reduce((sum, item) => sum + (item.price * item.quantity), 0);
+
+  // FIXED CHECKOUT HANDLER: Sirf selected items ko localstorage staging mein save karega
   const handleCheckout = () => {
+    // 1. Cart items mein se sirf unhe filter karo jo Context ke mutabiq selected hain
+    const itemsToCheckout = cartItems.filter(item => selectedItems.includes(item.id));
+
+    if (itemsToCheckout.length === 0) {
+      toast.warning("Please select at least one item to checkout", {
+        position: "top-right",
+        autoClose: 2000,
+        theme: isDark ? "dark" : "light",
+        style: { zIndex: 99999 }
+      });
+      return;
+    }
+
+    // 2. Sirf ticked products ko temporary staging location par rakhna
+    localStorage.setItem("checkout_staging", JSON.stringify(itemsToCheckout));
+
+    // 3. Drawer close karein aur navigate karein
     onClose(); 
     navigate("/checkout"); 
   };
@@ -157,7 +179,7 @@ function CartDrawer({ isOpen, onClose }) {
             </div>
           ) : (
             cartItems.map((item) => (
-              <div key={item.id} className={`flex items-center gap-2 sm:gap-3 mb-5 pb-5 border-b ${borderColor}`}>
+              <div key={item.id} className={`flex items-center gap-2 sm:gap-3 mb-5 pb-5 border-b ${borderColor} ${!selectedItems.includes(item.id) ? 'opacity-50' : ''}`}>
                 
                 {/* Individual Checkbox */}
                 <div className="flex-shrink-0">
@@ -229,14 +251,14 @@ function CartDrawer({ isOpen, onClose }) {
             ${isDark ? "border-[#333] bg-[#1a1a1a]" : "border-[#e0e0e0] bg-white"}`}
           >
             <div className="flex justify-between items-center mb-5">
-              <span className="font-semibold text-gray-500">Subtotal:</span>
-              <span className="text-xl font-bold text-[#00bcd4]">${totalPrice.toFixed(2)}</span>
+              <span className="font-semibold text-gray-500">Subtotal Selected:</span>
+              <span className="text-xl font-bold text-[#00bcd4]">${dynamicTotalPrice.toFixed(2)}</span>
             </div>
             <button
               onClick={handleCheckout} 
               className="w-full py-[14px] bg-black text-white font-bold rounded-xl cursor-pointer hover:bg-gray-800 transition-all shadow-md active:scale-[0.98]"
             >
-              CHECKOUT
+              CHECKOUT SELECTED ({selectedItems.length})
             </button>
           </div>
         )}

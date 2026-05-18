@@ -19,22 +19,17 @@ router.post('/', async (req, res) => {
   let connection;
 
   try {
-    // 1. Dono types ki key names ko check karke IDs nikalna
     const productIds = cartItems.map((item) => item.product_id || item.productId);
     
-    // Dynamic fallback user_id nikalna agar request body mein miss ho jaye
     const activeUserId = user_id || cartItems[0].user_id || cartItems[0].userId || 2; 
 
-    // 2. FETCH DIRECT FROM CART: Frontend par trust karne ke bajaye direct user ke cart table se real data uthao
     const [cartRecords] = await db.query(
       'SELECT product_id, category, price, quantity FROM cart WHERE user_id = ? AND product_id IN (?)',
       [activeUserId, productIds]
     );
 
-    // Agar cart se record na milein toh products map par fallback lagayenge
     const cartMap = new Map(cartRecords.map((item) => [item.product_id, item]));
 
-    // Products table backup check (jaise senior ne lagaya tha)
     const [products] = await db.query('SELECT id, price FROM products WHERE id IN (?)', [productIds]);
     const productMap = new Map(products.map((product) => [product.id, product]));
 
@@ -53,7 +48,6 @@ router.post('/', async (req, res) => {
       totalAmount += Number(itemPrice) * Number(itemQty);
     }
 
-    // Database connection aur transaction start
     connection = await db.getConnection();
     await connection.beginTransaction();
 
@@ -98,13 +92,11 @@ router.post('/', async (req, res) => {
       [orderId, 'Pending', null]
     );
 
-    // 3. INSERT INTO TRANSACTION REPORT: Cart table ke data se values map karna
     for (const item of cartItems) {
       const currentProductId = item.product_id || item.productId;
       const cartItem = cartMap.get(currentProductId);
       const productItem = productMap.get(currentProductId);
 
-      // Paka fix: Pehle cart table ki category uthayega (jo ke 'Accessories' hai), phir frontend check karega
       const currentCategory = (cartItem && cartItem.category) || item.category || item.Category || 'General';
       const currentQuantity = cartItem ? cartItem.quantity : Number(item.quantity || 1);
       const currentPrice = cartItem ? cartItem.price : (productItem ? productItem.price : Number(item.price || 0));
@@ -117,7 +109,6 @@ router.post('/', async (req, res) => {
       );
     }
 
-    // 4. AUTO-DELETE FROM CART: Is query ko strict bina kisi condition ke run karte hain target user par
     await connection.query(
       'DELETE FROM cart WHERE user_id = ? AND product_id IN (?)',
       [activeUserId, productIds]

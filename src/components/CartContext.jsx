@@ -73,9 +73,9 @@ export function CartProvider({ children }) {
 
   const toggleSelectAll = () => {
     if (selectedItems.length === cartItems.length) {
-      setSelectedItems([]); // Agar sab pehle se select hain, toh khali kar do
+      setSelectedItems([]); 
     } else {
-      setSelectedItems(cartItems.map((item) => item.id)); // Sab ki IDs add kar do
+      setSelectedItems(cartItems.map((item) => item.id)); 
     }
   };
 

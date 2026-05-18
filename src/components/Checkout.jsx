@@ -6,10 +6,10 @@ import { useTheme } from "./ThemeContext";
 function Checkout() {
   const { isDark } = useTheme();
   const navigate = useNavigate();
+
   const [cartItems, setCartItems] = useState([]);
   const [total, setTotal] = useState(0);
 
-  // 1. Shipping Details ka State (Aapke Backend ki requirement ke mutabiq)
   const [shipping, setShipping] = useState({
     name: "",
     email: "",
@@ -21,43 +21,50 @@ function Checkout() {
 
   const [paymentMethod, setPaymentMethod] = useState("Cash on Delivery");
 
-  // LocalStorage se Cart ka data load karna
   useEffect(() => {
-    const savedCart = JSON.parse(localStorage.getItem("cart")) || [];
-    if (savedCart.length === 0) {
-      toast.error("Aapka cart khali hai!");
-      navigate("/");
-      return;
-    }
-    setCartItems(savedCart);
+    // 1. Pehle temporary staging cache read karein
+    const stagedItems = JSON.parse(localStorage.getItem("checkout_staging"));
     
-    // Total calculate karna (Summary ke liye)
-    const sum = savedCart.reduce((acc, item) => acc + (item.price * item.quantity), 0);
-    setTotal(sum);
+    if (stagedItems && stagedItems.length > 0) {
+      setCartItems(stagedItems);
+      const sum = stagedItems.reduce((acc, item) => acc + (item.price * item.quantity), 0);
+      setTotal(sum);
+    } else {
+      // Fallback agar user direct URL access kar le aur staging khali ho
+      const savedCart = JSON.parse(localStorage.getItem("cart")) || [];
+      if (savedCart.length === 0) {
+        // Pop-up remove kar diya hai, ab yeh bina alert ke homepage par redirect karega
+        navigate("/");
+        return;
+      }
+      setCartItems(savedCart);
+      const sum = savedCart.reduce((acc, item) => acc + (item.price * item.quantity), 0);
+      setTotal(sum);
+    }
   }, [navigate]);
 
   const handleInput = (e) => {
     setShipping({ ...shipping, [e.target.name]: e.target.value });
   };
 
-  // 2. Order Submit Function (Backend API Call)
   const handlePlaceOrder = async (e) => {
     e.preventDefault();
 
-    // Backend expects: { cartItems, shipping, paymentMethod }
+    const currentUserId = 2; 
+
     const orderPayload = {
+      user_id: currentUserId,
       cartItems: cartItems.map(item => ({
-        productId: item.id,
-        quantity: item.quantity
+        product_id: item.id || item.product_id,
+        quantity: item.quantity,
+        price: item.price,
+        category: item.category || 'General'
       })),
       shipping: shipping,
       paymentMethod: paymentMethod
     };
 
-    console.log("Sending Order Payload:", orderPayload);
-
     try {
-      // Is URL ko apne backend port ke mutabiq check kar lena (e.g., 4000)
       const response = await fetch("http://localhost:4000/api/checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -67,9 +74,19 @@ function Checkout() {
       const result = await response.json();
 
       if (response.ok) {
+        // Success pop-up bilkul waise hi barkarar hai
         toast.success(`🎉 Order Placed! ID: ${result.orderId}`);
-        localStorage.removeItem("cart"); // Order ke baad cart clear
-        window.dispatchEvent(new Event("cartUpdate")); // UI refresh
+
+        // LOCAL STORAGE STORAGE MATCH & FILTER CLEANING
+        const orderedProductIds = cartItems.map(item => item.id || item.product_id);
+        const fullCart = JSON.parse(localStorage.getItem("cart")) || [];
+        const remainingCartItems = fullCart.filter(item => !orderedProductIds.includes(item.id));
+        
+        // Cache updates
+        localStorage.setItem("cart", JSON.stringify(remainingCartItems));
+        localStorage.removeItem("checkout_staging"); // Remove temp cache data
+        
+        window.dispatchEvent(new Event("cartUpdate")); 
         navigate("/"); 
       } else {
         toast.error(result.error || "Order fail ho gaya");
@@ -84,7 +101,7 @@ function Checkout() {
     <div className={`min-h-screen p-4 md:p-10 ${isDark ? "bg-[#121212] text-white" : "bg-gray-100 text-black"}`}>
       <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-8">
         
-        {/* FORM SECTION: Shipping & Details */}
+        {/* FORM SECTION */}
         <div className={`lg:col-span-2 p-6 rounded-2xl shadow-md ${isDark ? "bg-[#1e1e1e] border border-gray-800" : "bg-white"}`}>
           <h2 className="text-2xl font-bold mb-6 border-b pb-2">Shipping Information</h2>
           <form onSubmit={handlePlaceOrder} className="space-y-4">
@@ -118,7 +135,7 @@ function Checkout() {
           </form>
         </div>
 
-        {/* ORDER SUMMARY SECTION */}
+        {/* ORDER SUMMARY */}
         <div className={`p-6 rounded-2xl shadow-md h-fit border ${isDark ? "bg-[#1e1e1e] border-gray-800" : "bg-white border-gray-200"}`}>
           <h2 className="text-xl font-bold mb-4">Order Summary</h2>
           <div className="space-y-4 border-b border-gray-700 pb-4 mb-4 max-h-80 overflow-y-auto">
@@ -126,7 +143,7 @@ function Checkout() {
               <div key={item.id} className="flex justify-between items-center">
                 <div className="flex items-center gap-3">
                   <div className="w-12 h-12 bg-white rounded-lg p-1 flex items-center justify-center">
-                    <img src={item.image} alt="" className="max-h-full max-w-full object-contain" />
+                    <img src={item.thumbnail || item.image} alt="" className="max-h-full max-w-full object-contain rounded" />
                   </div>
                   <div>
                     <p className="text-sm font-bold truncate w-24 md:w-32">{item.title}</p>

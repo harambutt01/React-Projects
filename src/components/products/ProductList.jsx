@@ -4,7 +4,6 @@ import useFetch from "../../hooks/useFetch";
 import ProductCard from "./ProductCard";
 import ProductFilters from "./ProductFilters";
 
-// Aapki local backend API ka URL
 const API_URL = "http://localhost:4000/api/products?page=1&limit=100";
 
 function ProductList() {
@@ -15,13 +14,11 @@ function ProductList() {
   const [category, setCategory] = useState("");
   const [sort, setSort] = useState("");
 
-  // API response handle kar rahe hain (agar array direct hai ya 'products' object ke andar hai)
   const productsData = useMemo(() => {
     if (Array.isArray(apiData)) return apiData;
     return apiData?.products || [];
   }, [apiData]);
 
-  // Categories nikalne ke liye database ke 'category_name' ya 'category' field ko use karein
   const categories = useMemo(() => {
     return [...new Set(productsData.map((p) => p.category_name || p.category))].filter(Boolean);
   }, [productsData]);
