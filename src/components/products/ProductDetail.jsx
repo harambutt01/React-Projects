@@ -4,8 +4,11 @@ import { useTheme } from "../ThemeContext";
 import { useCart } from "../CartContext";
 import useFetch from "../../hooks/useFetch";
 import { toast } from "react-toastify";
+
+// 🟢 Swiper ka complete bundle aur uski CSS import ki taake Autoplay ka issue hal ho jaye
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Navigation, Pagination } from "swiper/modules";
+import { Navigation, Pagination, Autoplay } from "swiper/modules";
+
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
@@ -75,9 +78,10 @@ function ProductDetail() {
     }
   }, [product, id]);
 
+  // --- AUTO SCROLL WITH SMOOTH EFFECT ---
   useEffect(() => {
     if (!product) return;
-    window.scrollTo({ top: 0, behavior: "instant" });
+    window.scrollTo({ top: 0, behavior: "smooth" }); 
     setQuantity(1);
     setActiveTab("details");
     setShowReviewForm(false);
@@ -126,11 +130,10 @@ function ProductDetail() {
   };
   const toggleReviewForm = () => setShowReviewForm((prev) => !prev);
 
-  // --- 🟢 DATABASE DRIVEN ADD TO CART ---
+  // --- DATABASE DRIVEN ADD TO CART ---
   const handleAddToCart = async () => {
     if (!product) return;
 
-    // LocalStorage se logged-in user ki details lena
     const savedUser = JSON.parse(localStorage.getItem("user"));
 
     if (!savedUser || !savedUser.id) {
@@ -139,7 +142,6 @@ function ProductDetail() {
       return;
     }
 
-    // Payload
     const cartPayload = {
       user_id: savedUser.id,
       productId: product.id,
@@ -273,8 +275,22 @@ function ProductDetail() {
         {relatedProducts.length > 0 && (
           <div className="mt-16 pt-12 border-t overflow-hidden">
             <h2 className="text-xl md:text-2xl font-bold mb-8 uppercase tracking-tight">You May Also Like</h2>
-            <Swiper modules={[Navigation, Pagination]} spaceBetween={12} slidesPerView={1.3} navigation pagination={{ clickable: true }}
-              breakpoints={{ 640: { slidesPerView: 2 }, 768: { slidesPerView: 3 }, 1024: { slidesPerView: 4 } }} className="product-swiper pb-14">
+            
+            <Swiper 
+              modules={[Navigation, Pagination, Autoplay]} 
+              spaceBetween={12} 
+              slidesPerView={1.3} 
+              navigation 
+              pagination={{ clickable: true }}
+              /* 🟢 Autoplay setting ko completely clean kiya */
+              autoplay={{
+                delay: 2000,                 // Ab har 2 seconds baad automatically slide move karegi
+                disableOnInteraction: false, // Arros par click karne ke baad bhi loop chalta rahega
+                pauseOnMouseEnter: false     // Mouse upar aane par bhi automatic slide rukegi nahi, chalti rahegi
+              }}
+              breakpoints={{ 640: { slidesPerView: 2 }, 768: { slidesPerView: 3 }, 1024: { slidesPerView: 4 } }} 
+              className="product-swiper pb-14"
+            >
               {relatedProducts.map((rp) => (
                 <SwiperSlide key={rp.id}>
                   <div onClick={() => handleRelatedProductClick(rp.id)} className={`group cursor-pointer p-3 md:p-4 rounded-2xl border ${isDark ? "bg-[#252525] border-[#333]" : "bg-white shadow-sm"}`}>
