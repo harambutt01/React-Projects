@@ -2,7 +2,6 @@ import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useTheme } from "./ThemeContext";
-// 1️⃣ country-list package se function import kiya
 import { getNames } from "country-list";
 
 function Checkout() {
@@ -29,7 +28,6 @@ function Checkout() {
   const countryRef = useRef(null);
   const paymentRef = useRef(null);
 
-  // 2️⃣ DYNAMIC COUNTRIES LIST: Purani 4 countries wala array hata kar dynamic list nikal li
   const countries = getNames();
   const paymentMethods = ["Cash on Delivery", "Online Payment"];
 
@@ -115,10 +113,10 @@ function Checkout() {
 
   return (
     <div className={`min-h-screen w-full px-3 py-6 md:p-10 box-border overflow-x-hidden ${isDark ? "bg-[#121212] text-white" : "bg-gray-100 text-black"}`}>
-      <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8 w-full box-border">
+      <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-[1.8fr,1fr] gap-6 md:gap-8 w-full box-border">
         
         {/* FORM SECTION */}
-        <div className={`p-4 sm:p-6 rounded-2xl shadow-md h-fit w-full max-w-full min-w-0 box-border ${isDark ? "bg-[#1e1e1e] border border-gray-800" : "bg-white border border-gray-200"}`}>
+        <div className={`p-4 sm:p-6 rounded-2xl shadow-md h-full w-full max-w-full min-w-0 box-border ${isDark ? "bg-[#1e1e1e] border border-gray-800" : "bg-white border border-gray-200"}`}>
           <h2 className="text-xl sm:text-2xl font-bold mb-6 border-b pb-2">Shipping Information</h2>
           <form onSubmit={handlePlaceOrder} className="space-y-4 w-full min-w-0 block box-border">
             
@@ -129,42 +127,42 @@ function Checkout() {
             
             <input type="text" name="address" placeholder="Complete Street Address" required onChange={handleInput} className="p-3 rounded-lg border bg-transparent w-full text-sm focus:outline-none focus:ring-2 focus:ring-[#00bcd4] box-border" />
             
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 w-full">
+            {/* CITY & POSTAL CODE */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full">
               <input type="text" name="city" placeholder="City" required onChange={handleInput} className="p-3 rounded-lg border bg-transparent w-full text-sm focus:outline-none focus:ring-2 focus:ring-[#00bcd4] box-border" />
               <input type="text" name="postalCode" placeholder="Postal Code" required onChange={handleInput} className="p-3 rounded-lg border bg-transparent w-full text-sm focus:outline-none focus:ring-2 focus:ring-[#00bcd4] box-border" />
-              
-              {/* CUSTOM RESPONSIVE COUNTRY DROPDOWN */}
-              <div ref={countryRef} className="relative w-full text-sm select-none">
-                <div 
-                  onClick={() => setIsCountryOpen(!isCountryOpen)}
-                  className={`p-3 rounded-lg border w-full flex justify-between items-center cursor-pointer transition-all duration-200 ${
-                    isDark ? "border-gray-700 bg-transparent text-white" : "border-gray-300 bg-white text-black"
-                  } ${isCountryOpen ? "ring-2 ring-[#00bcd4] border-transparent" : ""}`}
-                >
-                  <span className="truncate">{shipping.country}</span>
-                  <span className="text-[10px] opacity-70 transition-transform duration-200" style={{ transform: isCountryOpen ? "rotate(180deg)" : "rotate(0deg)" }}>▼</span>
-                </div>
-                {isCountryOpen && (
-                  <div className={`absolute z-50 left-0 right-0 mt-1 rounded-lg border shadow-xl max-h-60 overflow-y-auto w-full left-0 ${isDark ? "bg-[#1e1e1e] border-gray-800 text-white" : "bg-white border-gray-200 text-black"}`}>
-                    {/* 3️⃣ Yeh mapping automatic poori list render karegi bina layout kharab kiye */}
-                    {countries.map((c) => (
-                      <div 
-                        key={c}
-                        onClick={() => {
-                          setShipping({ ...shipping, country: c });
-                          setIsCountryOpen(false);
-                        }}
-                        className={`p-3 cursor-pointer text-sm truncate ${isDark ? "hover:bg-gray-800" : "hover:bg-gray-100"}`}
-                      >
-                        {c}
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
             </div>
             
-            {/* CUSTOM RESPONSIVE PAYMENT DROPDOWN */}
+            {/* COUNTRY DROPDOWN (FULL WIDTH) */}
+            <div ref={countryRef} className="relative w-full text-sm select-none">
+              <div 
+                onClick={() => setIsCountryOpen(!isCountryOpen)}
+                className={`p-3 rounded-lg border w-full flex justify-between items-center cursor-pointer transition-all duration-200 ${
+                  isDark ? "border-gray-700 bg-transparent text-white" : "border-gray-300 bg-white text-black"
+                } ${isCountryOpen ? "ring-2 ring-[#00bcd4] border-transparent" : ""}`}
+              >
+                <span className="truncate">{shipping.country}</span>
+                <span className="text-[10px] opacity-70 transition-transform duration-200" style={{ transform: isCountryOpen ? "rotate(180deg)" : "rotate(0deg)" }}>▼</span>
+              </div>
+              {isCountryOpen && (
+                <div className={`absolute z-50 left-0 right-0 mt-1 rounded-lg border shadow-xl max-h-60 overflow-y-auto w-full ${isDark ? "bg-[#1e1e1e] border-gray-800 text-white" : "bg-white border-gray-200 text-black"}`}>
+                  {countries.map((c) => (
+                    <div 
+                      key={c}
+                      onClick={() => {
+                        setShipping({ ...shipping, country: c });
+                        setIsCountryOpen(false);
+                      }}
+                      className={`p-3 cursor-pointer text-sm truncate ${isDark ? "hover:bg-gray-800" : "hover:bg-gray-100"}`}
+                    >
+                      {c}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+            
+            {/* PAYMENT METHOD */}
             <div className="w-full min-w-0 block box-border">
               <h2 className="text-lg sm:text-xl font-bold mt-6 mb-4">Payment Method</h2>
               <div ref={paymentRef} className="relative w-full text-sm select-none">
@@ -178,7 +176,7 @@ function Checkout() {
                   <span className="text-[10px] opacity-70 transition-transform duration-200" style={{ transform: isPaymentOpen ? "rotate(180deg)" : "rotate(0deg)" }}>▼</span>
                 </div>
                 {isPaymentOpen && (
-                  <div className={`absolute z-50 left-0 right-0 mt-1 rounded-lg border shadow-xl w-full left-0 ${isDark ? "bg-[#1e1e1e] border-gray-800 text-white" : "bg-white border-gray-200 text-black"}`}>
+                  <div className={`absolute z-50 left-0 right-0 mt-1 rounded-lg border shadow-xl w-full ${isDark ? "bg-[#1e1e1e] border-gray-800 text-white" : "bg-white border-gray-200 text-black"}`}>
                     {paymentMethods.map((pm) => (
                       <div 
                         key={pm}
@@ -206,7 +204,7 @@ function Checkout() {
         </div>
 
         {/* ORDER SUMMARY */}
-        <div className={`p-4 sm:p-6 rounded-2xl shadow-md h-fit border w-full max-w-full min-w-0 box-border ${isDark ? "bg-[#1e1e1e] border-gray-800" : "bg-white border-gray-200"}`}>
+        <div className={`p-4 sm:p-6 rounded-2xl shadow-md h-full border w-full max-w-full min-w-0 box-border ${isDark ? "bg-[#1e1e1e] border-gray-800" : "bg-white border-gray-200"}`}>
           <h2 className="text-xl font-bold mb-4">Order Summary</h2>
           <div className="space-y-4 border-b border-gray-700 pb-4 mb-4 max-h-80 overflow-y-auto w-full">
             {cartItems.map((item) => (

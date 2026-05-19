@@ -5,7 +5,7 @@ import { useCart } from "../CartContext";
 import useFetch from "../../hooks/useFetch";
 import { toast } from "react-toastify";
 
-// 🟢 Swiper ka complete bundle aur uski CSS import ki taake Autoplay ka issue hal ho jaye
+// Swiper imports for Related Products slider
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination, Autoplay } from "swiper/modules";
 
@@ -43,6 +43,37 @@ function ProductDetail() {
     if (Array.isArray(apiData)) return apiData[0];
     return apiData;
   }, [apiData, id]);
+
+  // 🟢 BULLETPROOF IMAGES ARRAY LOGIC: Agar backend se images array nahi bhi aa raha, 
+  // toh mojooda string fields (image, thumbnail, img_url) ko akatha kar ke array bana dega.
+  const allProductImages = useMemo(() => {
+    if (!product) return [];
+    
+    // Agar seedha array mojood hai aur usme items hain
+    if (product.images && Array.isArray(product.images) && product.images.length > 0) {
+      return product.images;
+    }
+    
+    // Agar `product.images` string format mein JSON save huiwi hai (kabhi kabhi MySQL mein string hoti hai)
+    if (typeof product.images === "string") {
+      try {
+        const parsed = JSON.parse(product.images);
+        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      } catch (e) {
+        // parsing failed, move to fallback
+      }
+    }
+
+    // Fallback: Saare available single image text parameters ko filter out kar ke array banao
+    const fallbackArray = [
+      product.image,
+      product.thumbnail,
+      product.img_url
+    ].filter((img) => img && typeof img === "string" && img.trim() !== "");
+
+    // Duplicate images ko remove karne ke liye Set use kiya
+    return [...new Set(fallbackArray)];
+  }, [product]);
 
   const sortedReviews = useMemo(() => {
     return [...localReviews].sort((a, b) => new Date(b.date) - new Date(a.date));
@@ -117,7 +148,6 @@ function ProductDetail() {
   };
 
   // --- HANDLERS ---
-  const handleImageSelect = (product) => setSelectedImage(product.image || product.thumbnail || product.img_url );
   const handleTabChange = (tab) => setActiveTab(tab);
   const handleQuantityIncrease = () => setQuantity((q) => q + 1);
   const handleQuantityDecrease = () => setQuantity((q) => Math.max(1, q - 1));
@@ -190,12 +220,38 @@ function ProductDetail() {
         </button>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 mb-16">
-          <div className="flex flex-col gap-6">
+          {/* Left Side: Images Section */}
+          <div className="flex flex-col gap-4">
+            {/* Main Badi Image Box */}
             <div className={`rounded-2xl p-6 flex items-center justify-center min-h-[300px] md:min-h-[450px] ${imgBg}`}>
               <img src={displayImage(selectedImage)} alt={product.title || product.name} className="max-h-[280px] md:max-h-[400px] object-contain hover:scale-105 transition-all duration-500" />
             </div>
+
+            {/* 🟢 DYNAMIC MINI GALLERY TRACK: Agar 1 se zyada images bani hain toh forced show karega */}
+            {allProductImages.length > 1 && (
+              <div className="flex items-center gap-3 overflow-x-auto py-2 pr-2 scrollbar-none">
+                {allProductImages.map((imgUrl, index) => {
+                  const isCurrentActive = selectedImage === imgUrl;
+                  return (
+                    <button
+                      key={index}
+                      onClick={() => setSelectedImage(imgUrl)}
+                      onMouseEnter={() => setSelectedImage(imgUrl)} 
+                      className={`w-16 h-16 md:w-20 md:h-20 rounded-xl p-2 flex items-center justify-center border-2 transition-all duration-200 flex-shrink-0 ${imgBg} ${
+                        isCurrentActive 
+                          ? (isDark ? "border-[#00bcd4]" : "border-black scale-95") 
+                          : (isDark ? "border-transparent opacity-60 hover:opacity-100" : "border-gray-200 opacity-70 hover:opacity-100")
+                      }`}
+                    >
+                      <img src={displayImage(imgUrl)} alt={`thumbnail-${index}`} className="max-h-full max-w-full object-contain" />
+                    </button>
+                  );
+                })}
+              </div>
+            )}
           </div>
 
+          {/* Right Side: Product Details info */}
           <div className="flex flex-col">
             <span className={`text-xs font-black uppercase tracking-widest mb-2 ${isDark ? "text-gray-400" : "text-gray-500"}`}>{product.category}</span>
             <h1 className="text-2xl md:text-4xl font-bold mb-4">{product.title || product.name}</h1>

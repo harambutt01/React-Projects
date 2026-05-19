@@ -63,14 +63,13 @@ function Navbar() {
   // Logout Functionality
   const handleLogout = () => {
     localStorage.removeItem("user");
-    window.dispatchEvent(new Event("authChange")); // Notify Navbar to turn off toggle
+    window.dispatchEvent(new Event("authChange")); 
     toast.error("Logged out successfully!", { theme: "colored" });
     setMenuOpen(false);
     navigate("/login");
   };
 
   const toggleStatus = useCallback(() => {
-    // Sirf logged in user toggle cher sakta hai (Optional Senior logic)
     if (user) {
       setIsOnline((prev) => !prev);
     } else {
@@ -118,7 +117,6 @@ function Navbar() {
         </nav>
 
         <div className="flex items-center gap-[15px] sm:gap-[20px]">
-          {/* Online/Offline Toggle linked to isOnline state */}
           <button 
             className={`w-[28px] h-[15px] sm:w-[30px] sm:h-[17px] rounded-full border-none cursor-pointer relative transition-all duration-300 ${isOnline ? "bg-[#00e5a0]" : "bg-[#cccccc]"}`} 
             onClick={toggleStatus}
