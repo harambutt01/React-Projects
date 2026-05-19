@@ -1,19 +1,31 @@
 import React, { useState } from "react"; 
 import { Link } from "react-router-dom";
 import { FaInstagram, FaTwitter, FaLinkedinIn, FaFacebookF } from "react-icons/fa";
+import emailjs from "@emailjs/browser";
+import { toast } from "react-toastify";
 
 const Footer = () => {
   const [email, setEmail] = useState("");
-  const [subscribed, setSubscribed] = useState(false);
 
   const handleSubscribe = (e) => {
     e.preventDefault();
-    if (email.trim() !== "") {
-      setSubscribed(true);
+
+    const templateParams = {
+      user_email: email, 
+    };
+
+    emailjs.send(
+      "service_t3iioit", 
+      "template_0jxtwwl", 
+      templateParams, 
+      "DhTTFdtTNnLJ1_KPQ"
+    )
+    .then((response) => {
+      toast.success("Subscribed successfully!");
       setEmail(""); 
-      
-      setTimeout(() => setSubscribed(false), 3000);
-    }
+    }, (error) => {
+      toast.error("Failed to subscribe.");
+    });
   };
 
   return (
@@ -61,7 +73,7 @@ const Footer = () => {
             </ul>
           </div>
 
-          {/* Newsletter Section - Updated with Logic */}
+          {/* Newsletter Section */}
           <div className="lg:col-span-4 space-y-8">
             <h4 className="text-[10px] font-bold uppercase tracking-[5px] text-white">Join the Club</h4>
             <p className="text-gray-300 text-[13px]">Subscribe for early access and exclusive drops.</p>
@@ -83,13 +95,6 @@ const Footer = () => {
                   Submit
                 </button>
               </div>
-
-              {/* Success Message Notification */}
-              {subscribed && (
-                <p className="absolute -bottom-8 left-0 text-[10px] text-[#00bcd4] font-bold uppercase tracking-widest animate-pulse">
-                  Thanks for subscribing! ✨
-                </p>
-              )}
             </form>
           </div>
         </div>
@@ -99,11 +104,10 @@ const Footer = () => {
           <p className="text-[9px] text-gray-500 tracking-[4px] uppercase">
             © 2026 Trendora. All rights reserved.
           </p>
-          
           <div className="flex items-center gap-8 text-[10px] text-gray-600 font-bold tracking-widest uppercase">
-             <span>VISA</span>
-             <span>MASTERCARD</span>
-             <span>PAYPAL</span>
+              <span>VISA</span>
+              <span>MASTERCARD</span>
+              <span>PAYPAL</span>
           </div>
         </div>
       </div>
