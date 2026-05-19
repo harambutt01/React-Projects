@@ -4,62 +4,57 @@ import { useTheme } from "../ThemeContext";
 import { Heart, ShoppingCart } from "lucide-react";
 import { toast } from "react-toastify";
 
-function ProductCard({ product }) {
+function ProductCard({ product, isSale: isSectionSale }) {
   const { isDark } = useTheme();
   const navigate = useNavigate();
   const [isInWishlist, setIsInWishlist] = useState(false);
 
-  // Variable Destructuring (id, title, etc. nikalna)
+  // Variable Destructuring
   const { id, title, category, price, image, thumbnail, images } = product;
 
   // --- SAFE IMAGE LOGIC ---
   const productImage = image || thumbnail || (images && images[0]) || "";
-  console.log(productImage)
+
   useEffect(() => {
     const wishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
     setIsInWishlist(wishlist.some((item) => item.id === id));
   }, [id]);
 
-  //  HANDLE ADD TO CART (Database + LocalStorage) ---
+  // HANDLE ADD TO CART (Database + LocalStorage) ---
   const handleAddToCart = async (e) => {
     e.stopPropagation();
 
-    //  User login check
+    // User login check
     const loggedInUser = JSON.parse(localStorage.getItem("user"));
     if (!loggedInUser) {
       toast.error("Please login first!", { theme: "colored" });
       return;
     }
 
-    //   MySQL API
     const cartData = {
-  user_id: loggedInUser.id, 
-  productId: id,
-  image: productImage, 
-  price: price,
-  category: category,
-  quantity: 1
-};
+      user_id: loggedInUser.id, 
+      productId: id,
+      image: productImage, 
+      price: price,
+      category: category,
+      quantity: 1
+    };
 
-// Debugging  console check
-console.log("Sending Payload to Database:", cartData);
     try {
-      // Custom API (Backend)
       const response = await fetch('http://localhost:4000/api/cart', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(cartData)
       });
-console.log("Sending Payload to Database:", cartData);
+
       if (response.ok) {
-        // 4. Update LocalStorage (for CartDrawer UI sync)
+        // Update LocalStorage (for CartDrawer UI sync)
         const cart = JSON.parse(localStorage.getItem("cart")) || [];
         const existingIndex = cart.findIndex((item) => item.id === id);
 
         if (existingIndex > -1) {
           cart[existingIndex].quantity += 1;
         } else {
-          // Pura product object bhej rahe hain taake local cart mein bhi details rahein
           cart.push({ ...product, quantity: 1, image: productImage });
         }
 
@@ -74,12 +69,21 @@ console.log("Sending Payload to Database:", cartData);
           theme: isDark ? "dark" : "light",
         });
       } else {
-        toast.error("Failed to sync with database");
+        // Safe professional error message
+        toast.error("Could not update cart. Please try again!", {
+          position: "top-right",
+          autoClose: 2000,
+          theme: isDark ? "dark" : "light",
+        });
       }
 
     } catch (err) {
-      console.error("Cart API Error:", err);
-      toast.error("Server connection failed");
+      console.error("Cart Action Failed:", err);
+      toast.error("Server connection failed. Please try again later.", {
+        position: "top-right",
+        autoClose: 2000,
+        theme: isDark ? "dark" : "light",
+      });
     }
   };
 
@@ -110,8 +114,8 @@ console.log("Sending Payload to Database:", cartData);
     }
   };
 
-  const isSale = category?.toLowerCase().includes("fragrances") ||
-                  category?.toLowerCase().includes("clearance");
+  // FIXED: Agar clearance section se aaye ya category "tech accessories" ho, dono surton mein sale true hogi
+  const isSale = !!isSectionSale || category?.toLowerCase() === "tech accessories";
 
   const discountedPrice = isSale ? (price - (price * 15) / 100).toFixed(2) : null;
 
@@ -128,71 +132,76 @@ console.log("Sending Payload to Database:", cartData);
   return (
     <div
       onClick={handleProductNavigation}
-      className={`group cursor-pointer rounded-2xl p-4 transition-all duration-300 border relative ${cardBg}`}
+      className={`group cursor-pointer rounded-2xl p-4 transition-all duration-300 border relative flex flex-col justify-between ${cardBg}`}
     >
-      {/* Image Section */}
-      <div className={`relative aspect-square rounded-xl overflow-hidden mb-4 ${isDark ? "bg-white/5" : "bg-[#f9f9f9]"}`}>
+      <div>
+        {/* Image Section */}
+        <div className={`relative aspect-square rounded-xl overflow-hidden mb-4 ${isDark ? "bg-white/5" : "bg-[#f9f9f9]"}`}>
 
-        {isSale && (
-          <div className="absolute top-0 left-0 z-30 bg-[#ff4444] text-white text-[9px] font-black px-3 py-1.5 uppercase tracking-wider rounded-br-lg">
-            15% OFF
-          </div>
-        )}
+          {/* 🟢 Sale Tag: Wapis apni original corner-attached professional position par */}
+          {isSale && (
+            <div className="absolute top-0 left-0 z-30 bg-[#ff4a5a] text-white text-[9px] font-black px-3 py-1.5 uppercase tracking-wider rounded-br-lg shadow-sm">
+              15% OFF
+            </div>
+          )}
 
-        <button
-          onClick={handleWishlistToggle}
-          className="absolute top-3 right-3 z-20 w-9 h-9 flex items-center justify-center bg-black rounded-full shadow-lg transition-all duration-300 hover:scale-110 active:scale-90 border border-white/10"
-        >
-          <Heart
-            size={18}
-            strokeWidth={2}
-            className={`transition-all duration-300 ${isInWishlist ? "fill-[#00bcd4] text-[#00bcd4]" : "text-white"}`}
+          {/* 🟢 Wishlist Button: Wapis apni asli clean position par single single */}
+          <button
+            onClick={handleWishlistToggle}
+            className="absolute top-3 right-3 z-20 w-9 h-9 flex items-center justify-center bg-black rounded-full shadow-lg transition-all duration-300 hover:scale-110 active:scale-90 border border-white/10"
+          >
+            <Heart
+              size={18}
+              strokeWidth={2}
+              className={`transition-all duration-300 ${isInWishlist ? "fill-[#00bcd4] text-[#00bcd4]" : "text-white"}`}
+            />
+          </button>
+
+          <img
+            src={productImage}
+            alt={title}
+            className="w-full h-full object-contain p-4 group-hover:scale-110 transition-transform duration-500"
           />
-        </button>
+        </div>
 
-        <img
-          src={productImage} // Updated to use the safe image variable
-          alt={title}
-          className="w-full h-full object-contain p-4 group-hover:scale-110 transition-transform duration-500"
-        />
-
-        {!isSale && (
-          <div className="absolute top-2 left-2">
-            <p className="font-black text-[10px] uppercase tracking-widest opacity-50">
+        {/* Info Section */}
+        <div className="space-y-1">
+          {/* Product Title */}
+          <h3 className="font-bold text-sm truncate opacity-90">{title}</h3>
+          
+          {/* 🟢 Category Pill Tag: Ab image se hat kar title aur price ke beech mein aa gayi */}
+          <div className="pt-0.5">
+            <p className="font-black text-[9px] uppercase tracking-widest text-gray-400 dark:text-gray-500">
               {category}
             </p>
           </div>
-        )}
-      </div>
-
-      {/* Info Section */}
-      <div className="space-y-2">
-        <div className="flex items-center gap-2 flex-wrap">
-          {isSale ? (
-            <>
-              <div className="inline-block px-2 py-0.5 rounded text-xs font-black text-red-500 bg-red-50">
-                ${discountedPrice}
-              </div>
-              <span className={`text-xs font-bold line-through opacity-40 ${isDark ? "text-white" : "text-black"}`}>
+          
+          {/* Price Section */}
+          <div className="flex items-center gap-2 flex-wrap pt-1">
+            {isSale ? (
+              <>
+                <div className="inline-block px-2 py-0.5 rounded text-xs font-black text-[#ff4a5a] bg-red-50 dark:bg-red-950/40">
+                  ${discountedPrice}
+                </div>
+                <span className={`text-xs font-medium line-through opacity-40 ${isDark ? "text-white" : "text-black"}`}>
+                  ${price}
+                </span>
+              </>
+            ) : (
+              <div className={`inline-block px-2 py-0.5 rounded text-xs font-black ${priceBadge}`}>
                 ${price}
-              </span>
-            </>
-          ) : (
-            <div className={`inline-block px-2 py-0.5 rounded text-xs font-black ${priceBadge}`}>
-              ${price}
-            </div>
-          )}
+              </div>
+            )}
+          </div>
         </div>
-
-        <h3 className="font-bold text-sm truncate">{title}</h3>
-
-        <button
-          onClick={handleAddToCart}
-          className={`w-full mt-2 py-2.5 text-[10px] font-black border rounded-lg transition-all tracking-widest uppercase flex items-center justify-center gap-2 ${cartBtn}`}
-        >
-          <ShoppingCart size={13} /> Add to Cart
-        </button>
       </div>
+
+      <button
+        onClick={handleAddToCart}
+        className={`w-full mt-4 py-2.5 text-[10px] font-black border rounded-lg transition-all tracking-widest uppercase flex items-center justify-center gap-2 ${cartBtn}`}
+      >
+        <ShoppingCart size={13} /> Add to Cart
+      </button>
     </div>
   );
 }

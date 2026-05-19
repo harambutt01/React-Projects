@@ -8,12 +8,10 @@ export function CartProvider({ children }) {
     return saved ? JSON.parse(saved) : [];
   });
 
-  // Nayi State: Jo select kiye huay products ki IDs track karegi
   const [selectedItems, setSelectedItems] = useState([]);
 
   useEffect(() => {
     localStorage.setItem("cart", JSON.stringify(cartItems));
-    // Jab cart items badlein, toh jo items cart mein nahi hain unhein selection se nikal dein
     setSelectedItems((prev) => prev.filter((id) => cartItems.some((item) => item.id === id)));
   }, [cartItems]);
 
@@ -45,10 +43,10 @@ export function CartProvider({ children }) {
       });
 
       if (!response.ok) {
-        throw new Error("Failed to add item to the database");
+        throw new Error("Failed to add item to cart");
       }
     } catch (error) {
-      console.error("Error adding item to the database:", error);
+      console.error("Cart Action Failed:", error);
     }
   };
 
@@ -82,7 +80,6 @@ export function CartProvider({ children }) {
   const deleteSelectedFromCart = async () => {
     if (selectedItems.length === 0) return;
 
-    // Frontend State se delete karna
     setCartItems((prev) => prev.filter((item) => !selectedItems.includes(item.id)));
 
     try {
@@ -95,12 +92,12 @@ export function CartProvider({ children }) {
       });
 
       if (!response.ok) {
-        throw new Error("Failed to delete selected items from database");
+        throw new Error("Failed to delete selected items from cart");
       }
 
       setSelectedItems([]);
     } catch (error) {
-      console.error("Error deleting multiple items:", error);
+      console.error("Cart Action Failed:", error);
     }
   };
 

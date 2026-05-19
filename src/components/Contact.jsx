@@ -1,10 +1,10 @@
 import React from 'react';
+import { toast } from 'react-toastify';
 
 const Contact = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
-    //  form submission 
-    alert("Message sent successfully! We will get back to you soon.");
+    toast.success("Message sent successfully! We will get back to you soon.");
   };
 
   return (

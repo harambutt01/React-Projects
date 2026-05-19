@@ -21,11 +21,9 @@ function Checkout() {
 
   const [paymentMethod, setPaymentMethod] = useState("Cash on Delivery");
 
-  // 🟢 Custom Dropdowns visibility controller states
   const [isCountryOpen, setIsCountryOpen] = useState(false);
   const [isPaymentOpen, setIsPaymentOpen] = useState(false);
 
-  // References to detect clicks outside dropdown to close them safely
   const countryRef = useRef(null);
   const paymentRef = useRef(null);
 
@@ -49,7 +47,6 @@ function Checkout() {
       setTotal(sum);
     }
 
-    // 🟢 Event listener to close custom boxes when user clicks elsewhere on screen
     const handleClickOutside = (event) => {
       if (countryRef.current && !countryRef.current.contains(event.target)) setIsCountryOpen(false);
       if (paymentRef.current && !paymentRef.current.contains(event.target)) setIsPaymentOpen(false);
@@ -105,7 +102,7 @@ function Checkout() {
         window.dispatchEvent(new Event("cartUpdate")); 
         navigate("/"); 
       } else {
-        toast.error(result.error || "Order fail ho gaya");
+        toast.error(result.error || "Order failed!");
       }
     } catch (err) {
       console.error("Checkout Error:", err);
@@ -133,7 +130,7 @@ function Checkout() {
               <input type="text" name="city" placeholder="City" required onChange={handleInput} className="p-3 rounded-lg border bg-transparent w-full text-sm focus:outline-none focus:ring-2 focus:ring-[#00bcd4] box-border" />
               <input type="text" name="postalCode" placeholder="Postal Code" required onChange={handleInput} className="p-3 rounded-lg border bg-transparent w-full text-sm focus:outline-none focus:ring-2 focus:ring-[#00bcd4] box-border" />
               
-              {/* 🟢 CUSTOM RESPONSIVE COUNTRY DROPDOWN */}
+              {/* CUSTOM RESPONSIVE COUNTRY DROPDOWN */}
               <div ref={countryRef} className="relative w-full text-sm select-none">
                 <div 
                   onClick={() => setIsCountryOpen(!isCountryOpen)}
@@ -163,7 +160,7 @@ function Checkout() {
               </div>
             </div>
             
-            {/* 🟢 CUSTOM RESPONSIVE PAYMENT DROPDOWN */}
+            {/*  CUSTOM RESPONSIVE PAYMENT DROPDOWN */}
             <div className="w-full min-w-0 block box-border">
               <h2 className="text-lg sm:text-xl font-bold mt-6 mb-4">Payment Method</h2>
               <div ref={paymentRef} className="relative w-full text-sm select-none">

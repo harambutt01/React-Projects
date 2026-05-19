@@ -36,7 +36,6 @@ function CartDrawer({ isOpen, onClose }) {
     });
   };
 
-  // SweetAlert2 for bulk deletion
   const handleDeleteSelectedClick = () => {
     Swal.fire({
       title: 'Remove from cart?',
@@ -84,14 +83,11 @@ function CartDrawer({ isOpen, onClose }) {
     });
   };
 
-  // SMART DYNAMIC TOTAL: Sirf selected (ticked) items ka total calculate karna
   const dynamicTotalPrice = cartItems
     .filter(item => selectedItems.includes(item.id))
     .reduce((sum, item) => sum + (item.price * item.quantity), 0);
 
-  // FIXED CHECKOUT HANDLER: Sirf selected items ko localstorage staging mein save karega
   const handleCheckout = () => {
-    // 1. Cart items mein se sirf unhe filter karo jo Context ke mutabiq selected hain
     const itemsToCheckout = cartItems.filter(item => selectedItems.includes(item.id));
 
     if (itemsToCheckout.length === 0) {
@@ -104,10 +100,8 @@ function CartDrawer({ isOpen, onClose }) {
       return;
     }
 
-    // 2. Sirf ticked products ko temporary staging location par rakhna
     localStorage.setItem("checkout_staging", JSON.stringify(itemsToCheckout));
 
-    // 3. Drawer close karein aur navigate karein
     onClose(); 
     navigate("/checkout"); 
   };

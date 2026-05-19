@@ -11,12 +11,11 @@ function Home() {
   const fetchProducts = async () => {
     try {
       setLoading(true);
-      // Local backend API with 100 limit
       const response = await fetch('http://localhost:4000/api/products?pageSize=100');
       if (!response.ok) throw new Error("Failed to fetch products");
       const data = await response.json();
       
-      // Supporting both array and object response from your backend
+      // Supporting both array and object response from  backend
       setProducts(data.products || data || []);
     } catch (err) {
       setError(err.message);
@@ -33,7 +32,6 @@ function Home() {
     navigate('/products');
   };
 
-  // Categories filtered based on your database names
   const electronics = products
     .filter((p) => p.category?.toLowerCase() === "electronics")
     .slice(0, 4);
@@ -42,8 +40,8 @@ function Home() {
     .filter((p) => p.category?.toLowerCase() === "fashion")
     .slice(0, 4);
 
-  const beauty = products
-    .filter((p) => p.category?.toLowerCase() === "cosmetics")
+  const techAccessories = products
+    .filter((p) => p.category?.toLowerCase() === "tech accessories")
     .slice(0, 4);
 
   return (
@@ -104,7 +102,7 @@ function Home() {
             <CategorySection
               title="Clearance Product"
               tag="Exclusive Deals"
-              items={beauty}
+              items={techAccessories}
               id="clearance"
               isSale={true}
             />

@@ -167,7 +167,7 @@ function ProductDetail() {
         toast.error(result.error || "Failed to add to cart");
       }
     } catch (err) {
-      console.error("Cart API Error:", err);
+      console.error("Cart Action Failed:", err);
       toast.error("Connection to server failed");
     }
   };
@@ -282,11 +282,10 @@ function ProductDetail() {
               slidesPerView={1.3} 
               navigation 
               pagination={{ clickable: true }}
-              /* 🟢 Autoplay setting ko completely clean kiya */
               autoplay={{
-                delay: 2000,                 // Ab har 2 seconds baad automatically slide move karegi
-                disableOnInteraction: false, // Arros par click karne ke baad bhi loop chalta rahega
-                pauseOnMouseEnter: false     // Mouse upar aane par bhi automatic slide rukegi nahi, chalti rahegi
+                delay: 2000,                 
+                disableOnInteraction: false, 
+                pauseOnMouseEnter: false    
               }}
               breakpoints={{ 640: { slidesPerView: 2 }, 768: { slidesPerView: 3 }, 1024: { slidesPerView: 4 } }} 
               className="product-swiper pb-14"

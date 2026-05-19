@@ -1,7 +1,7 @@
 import { useCart } from "./CartContext";
 import { useTheme } from "./ThemeContext";
 import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify"; // 1. Toast Import kiya
+import { toast } from "react-toastify"; 
 
 function Cart() {
   const { cartItems, removeFromCart, updateQuantity, totalPrice } = useCart();
@@ -20,7 +20,6 @@ function Cart() {
     updateQuantity(id, currentQty + 1);
   };
 
-  // 2. Function ko update kiya taake title toast mein show ho sake
   const handleRemoveItem = (id, title) => {
     removeFromCart(id);
     toast.info(`${title} removed from cart`, {
@@ -93,7 +92,6 @@ function Cart() {
           <div className="text-right">
             <p className="font-bold">${(item.price * item.quantity).toFixed(2)}</p>
             <button
-              // 3. Yahan item.title pass karna zaroori tha
               onClick={() => handleRemoveItem(item.id, item.title)}
               className="text-red-500 text-sm cursor-pointer bg-transparent border-none mt-2 hover:underline"
             >

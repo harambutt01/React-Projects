@@ -1,9 +1,8 @@
-import React, { useState } from "react"; // 1. useState import kiya
+import React, { useState } from "react"; 
 import { Link } from "react-router-dom";
 import { FaInstagram, FaTwitter, FaLinkedinIn, FaFacebookF } from "react-icons/fa";
 
 const Footer = () => {
-  // 2. State banayi email aur message handle karne ke liye
   const [email, setEmail] = useState("");
   const [subscribed, setSubscribed] = useState(false);
 
@@ -11,9 +10,8 @@ const Footer = () => {
     e.preventDefault();
     if (email.trim() !== "") {
       setSubscribed(true);
-      setEmail(""); // Email clear kar di
+      setEmail(""); 
       
-      // 3 seconds baad message gayab karne ke liye
       setTimeout(() => setSubscribed(false), 3000);
     }
   };
