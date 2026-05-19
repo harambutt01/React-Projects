@@ -2,6 +2,8 @@ import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useTheme } from "./ThemeContext";
+// 1️⃣ country-list package se function import kiya
+import { getNames } from "country-list";
 
 function Checkout() {
   const { isDark } = useTheme();
@@ -27,7 +29,8 @@ function Checkout() {
   const countryRef = useRef(null);
   const paymentRef = useRef(null);
 
-  const countries = ["Pakistan", "United Arab Emirates", "United Kingdom", "United States"];
+  // 2️⃣ DYNAMIC COUNTRIES LIST: Purani 4 countries wala array hata kar dynamic list nikal li
+  const countries = getNames();
   const paymentMethods = ["Cash on Delivery", "Online Payment"];
 
   useEffect(() => {
@@ -143,6 +146,7 @@ function Checkout() {
                 </div>
                 {isCountryOpen && (
                   <div className={`absolute z-50 left-0 right-0 mt-1 rounded-lg border shadow-xl max-h-60 overflow-y-auto w-full left-0 ${isDark ? "bg-[#1e1e1e] border-gray-800 text-white" : "bg-white border-gray-200 text-black"}`}>
+                    {/* 3️⃣ Yeh mapping automatic poori list render karegi bina layout kharab kiye */}
                     {countries.map((c) => (
                       <div 
                         key={c}
@@ -160,7 +164,7 @@ function Checkout() {
               </div>
             </div>
             
-            {/*  CUSTOM RESPONSIVE PAYMENT DROPDOWN */}
+            {/* CUSTOM RESPONSIVE PAYMENT DROPDOWN */}
             <div className="w-full min-w-0 block box-border">
               <h2 className="text-lg sm:text-xl font-bold mt-6 mb-4">Payment Method</h2>
               <div ref={paymentRef} className="relative w-full text-sm select-none">
