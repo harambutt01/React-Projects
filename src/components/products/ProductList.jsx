@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo } from "react"; // useState add kiya
 import { useTheme } from "../ThemeContext";
 import useFetch from "../../hooks/useFetch";
 import ProductCard from "./ProductCard";
@@ -13,6 +13,9 @@ function ProductList() {
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("");
   const [sort, setSort] = useState("");
+  
+  // 1. Filter toggle state
+  const [showFilters, setShowFilters] = useState(false);
 
   const productsData = useMemo(() => {
     if (Array.isArray(apiData)) return apiData;
@@ -25,40 +28,43 @@ function ProductList() {
 
   const filteredProducts = useMemo(() => {
     let result = [...productsData];
-
-    // Search mapping
     if (search.trim()) {
-      result = result.filter((p) =>
-        (p.name || p.title).toLowerCase().includes(search.toLowerCase())
-      );
+      result = result.filter((p) => (p.name || p.title).toLowerCase().includes(search.toLowerCase()));
     }
-
-    // Category mapping
     if (category) {
       result = result.filter((p) => (p.category_name || p.category) === category);
     }
-
-    // Price sorting
     if (sort === "asc") result.sort((a, b) => a.price - b.price);
     else if (sort === "desc") result.sort((a, b) => b.price - a.price);
-
     return result;
   }, [search, category, sort, productsData]);
 
   return (
     <div className={`p-6 min-h-screen transition-all duration-300 w-full max-w-[1400px] mx-auto pt-[80px] sm:pt-[75px] sm:p-4 ${isDark ? "bg-[#121212]" : "bg-[#f5f5f5]"}`}>
 
-      <div className="w-full mb-6 text-left">
-        <h1 className={`m-0 mb-1 text-[2rem] font-bold ${isDark ? "text-white" : "text-black"}`}>
-          Products
-        </h1>
-        <p className={`text-[0.85rem] ${isDark ? "text-[#aaa]" : "text-[#666]"}`}>
-          {loading ? "Fetching products..." : `${filteredProducts.length} results found`}
-        </p>
+      <div className="flex justify-between items-center mb-6 w-full">
+        <div>
+          <h1 className={`m-0 mb-1 text-[2rem] font-bold ${isDark ? "text-white" : "text-black"}`}>Products</h1>
+          <p className={`text-[0.85rem] ${isDark ? "text-[#aaa]" : "text-[#666]"}`}>
+            {loading ? "Fetching products..." : `${filteredProducts.length} results found`}
+          </p>
+        </div>
+
+        {/* 2. Toggle Button */}
+        {!loading && (
+          <button 
+            onClick={() => setShowFilters(!showFilters)}
+            className={`px-5 py-2 rounded-lg text-sm font-bold transition-all ${isDark ? "bg-[#333] text-white hover:bg-[#444]" : "bg-black text-white hover:bg-gray-800"}`}
+          >
+            {showFilters ? "▲ Hide Filters" : "▼ Show Filters"}
+          </button>
+        )}
       </div>
 
+      {/* 3. Pass isVisible prop to ProductFilters */}
       {!loading && (
         <ProductFilters
+          isVisible={showFilters}
           search={search}
           onSearchChange={setSearch}
           category={category}
