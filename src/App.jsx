@@ -1,4 +1,5 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import ScrollToTop from "./components/ScrollToTop";
 import { ThemeProvider } from "./components/ThemeContext";
 import { CartProvider } from "./components/CartContext";
 import { ToastContainer } from "react-toastify"; 
@@ -29,6 +30,7 @@ function App() {
       <ThemeProvider>
         <CartProvider>
           <Navbar />
+          <ScrollToTop />
           
           <div className="flex flex-col min-h-screen">
             <main className="flex-grow pt-[64px]"> 
