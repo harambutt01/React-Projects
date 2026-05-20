@@ -218,6 +218,12 @@ function ProductCard({ product, isSale: isSectionSale }) {
               </button>
             </>
           )}
+          {/* Quick View Button (Without Icon) */}
+<div className="absolute inset-0 z-20 flex items-center justify-center bg-black/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 max-md:opacity-100">
+  <button className="bg-black text-white px-6 py-2 rounded-full font-bold text-xs shadow-lg transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
+    QUICK VIEW
+  </button>
+</div>
 
           {/* Main Displaying Image */}
           <img
@@ -277,13 +283,7 @@ function ProductCard({ product, isSale: isSectionSale }) {
         </div>
       </div>
 
-      {/* Add To Cart Button */}
-      <button
-        onClick={handleAddToCart}
-        className={`w-full mt-4 py-2.5 text-[10px] font-black border rounded-lg transition-all tracking-widest uppercase flex items-center justify-center gap-2 ${cartBtn}`}
-      >
-        <ShoppingCart size={13} /> Add to Cart
-      </button>
+      
     </div>
   );
 }
