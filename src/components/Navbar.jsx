@@ -97,7 +97,6 @@ function Navbar() {
             <li><Link to="/products" className="text-white no-underline text-[0.85rem] uppercase tracking-widest hover:text-[#00bcd4] transition-colors">Product</Link></li>
             <li><Link to="/about" className="text-white no-underline text-[0.85rem] uppercase tracking-widest hover:text-[#00bcd4] transition-colors">About</Link></li>
             <li><Link to="/contact" className="text-white no-underline text-[0.85rem] uppercase tracking-widest hover:text-[#00bcd4] transition-colors">Contact</Link></li>
-            <li><Link to="/dashboard" className="text-white no-underline text-[0.85rem] uppercase tracking-widest hover:text-[#00bcd4] transition-colors">Dashboard</Link></li>
             
             <li>
               {user ? (
@@ -149,7 +148,7 @@ function Navbar() {
           <button className="bg-transparent text-white text-2xl" onClick={closeMenu}>✕</button>
         </div>
         <ul className="list-none p-0 flex flex-col gap-2">
-          {["Home", "Products", "About", "Contact", "Dashboard"].map((item) => (
+          {["Home", "Products", "About", "Contact"].map((item) => (
             <li key={item}>
               <Link to={item === "Home" ? "/" : `/${item.toLowerCase()}`} onClick={closeMenu} className="text-white no-underline text-[1.1rem] block px-4 py-3 rounded-lg hover:bg-[#00bcd4]/10 transition-all">{item}</Link>
             </li>

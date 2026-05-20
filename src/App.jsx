@@ -11,7 +11,6 @@ import Home from "./components/Home";
 import About from "./components/About";
 import Contact from "./components/Contact";
 import Counter from "./components/Counter.jsx";
-import Dashboard from "./components/Dashboard.jsx";
 import ProductList from "./components/products/ProductList.jsx";
 import ProductDetail from "./components/products/ProductDetail.jsx";
 import Cart from "./components/Cart.jsx"; 
@@ -38,7 +37,6 @@ function App() {
                 <Route path="/about"          element={<About />}          />
                 <Route path="/contact"        element={<Contact />}        />
                 <Route path="/counter"        element={<Counter />}        />
-                <Route path="/dashboard"      element={<Dashboard />}      />
                 <Route path="/products"       element={<ProductList />}    />
                 <Route path="/products/:id"   element={<ProductDetail />}  />
                 <Route path="/cart"           element={<Cart />}           />
