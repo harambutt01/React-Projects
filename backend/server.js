@@ -79,6 +79,21 @@ app.post('/api/login', (req, res) => {
   });
 });
 
+// --- NEW: SUPPORT TICKET API ---
+app.post('/api/support', (req, res) => {
+  const { name, email, orderId, issueType, details } = req.body;
+  
+  const sql = "INSERT INTO support_tickets (name, email, order_id, issue_type, details) VALUES (?, ?, ?, ?, ?)";
+  
+  db.query(sql, [name, email, orderId, issueType, details], (err, result) => {
+    if (err) {
+      console.error("Database error:", err);
+      return res.status(500).json({ status: "Error", message: "Failed to save ticket" });
+    }
+    return res.json({ status: "Success", message: "Ticket saved successfully!" });
+  });
+});
+
 // --- 6. OTHER APP ROUTES ---
 app.use('/api/products', productRoutes);
 app.use('/api/categories', categoryRoutes);
