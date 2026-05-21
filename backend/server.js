@@ -114,6 +114,15 @@ app.get('/api/admin/recent-orders', (req, res) => {
   });
 });
 
+// --- NEWLY ADDED: GET ALL USERS ---
+app.get('/api/users', (req, res) => {
+  const sql = "SELECT id, name, email, role FROM users";
+  db.query(sql, (err, data) => {
+    if (err) return res.status(500).json({ error: "Failed to fetch users" });
+    res.json(data);
+  });
+});
+
 // --- 7. OTHER ROUTES ---
 app.use('/api/products', productRoutes);
 app.use('/api/categories', categoryRoutes);
