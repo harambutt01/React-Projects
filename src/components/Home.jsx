@@ -15,7 +15,7 @@ function Home() {
   const fetchProducts = async () => {
     try {
       setLoading(true);
-      const response = await fetch(`${API_BASE_URL}/products?pageSize=100`);
+      const response = await fetch(`${API_BASE_URL}/api/products?pageSize=100`);
       if (!response.ok) throw new Error("Failed to fetch products");
       const data = await response.json();
       setProducts(data.products || data || []);

@@ -20,9 +20,7 @@ function ProductDetail() {
   const { isDark } = useTheme();
   const { addToCart } = useCart(); 
 
-  const { data: apiData, loading, error } = useFetch(`${API_BASE_URL}/products/${id}`);
-  
-  const [quantity, setQuantity] = useState(1);
+  const { data: apiData, loading, error } = useFetch(`${API_BASE_URL}/api/products/${id}`);  const [quantity, setQuantity] = useState(1);
   const [activeTab, setActiveTab] = useState("details");
   const [selectedImage, setSelectedImage] = useState(null);
   const [localReviews, setLocalReviews] = useState([]);
@@ -45,34 +43,28 @@ function ProductDetail() {
     return apiData;
   }, [apiData, id]);
 
-  // 🟢 BULLETPROOF IMAGES ARRAY LOGIC: Agar backend se images array nahi bhi aa raha, 
-  // toh mojooda string fields (image, thumbnail, img_url) ko akatha kar ke array bana dega.
+  
   const allProductImages = useMemo(() => {
     if (!product) return [];
     
-    // Agar seedha array mojood hai aur usme items hain
     if (product.images && Array.isArray(product.images) && product.images.length > 0) {
       return product.images;
     }
     
-    // Agar `product.images` string format mein JSON save huiwi hai (kabhi kabhi MySQL mein string hoti hai)
     if (typeof product.images === "string") {
       try {
         const parsed = JSON.parse(product.images);
         if (Array.isArray(parsed) && parsed.length > 0) return parsed;
       } catch (e) {
-        // parsing failed, move to fallback
       }
     }
 
-    // Fallback: Saare available single image text parameters ko filter out kar ke array banao
     const fallbackArray = [
       product.image,
       product.thumbnail,
       product.img_url
     ].filter((img) => img && typeof img === "string" && img.trim() !== "");
 
-    // Duplicate images ko remove karne ke liye Set use kiya
     return [...new Set(fallbackArray)];
   }, [product]);
 
@@ -80,11 +72,10 @@ function ProductDetail() {
     return [...localReviews].sort((a, b) => new Date(b.date) - new Date(a.date));
   }, [localReviews]);
 
-  // --- FETCH REVIEWS FROM DATABASE ---
   useEffect(() => {
     const fetchReviews = async () => {
       try {
-        const response = await fetch(`${API_BASE_URL}/products/${id}/reviews`);
+        const response = await fetch(`${API_BASE_URL}/api/products/${id}/reviews`);
         const data = await response.json();
         setLocalReviews(data.reviews || []);
       } catch (err) {
@@ -94,12 +85,11 @@ function ProductDetail() {
     if (id) fetchReviews();
   }, [id]);
 
-  // --- FETCH RELATED PRODUCTS ---
   useEffect(() => {
     if (product && product.category) {
       const fetchRelated = async () => {
         try {
-          const response = await fetch(`${API_BASE_URL}/products/related/${product.category}/${id}`);
+          const response = await fetch(`${API_BASE_URL}/api/products/related/${product.category}/${id}`);
           const data = await response.json();
           setRelatedProducts(data);
         } catch (err) {
@@ -130,14 +120,14 @@ function ProductDetail() {
     }
 
     try {
-      const response = await fetch(`${API_BASE_URL}/products/${id}/reviews`, {
+      const response = await fetch(`${API_BASE_URL}/api/products/${id}/reviews`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(newReview)
       });
 
       if (response.ok) {
-        const updatedData = await fetch(`${API_BASE_URL}/products/${id}/reviews`).then(res => res.json());
+        const updatedData = await fetch(`${API_BASE_URL}/api/products/${id}/reviews`).then(res => res.json());
         setLocalReviews(updatedData.reviews || []);
         setNewReview({ reviewerName: "", comment: "", rating: 5 });
         setShowReviewForm(false);
@@ -183,8 +173,8 @@ function ProductDetail() {
     };
 
     try {
-      const response = await fetch(`${API_BASE_URL}/cart`, {
-        method: 'POST',
+const response = await fetch(`${API_BASE_URL}/api/cart`, {
+          method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(cartPayload)
       });

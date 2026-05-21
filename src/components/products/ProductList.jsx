@@ -5,8 +5,7 @@ import ProductCard from "./ProductCard";
 import ProductFilters from "./ProductFilters";
 import { API_BASE_URL } from '../../Config/Api';
 
-const API_URL = `${API_BASE_URL}/products?page=1&limit=100`;
-
+const API_URL = `${API_BASE_URL}/api/products?page=1&limit=100`;
 function ProductList() {
   const { isDark } = useTheme();
   const { data: apiData, loading, error } = useFetch(API_URL);

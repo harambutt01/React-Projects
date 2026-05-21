@@ -14,7 +14,7 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-// --- 2. STATIC ASSETS (IMAGES) ---
+// --- 2. STATIC ASSETS ---
 app.use('/assets', express.static(path.join(__dirname, '../public/assets')));
 
 // --- 3. DATABASE CONNECTION ---
@@ -33,9 +33,6 @@ db.connect((err) => {
   console.log('Connected to MariaDB/MySQL');
 });
 
-// IMPORTANT: Exporting db so other routes can use it
-module.exports = db; 
-
 // --- 4. ROUTES IMPORT ---
 const productRoutes = require('./routes/products');
 const categoryRoutes = require('./routes/categories');
@@ -44,12 +41,8 @@ const reviewRoutes = require('./routes/reviews');
 const checkoutRoutes = require('./routes/checkout');
 
 // --- 5. AUTHENTICATION APIs ---
-
-// Signup API - Fixed
 app.post('/api/signup', (req, res) => {
   const { name, email, password } = req.body;
-  
-  // Logic: Agar specific email hai to admin, warna user
   const role = (email === 'harammeer02@gmail.com') ? 'admin' : 'user';
 
   const checkSql = "SELECT * FROM users WHERE email = ?";
@@ -57,7 +50,6 @@ app.post('/api/signup', (req, res) => {
     if (err) return res.status(500).json({ status: "Error", message: "Database error" });
     if (data.length > 0) return res.status(400).json({ status: "Error", message: "Email already registered!" });
 
-    // Yahan humne 'role' column aur uski value add ki hai
     const sql = "INSERT INTO users (name, email, password, role) VALUES (?, ?, ?, ?)";
     db.query(sql, [name, email, password, role], (err, result) => {
       if (err) return res.status(500).json({ status: "Error", message: "Registration failed" });
@@ -66,87 +58,67 @@ app.post('/api/signup', (req, res) => {
   });
 });
 
-// Login API
 app.post('/api/login', (req, res) => {
   const { email, password } = req.body;
   const sql = "SELECT id, name, email, role FROM users WHERE email = ? AND password = ?";
   
   db.query(sql, [email, password], (err, data) => {
     if (err) return res.status(500).json({ status: "Error", message: "Internal server error" });
-    
     if (data.length > 0) {
       const user = data[0]; 
-      return res.json({ 
-        status: "Success", 
-        message: "Login Successful!", 
-        user: { 
-          id: user.id, 
-          name: user.name, 
-          email: user.email, 
-          role: user.role 
-        } 
-      });
+      return res.json({ status: "Success", user });
     } else {
       return res.status(401).json({ status: "Error", message: "Invalid credentials" });
     }
   });
 });
 
-// --- NEW: SUPPORT TICKET API ---
-app.post('/api/support', (req, res) => {
-  const { name, email, orderId, issueType, details } = req.body;
-  
-  const sql = "INSERT INTO support_tickets (name, email, order_id, issue_type, details) VALUES (?, ?, ?, ?, ?)";
-  
-  db.query(sql, [name, email, orderId, issueType, details], (err, result) => {
-    if (err) {
-      console.error("Database error:", err);
-      return res.status(500).json({ status: "Error", message: "Failed to save ticket" });
-    }
-    return res.json({ status: "Success", message: "Ticket saved successfully!" });
-  });
-});
-
-// --- 6. OTHER APP ROUTES ---
-app.use('/api/products', productRoutes);
-app.use('/api/categories', categoryRoutes);
-app.use('/api/cart', cartRoutes);
-app.use('/api/products/:productId/reviews', reviewRoutes);
-app.use('/api/checkout', checkoutRoutes);
-
-// --- NEW: ADMIN STATS API (Yahan add karein) ---
+// --- 6. ADMIN APIs ---
 app.get('/api/admin/stats', (req, res) => {
   const revenueSql = "SELECT SUM(total_price) AS totalRevenue FROM orders";
   const ordersSql = "SELECT COUNT(*) AS totalOrders FROM orders";
-  const usersSql = "SELECT COUNT(*) AS totalUsers FROM users WHERE role = 'user'";
+  const usersSql = "SELECT COUNT(*) AS totalUsers FROM users"; 
 
   db.query(revenueSql, (err, revData) => {
-    if (err) return res.status(500).json({ error: "Failed to fetch revenue" });
     db.query(ordersSql, (err, ordData) => {
-      if (err) return res.status(500).json({ error: "Failed to fetch orders" });
       db.query(usersSql, (err, userData) => {
-        if (err) return res.status(500).json({ error: "Failed to fetch users" });
         res.json({
-          totalRevenue: revData[0].totalRevenue || 0,
-          totalOrders: ordData[0].totalOrders || 0,
-          totalUsers: userData[0].totalUsers || 0
+          totalRevenue: revData[0]?.totalRevenue || 0,
+          totalOrders: ordData[0]?.totalOrders || 0,
+          totalUsers: userData[0]?.totalUsers || 0
         });
       });
     });
   });
 });
 
-// --- 7. HEALTH CHECK ---
-app.get('/api/health', (req, res) => {
-  res.json({ status: 'ok', message: 'Backend is running' });
+app.get('/api/admin/sales-trend', (req, res) => {
+  const sql = `SELECT DATE_FORMAT(created_at, '%b') AS name, SUM(total_price) AS revenue 
+               FROM orders GROUP BY MONTH(created_at) ORDER BY MONTH(created_at) ASC LIMIT 12`;
+  db.query(sql, (err, data) => {
+    if (err) return res.status(500).json({ error: "Query Failed" });
+    res.json(data);
+  });
 });
 
-// --- 8. 404 HANDLER (MUST BE LAST) ---
-app.use((req, res) => {
-  res.status(404).json({ error: 'Endpoint not found' });
+app.get('/api/admin/recent-orders', (req, res) => {
+  const sql = `
+    SELECT o.id, u.name AS user_name, o.total_price, o.status 
+    FROM orders o
+    JOIN users u ON o.user_id = u.id
+    ORDER BY o.created_at DESC 
+    LIMIT 5`;
+  db.query(sql, (err, data) => {
+    if (err) return res.status(500).json({ error: "Failed to fetch orders" });
+    res.json(data);
+  });
 });
 
-// --- SERVER START ---
-app.listen(port, () => {
-  console.log(`Backend API listening on http://localhost:${port}`);
-});
+// --- 7. OTHER ROUTES ---
+app.use('/api/products', productRoutes);
+app.use('/api/categories', categoryRoutes);
+app.use('/api/cart', cartRoutes);
+app.use('/api/products/:productId/reviews', reviewRoutes);
+app.use('/api/checkout', checkoutRoutes);
+
+app.listen(port, () => console.log(`Backend running on http://localhost:${port}`));
