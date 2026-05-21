@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useTheme } from "./ThemeContext";
 import { getNames } from "country-list";
+import { API_BASE_URL } from '../Config/Api';
+
 
 function Checkout() {
   const { isDark } = useTheme();
@@ -83,7 +85,7 @@ function Checkout() {
     }
 
     try {
-      const response = await fetch("http://localhost:4000/api/checkout", {
+      const response = await fetch(`${API_BASE_URL}/checkout`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(orderPayload),

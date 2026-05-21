@@ -3,26 +3,27 @@ import { useNavigate } from "react-router-dom";
 import { useTheme } from "../ThemeContext";
 import { Heart, ShoppingCart, ChevronLeft, ChevronRight } from "lucide-react"; 
 import { toast } from "react-toastify";
+import { API_BASE_URL, IMAGE_BASE_URL } from '../../Config/Api';
+
 
 function ProductCard({ product, isSale: isSectionSale }) {
   const { isDark } = useTheme();
   const navigate = useNavigate();
   const [isInWishlist, setIsInWishlist] = useState(false);
 
-  // 🟢 FIXED: 'name' ko bhi destructure kiya kyunki aapki custom local API mein product name 'name' column mein hai.
   const { id, title, name, category, price, image, thumbnail, images } = product;
   
-  // Jo bhi name available ho (chahe database se name aaye ya title)
   const productRealName = name || title || "Product";
 
-  // --- LOCAL BACKEND IMAGE HELPER ---
   const displayImage = (img) => {
-    if (!img) return "https://via.placeholder.com/400?text=No+Image";
-    if (img.startsWith("http")) return img;
-    return `http://localhost:4000/${img}`;
-  };
-
-  // --- SAFE IMAGE LOGIC (SAFE ARRAY FOR SLIDER) ---
+  if (!img) return "https://via.placeholder.com/400?text=No+Image";
+  if (img.startsWith("http")) return img;
+  
+  // Agar img path ke shuru mein '/' hai to use hata dein
+  const cleanPath = img.startsWith('/') ? img.substring(1) : img;
+  
+  return `${IMAGE_BASE_URL}/${cleanPath}`;
+};
   const imageList = useMemo(() => {
     if (images && Array.isArray(images) && images.length > 0) return images;
     if (typeof images === "string") {
@@ -34,10 +35,8 @@ function ProductCard({ product, isSale: isSectionSale }) {
     return [image || thumbnail || product.img_url || ""];
   }, [images, image, thumbnail, product.img_url]);
   
-  // Image index ko track karne ke liye state
   const [currentImgIndex, setCurrentImgIndex] = useState(0);
 
-  // --- AUTOPLAY LOGIC ---
   useEffect(() => {
     if (imageList.length <= 1) return; 
 
@@ -48,7 +47,6 @@ function ProductCard({ product, isSale: isSectionSale }) {
     return () => clearInterval(interval); 
   }, [imageList]);
 
-  // --- MANUAL HANDLERS FOR ARROWS ---
   const nextImage = (e) => {
     e.stopPropagation(); 
     setCurrentImgIndex((prev) => (prev + 1) % imageList.length);
@@ -64,18 +62,15 @@ function ProductCard({ product, isSale: isSectionSale }) {
     setIsInWishlist(wishlist.some((item) => item.id === id));
   }, [id]);
 
-  // --- HANDLE ADD TO CART (Database + LocalStorage) ---
   const handleAddToCart = async (e) => {
     e.stopPropagation();
 
-    // User login check
     const loggedInUser = JSON.parse(localStorage.getItem("user"));
     if (!loggedInUser) {
       toast.error("Please login first!", { theme: "colored" });
       return;
     }
 
-    // 🟢 FIXED: Database format ke mutabiq payload pass kiya
     const cartData = {
       user_id: loggedInUser.id, 
       productId: id,
@@ -86,14 +81,13 @@ function ProductCard({ product, isSale: isSectionSale }) {
     };
 
     try {
-      const response = await fetch('http://localhost:4000/api/cart', {
+      const response = await fetch(`${API_BASE_URL}/cart`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(cartData)
       });
 
       if (response.ok) {
-        // Update LocalStorage (for CartDrawer UI sync)
         const cart = JSON.parse(localStorage.getItem("cart")) || [];
         const existingIndex = cart.findIndex((item) => item.id === id);
 
@@ -105,10 +99,8 @@ function ProductCard({ product, isSale: isSectionSale }) {
 
         localStorage.setItem("cart", JSON.stringify(cart));
         
-        // Custom event to refresh UI
         window.dispatchEvent(new Event("cartUpdate"));
         
-        // 🟢 FIXED: 'title' ki jagah 'productRealName' use kiya taake ganda popup 'undefined' na dikhaye!
         toast.success(`${productRealName} added to cart!`, {
           position: "top-right",
           autoClose: 2000,

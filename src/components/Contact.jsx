@@ -1,22 +1,25 @@
 import React from 'react';
 import { toast } from 'react-toastify';
+import { useTheme } from "./ThemeContext";
 
 const Contact = () => {
+  const { isDark } = useTheme();
+
   const handleSubmit = (e) => {
     e.preventDefault();
     toast.success("Message sent successfully! We will get back to you soon.");
   };
 
   return (
-    <div className="bg-white min-h-screen pt-[100px] pb-20">
+    <div className={`min-h-screen pt-[100px] pb-20 transition-colors duration-500 ${isDark ? "bg-[#121212] text-white" : "bg-white text-gray-900"}`}>
       
       {/* --- HEADER --- */}
       <div className="max-w-4xl mx-auto text-center px-6 mb-16">
-        <h1 className="text-3xl md:text-5xl font-light uppercase tracking-[6px] mb-4 text-gray-900">
+        <h1 className={`text-3xl md:text-5xl font-light uppercase tracking-[6px] mb-4 ${isDark ? "text-white" : "text-gray-900"}`}>
           Contact <span className="font-bold">Us</span>
         </h1>
-        <div className="w-16 h-1 bg-black mx-auto mb-6"></div>
-        <p className="text-gray-500 text-sm md:text-base leading-relaxed italic">
+        <div className={`w-16 h-1 mx-auto mb-6 ${isDark ? "bg-white" : "bg-black"}`}></div>
+        <p className={`text-sm md:text-base leading-relaxed italic ${isDark ? "text-gray-400" : "text-gray-500"}`}>
           Have a question or need assistance? Our team is always here to help you.
         </p>
       </div>
@@ -25,24 +28,16 @@ const Contact = () => {
         
         {/* --- left side support card --- */}
         <div className="lg:col-span-4 space-y-6">
-          <div className="bg-[#f9f9f9] p-8 border-l-4 border-black transition-all hover:shadow-md">
-            <h3 className="font-bold uppercase text-xs tracking-widest mb-2">Order Support</h3>
-            <p className="text-sm text-gray-600 mb-4">Looking to track your package? Click the link below.</p>
-            <button className="text-xs font-bold underline uppercase hover:text-gray-500 transition-colors">
-              Track My Order
-            </button>
-          </div>
-
-          <div className="bg-[#f9f9f9] p-8 border-l-4 border-black transition-all hover:shadow-md">
+          <SupportCard title="Order Support" desc="Looking to track your package? Click the link below." btnText="Track My Order" isDark={isDark} />
+          
+          <div className={`p-8 border-l-4 transition-all hover:shadow-md ${isDark ? "bg-[#1e1e1e] border-white" : "bg-[#f9f9f9] border-black"}`}>
             <h3 className="font-bold uppercase text-xs tracking-widest mb-2">Customer Care</h3>
-            <p className="text-sm text-gray-600 mb-1">Monday - Saturday</p>
-            <p className="text-sm text-gray-900 font-bold mb-3">09:00 AM - 06:00 PM</p>
-            <p className="text-sm text-blue-600 font-medium">support@trendora.com</p>
+            <p className={`text-sm mb-4 ${isDark ? "text-gray-400" : "text-gray-600"}`}>Monday - Saturday <br /> <span className={`font-bold ${isDark ? "text-white" : "text-gray-900"}`}>09:00 AM - 06:00 PM</span></p>
           </div>
 
-          <div className="bg-[#f9f9f9] p-8 border-l-4 border-black transition-all hover:shadow-md">
+          <div className={`p-8 border-l-4 transition-all hover:shadow-md ${isDark ? "bg-[#1e1e1e] border-white" : "bg-[#f9f9f9] border-black"}`}>
             <h3 className="font-bold uppercase text-xs tracking-widest mb-2">Visit Our Store</h3>
-            <p className="text-sm text-gray-600 leading-relaxed">
+            <p className={`text-sm leading-relaxed ${isDark ? "text-gray-400" : "text-gray-600"}`}>
               123 Fashion Street, Gulberg III,<br />
               Lahore, Pakistan.
             </p>
@@ -50,50 +45,18 @@ const Contact = () => {
         </div>
 
         {/* --- right side form --- */}
-        <div className="lg:col-span-8 bg-white border border-gray-100 p-8 md:p-12 shadow-2xl shadow-gray-100">
+        <div className={`lg:col-span-8 border p-8 md:p-12 shadow-2xl ${isDark ? "bg-[#1e1e1e] border-gray-800 shadow-none" : "bg-white border-gray-100 shadow-gray-100"}`}>
           <h2 className="text-2xl font-bold uppercase tracking-tight mb-8">Send a Message</h2>
           
           <form onSubmit={handleSubmit} className="space-y-8">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              {/* Name Input */}
-              <div className="relative">
-                <input 
-                  type="text" 
-                  id="name" 
-                  required
-                  className="peer w-full border-b-2 border-gray-200 py-2 outline-none focus:border-black transition-colors placeholder-transparent bg-transparent" 
-                  placeholder="Name" 
-                />
-                <label 
-                  htmlFor="name" 
-                  className="absolute left-0 -top-4 text-xs font-bold uppercase text-gray-400 peer-placeholder-shown:text-sm peer-placeholder-shown:top-2 peer-focus:-top-4 peer-focus:text-xs transition-all cursor-text"
-                >
-                  Full Name
-                </label>
-              </div>
-
-              {/* Email Input */}
-              <div className="relative">
-                <input 
-                  type="email" 
-                  id="email" 
-                  required
-                  className="peer w-full border-b-2 border-gray-200 py-2 outline-none focus:border-black transition-colors placeholder-transparent bg-transparent" 
-                  placeholder="Email" 
-                />
-                <label 
-                  htmlFor="email" 
-                  className="absolute left-0 -top-4 text-xs font-bold uppercase text-gray-400 peer-placeholder-shown:text-sm peer-placeholder-shown:top-2 peer-focus:-top-4 peer-focus:text-xs transition-all cursor-text"
-                >
-                  Email Address
-                </label>
-              </div>
+              <InputField id="name" label="Full Name" isDark={isDark} />
+              <InputField id="email" label="Email Address" type="email" isDark={isDark} />
             </div>
 
-            {/* Subject Select */}
             <div className="relative pt-2">
               <label className="text-xs font-bold uppercase text-gray-400 block mb-1">Subject</label>
-              <select className="w-full border-b-2 border-gray-200 py-2 outline-none focus:border-black transition-colors bg-transparent text-sm cursor-pointer">
+              <select className={`w-full border-b-2 py-2 outline-none transition-colors bg-transparent text-sm cursor-pointer ${isDark ? "border-gray-700 focus:border-white" : "border-gray-200 focus:border-black"}`}>
                 <option>General Inquiry</option>
                 <option>Order Tracking</option>
                 <option>Return & Exchange</option>
@@ -101,40 +64,35 @@ const Contact = () => {
               </select>
             </div>
 
-            {/* Message Text area */}
             <div className="relative pt-4">
-              <textarea 
-                rows="4" 
-                id="msg" 
-                required
-                className="peer w-full border-b-2 border-gray-200 py-2 outline-none focus:border-black transition-colors placeholder-transparent resize-none bg-transparent" 
-                placeholder="Message"
-              ></textarea>
-              <label 
-                htmlFor="msg" 
-                className="absolute left-0 -top-2 text-xs font-bold uppercase text-gray-400 peer-placeholder-shown:text-sm peer-placeholder-shown:top-2 peer-focus:-top-2 peer-focus:text-xs transition-all cursor-text"
-              >
-                How can we help?
-              </label>
+              <textarea rows="4" id="msg" required className={`peer w-full border-b-2 py-2 outline-none transition-colors placeholder-transparent resize-none bg-transparent ${isDark ? "border-gray-700 focus:border-white" : "border-gray-200 focus:border-black"}`} placeholder="Message"></textarea>
+              <label htmlFor="msg" className="absolute left-0 -top-2 text-xs font-bold uppercase text-gray-400 peer-placeholder-shown:text-sm peer-placeholder-shown:top-2 peer-focus:-top-2 peer-focus:text-xs transition-all cursor-text">How can we help?</label>
             </div>
 
-            {/* Submit Button */}
-            <button 
-              type="submit" 
-              className="group relative w-full md:w-auto bg-black text-white px-14 py-4 text-xs font-bold uppercase tracking-[4px] overflow-hidden transition-all active:scale-95"
-            >
-              <span className="relative z-10">Submit Now</span>
-              <div className="absolute inset-0 bg-[#333] translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
+            <button type="submit" className={`w-full md:w-auto px-14 py-4 text-xs font-bold uppercase tracking-[4px] transition-all ${isDark ? "bg-white text-black hover:bg-gray-200" : "bg-black text-white hover:bg-[#333]"}`}>
+              Submit Now
             </button>
           </form>
         </div>
-
       </div>
-
-      
-      </div>
-    
+    </div>
   );
 };
+
+// Helper Components for clean code
+const SupportCard = ({ title, desc, btnText, isDark }) => (
+  <div className={`p-8 border-l-4 transition-all hover:shadow-md ${isDark ? "bg-[#1e1e1e] border-white" : "bg-[#f9f9f9] border-black"}`}>
+    <h3 className="font-bold uppercase text-xs tracking-widest mb-2">{title}</h3>
+    <p className={`text-sm mb-4 ${isDark ? "text-gray-400" : "text-gray-600"}`}>{desc}</p>
+    <button className="text-xs font-bold underline uppercase hover:opacity-70 transition-opacity">{btnText}</button>
+  </div>
+);
+
+const InputField = ({ id, label, type = "text", isDark }) => (
+  <div className="relative">
+    <input type={type} id={id} required className={`peer w-full border-b-2 py-2 outline-none transition-colors placeholder-transparent bg-transparent ${isDark ? "border-gray-700 focus:border-white" : "border-gray-200 focus:border-black"}`} placeholder={label} />
+    <label htmlFor={id} className="absolute left-0 -top-4 text-xs font-bold uppercase text-gray-400 peer-placeholder-shown:text-sm peer-placeholder-shown:top-2 peer-focus:-top-4 peer-focus:text-xs transition-all cursor-text">{label}</label>
+  </div>
+);
 
 export default Contact;

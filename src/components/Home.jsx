@@ -1,21 +1,23 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import ProductCard from './products/ProductCard';
+import { useTheme } from "./ThemeContext"; 
+import { API_BASE_URL } from '../Config/Api';
+
 
 function Home() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
+  const { isDark } = useTheme(); // 
 
   const fetchProducts = async () => {
     try {
       setLoading(true);
-      const response = await fetch('http://localhost:4000/api/products?pageSize=100');
+      const response = await fetch(`${API_BASE_URL}/products?pageSize=100`);
       if (!response.ok) throw new Error("Failed to fetch products");
       const data = await response.json();
-      
-      // Supporting both array and object response from  backend
       setProducts(data.products || data || []);
     } catch (err) {
       setError(err.message);
@@ -45,7 +47,7 @@ function Home() {
     .slice(0, 4);
 
   return (
-    <div className="bg-white dark:bg-[#0a0a0a] min-h-screen transition-colors duration-300">
+    <div className={`min-h-screen transition-colors duration-300 ${isDark ? "bg-[#0a0a0a]" : "bg-white"}`}>
 
       {/* Hero Section */}
       <section className="relative min-h-[90vh] flex items-center justify-center bg-black text-white px-4 py-20 text-center overflow-hidden border-b border-white/10">
@@ -78,7 +80,7 @@ function Home() {
       </section>
 
       {/* Product Sections */}
-      <section className="max-w-[1400px] mx-auto py-24 px-8 border-t border-gray-100 dark:border-white/5">
+      <section className={`max-w-[1400px] mx-auto py-24 px-8 border-t ${isDark ? "border-white/5" : "border-gray-100"}`}>
         {loading ? (
           <div className="flex flex-col items-center justify-center py-20">
             <div className="w-12 h-12 border-4 border-[#00bcd4] border-t-transparent rounded-full animate-spin mb-4"></div>
@@ -86,26 +88,9 @@ function Home() {
           </div>
         ) : (
           <div className="space-y-32">
-            <CategorySection
-              title="New Arrival"
-              tag="Latest Gadgets"
-              items={electronics}
-              id="new-arrivals"
-            />
-            <CategorySection
-              title="Best Seller"
-              tag="Trending Styles"
-              items={clothing}
-              id="best-sellers"
-              isDark={true}
-            />
-            <CategorySection
-              title="Clearance Product"
-              tag="Exclusive Deals"
-              items={techAccessories}
-              id="clearance"
-              isSale={true}
-            />
+            <CategorySection title="New Arrival" tag="Latest Gadgets" items={electronics} id="new-arrivals" isDark={isDark} />
+           <CategorySection title="Best Seller" tag="Trending Styles" items={clothing} id="best-sellers" isDark={isDark} invert={true} />
+            <CategorySection title="Clearance Product" tag="Exclusive Deals" items={techAccessories} id="clearance" isDark={isDark} isSale={true} />
           </div>
         )}
       </section>
@@ -113,36 +98,33 @@ function Home() {
   );
 }
 
-function CategorySection({ title, tag, items, id, isDark, isSale }) {
-  const navigate = useNavigate();
 
+
+function CategorySection({ title, tag, items, id, isDark, isSale, invert }) {
+  const navigate = useNavigate();
+  
+  const isCurrentlyDark = invert ? !isDark : isDark;
+  
   if (!items || items.length === 0) return null;
 
-  const handleExploreClick = () => {
-    navigate('/products');
-  };
+  const bgClass = isCurrentlyDark ? 'bg-black text-white' : 'bg-white text-black';
 
   return (
-    <div id={id} className={`p-10 transition-all duration-500 ${isDark ? 'bg-black text-white shadow-2xl' : 'bg-white text-black'}`}>
-
+    <div id={id} className={`p-10 transition-all duration-500 ${bgClass} shadow-2xl`}>
       <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 border-b border-current/10 pb-8 gap-4">
         <div>
-          <span className={`text-[9px] font-black uppercase tracking-[4px] ${isSale ? 'text-red-500' : 'text-[#00bcd4]'}`}>
-            {tag}
-          </span>
-          <h2 className="text-4xl md:text-5xl font-black italic uppercase tracking-tighter mt-2 leading-none">
-            {title}
-          </h2>
+          <span className={`text-[9px] font-black uppercase tracking-[4px] ${isSale ? 'text-red-500' : 'text-[#00bcd4]'}`}>{tag}</span>
+          <h2 className="text-4xl md:text-5xl font-black italic uppercase tracking-tighter mt-2 leading-none">{title}</h2>
         </div>
 
         <button
-          onClick={handleExploreClick}
+          onClick={() => navigate('/products')}
           className={`text-[11px] font-black uppercase tracking-[3px] transition-all duration-300 flex items-center gap-2 group/link relative
-            ${isDark ? 'text-[#00bcd4] hover:text-white' : 'text-black hover:text-[#00bcd4]'}`}
+            ${isCurrentlyDark ? 'text-[#00bcd4] hover:text-white' : 'text-black hover:text-[#00bcd4]'}`}
         >
           <span className="relative">
             Explore Drop
-            <span className={`absolute -bottom-1 left-0 w-0 h-[2px] transition-all duration-300 group-hover/link:w-full ${isDark ? 'bg-white' : 'bg-[#00bcd4]'}`}></span>
+            <span className={`absolute -bottom-1 left-0 w-0 h-[2px] transition-all duration-300 group-hover/link:w-full ${isCurrentlyDark ? 'bg-white' : 'bg-[#00bcd4]'}`}></span>
           </span>
           <span className="group-hover/link:translate-x-2 transition-transform duration-300 text-lg">→</span>
         </button>
@@ -150,21 +132,15 @@ function CategorySection({ title, tag, items, id, isDark, isSale }) {
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12">
         {items.map((product) => (
-          <ProductCard
-            key={product.id}
-            product={product}
-            isSale={isSale}
-          />
+          <ProductCard key={product.id} product={product} isSale={isSale} />
         ))}
       </div>
 
       <div className="mt-12 md:mt-20 flex justify-center px-4">
         <button
-          onClick={handleExploreClick}
+          onClick={() => navigate('/products')}
           className={`group relative px-7 py-3.5 md:px-14 md:py-5 text-[10px] md:text-[11px] tracking-[2px] md:tracking-[4px] font-black uppercase border-2 overflow-hidden transition-all duration-500 active:scale-95
-            ${isDark
-              ? 'border-[#00bcd4] text-[#00bcd4] shadow-[0_0_15px_rgba(0,188,212,0.2)]'
-              : 'border-black text-black'}`}
+            ${isDark ? 'border-[#00bcd4] text-[#00bcd4] shadow-[0_0_15px_rgba(0,188,212,0.2)]' : 'border-black text-black'}`}
         >
           <span className={`absolute -inset-[2px] translate-y-full transition-transform duration-500 ease-out group-hover:translate-y-0 group-active:translate-y-0 ${isDark ? 'bg-[#00bcd4]' : 'bg-black'}`}></span>
           <span className={`relative z-10 transition-colors duration-500 ${isDark ? 'group-hover:text-black group-active:text-black' : 'group-hover:text-white group-active:text-white'}`}>

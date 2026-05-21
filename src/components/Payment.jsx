@@ -2,6 +2,8 @@ import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useTheme } from "./ThemeContext"; 
+import { API_BASE_URL } from '../Config/Api';
+
 
 function Payment() {
   const { isDark } = useTheme();
@@ -33,7 +35,7 @@ function Payment() {
 
     setTimeout(async () => {
       try {
-        const response = await fetch("http://localhost:4000/api/checkout", {
+        const response = await fetch(`${API_BASE_URL}/checkout`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({

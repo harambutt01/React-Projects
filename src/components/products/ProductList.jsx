@@ -1,10 +1,11 @@
-import { useState, useMemo } from "react"; // useState add kiya
+import { useState, useMemo } from "react"; 
 import { useTheme } from "../ThemeContext";
 import useFetch from "../../hooks/useFetch";
 import ProductCard from "./ProductCard";
 import ProductFilters from "./ProductFilters";
+import { API_BASE_URL } from '../../Config/Api';
 
-const API_URL = "http://localhost:4000/api/products?page=1&limit=100";
+const API_URL = `${API_BASE_URL}/products?page=1&limit=100`;
 
 function ProductList() {
   const { isDark } = useTheme();
@@ -14,7 +15,6 @@ function ProductList() {
   const [category, setCategory] = useState("");
   const [sort, setSort] = useState("");
   
-  // 1. Filter toggle state
   const [showFilters, setShowFilters] = useState(false);
 
   const productsData = useMemo(() => {
@@ -61,7 +61,6 @@ function ProductList() {
         )}
       </div>
 
-      {/* 3. Pass isVisible prop to ProductFilters */}
       {!loading && (
         <ProductFilters
           isVisible={showFilters}

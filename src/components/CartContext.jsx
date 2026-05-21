@@ -1,4 +1,6 @@
 import { createContext, useContext, useState, useEffect } from "react";
+import { API_BASE_URL } from '../Config/Api';
+
 
 const CartContext = createContext();
 
@@ -11,8 +13,21 @@ export function CartProvider({ children }) {
   const [selectedItems, setSelectedItems] = useState([]);
 
   useEffect(() => {
+    const syncCart = () => {
+      const saved = localStorage.getItem("cart");
+      if (saved) {
+        setCartItems(JSON.parse(saved));
+      }
+    };
+    window.addEventListener("cartUpdate", syncCart);
+    return () => window.removeEventListener("cartUpdate", syncCart);
+  }, []);
+
+  useEffect(() => {
     localStorage.setItem("cart", JSON.stringify(cartItems));
-    setSelectedItems((prev) => prev.filter((id) => cartItems.some((item) => item.id === id)));
+    setSelectedItems((prev) =>
+      prev.filter((id) => cartItems.some((item) => item.id === id))
+    );
   }, [cartItems]);
 
   const addToCart = async (product, quantity) => {
@@ -26,15 +41,17 @@ export function CartProvider({ children }) {
     }
 
     setCartItems(updatedCart);
+    window.dispatchEvent(new Event("cartUpdate"));
+
+    const user = JSON.parse(localStorage.getItem("user"));
 
     try {
-      const response = await fetch("http://localhost:4000/api/cart", {
+      const response = await fetch(`${API_BASE_URL}/cart`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          id: product.id,
+          user_id: user?.id,
+          productId: product.id,
           name: product.name,
           price: product.price,
           image: product.image,
@@ -42,9 +59,7 @@ export function CartProvider({ children }) {
         }),
       });
 
-      if (!response.ok) {
-        throw new Error("Failed to add item to cart");
-      }
+      if (!response.ok) throw new Error("Failed to add item to cart");
     } catch (error) {
       console.error("Cart Action Failed:", error);
     }
@@ -52,6 +67,7 @@ export function CartProvider({ children }) {
 
   const removeFromCart = (id) => {
     setCartItems((prev) => prev.filter((item) => item.id !== id));
+    window.dispatchEvent(new Event("cartUpdate"));
   };
 
   const updateQuantity = (id, quantity) => {
@@ -59,11 +75,12 @@ export function CartProvider({ children }) {
     setCartItems((prev) =>
       prev.map((item) => (item.id === id ? { ...item, quantity } : item))
     );
+    window.dispatchEvent(new Event("cartUpdate"));
   };
 
   const toggleSelectItem = (id) => {
     if (selectedItems.includes(id)) {
-      setSelectedItems(selectedItems.filter((itemIds) => itemIds !== id));
+      setSelectedItems(selectedItems.filter((itemId) => itemId !== id));
     } else {
       setSelectedItems([...selectedItems, id]);
     }
@@ -71,30 +88,31 @@ export function CartProvider({ children }) {
 
   const toggleSelectAll = () => {
     if (selectedItems.length === cartItems.length) {
-      setSelectedItems([]); 
+      setSelectedItems([]);
     } else {
-      setSelectedItems(cartItems.map((item) => item.id)); 
+      setSelectedItems(cartItems.map((item) => item.id));
     }
   };
 
   const deleteSelectedFromCart = async () => {
     if (selectedItems.length === 0) return;
 
-    setCartItems((prev) => prev.filter((item) => !selectedItems.includes(item.id)));
+    setCartItems((prev) =>
+      prev.filter((item) => !selectedItems.includes(item.id))
+    );
+    window.dispatchEvent(new Event("cartUpdate"));
 
     try {
-      const response = await fetch("http://localhost:4000/api/cart/delete-multiple", {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ ids: selectedItems }), 
-      });
+      const response = await fetch(
+        `${API_BASE_URL}/cart/delete-multiple`,
+        {
+          method: "DELETE",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ ids: selectedItems }),
+        }
+      );
 
-      if (!response.ok) {
-        throw new Error("Failed to delete selected items from cart");
-      }
-
+      if (!response.ok) throw new Error("Failed to delete");
       setSelectedItems([]);
     } catch (error) {
       console.error("Cart Action Failed:", error);
@@ -102,19 +120,22 @@ export function CartProvider({ children }) {
   };
 
   const totalItems = cartItems.reduce((sum, item) => sum + item.quantity, 0);
-  const totalPrice = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const totalPrice = cartItems.reduce(
+    (sum, item) => sum + item.price * item.quantity,
+    0
+  );
 
   return (
     <CartContext.Provider
       value={{
         cartItems,
-        selectedItems, 
+        selectedItems,
         addToCart,
         removeFromCart,
         updateQuantity,
-        toggleSelectItem, 
-        toggleSelectAll,  
-        deleteSelectedFromCart, 
+        toggleSelectItem,
+        toggleSelectAll,
+        deleteSelectedFromCart,
         totalItems,
         totalPrice,
       }}

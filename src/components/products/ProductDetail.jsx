@@ -4,6 +4,7 @@ import { useTheme } from "../ThemeContext";
 import { useCart } from "../CartContext";
 import useFetch from "../../hooks/useFetch";
 import { toast } from "react-toastify";
+import { API_BASE_URL } from '../../Config/Api';
 
 // Swiper imports for Related Products slider
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -19,7 +20,7 @@ function ProductDetail() {
   const { isDark } = useTheme();
   const { addToCart } = useCart(); 
 
-  const { data: apiData, loading, error } = useFetch(`http://localhost:4000/api/products/${id}`);
+  const { data: apiData, loading, error } = useFetch(`${API_BASE_URL}/products/${id}`);
   
   const [quantity, setQuantity] = useState(1);
   const [activeTab, setActiveTab] = useState("details");
@@ -32,7 +33,7 @@ function ProductDetail() {
   const displayImage = (img) => {
     if (!img) return "https://via.placeholder.com/400?text=No+Image";
     if (img.startsWith("http")) return img;
-    return `http://localhost:4000/${img}`;
+    return `${API_BASE_URL}/${img}`;
   };
 
   const product = useMemo(() => {
@@ -83,7 +84,7 @@ function ProductDetail() {
   useEffect(() => {
     const fetchReviews = async () => {
       try {
-        const response = await fetch(`http://localhost:4000/api/products/${id}/reviews`);
+        const response = await fetch(`${API_BASE_URL}/products/${id}/reviews`);
         const data = await response.json();
         setLocalReviews(data.reviews || []);
       } catch (err) {
@@ -98,7 +99,7 @@ function ProductDetail() {
     if (product && product.category) {
       const fetchRelated = async () => {
         try {
-          const response = await fetch(`http://localhost:4000/api/products/related/${product.category}/${id}`);
+          const response = await fetch(`${API_BASE_URL}/products/related/${product.category}/${id}`);
           const data = await response.json();
           setRelatedProducts(data);
         } catch (err) {
@@ -129,14 +130,14 @@ function ProductDetail() {
     }
 
     try {
-      const response = await fetch(`http://localhost:4000/api/products/${id}/reviews`, {
+      const response = await fetch(`${API_BASE_URL}/products/${id}/reviews`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(newReview)
       });
 
       if (response.ok) {
-        const updatedData = await fetch(`http://localhost:4000/api/products/${id}/reviews`).then(res => res.json());
+        const updatedData = await fetch(`${API_BASE_URL}/products/${id}/reviews`).then(res => res.json());
         setLocalReviews(updatedData.reviews || []);
         setNewReview({ reviewerName: "", comment: "", rating: 5 });
         setShowReviewForm(false);
@@ -182,7 +183,7 @@ function ProductDetail() {
     };
 
     try {
-      const response = await fetch('http://localhost:4000/api/cart', {
+      const response = await fetch(`${API_BASE_URL}/cart`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(cartPayload)

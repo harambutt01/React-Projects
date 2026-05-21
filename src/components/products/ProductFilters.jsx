@@ -5,7 +5,7 @@ function ProductFilters({
   category, onCategoryChange, 
   sort, onSortChange, 
   categories, 
-  isVisible // Ye naya prop hai jo show/hide control karega
+  isVisible 
 }) {
   const { isDark } = useTheme();
 
@@ -16,7 +16,6 @@ function ProductFilters({
     }`;
 
   return (
-    // Is wrapper div mein humne animation ke liye max-h aur opacity di hai
     <div className={`transition-all duration-500 ease-in-out overflow-hidden ${isVisible ? "max-h-24 opacity-100 mb-6" : "max-h-0 opacity-0 mb-0"}`}>
       
       <div className="grid grid-cols-[1fr_1fr_1fr] sm:grid-cols-[2fr_1fr_1fr] gap-1 sm:gap-3 w-full">
