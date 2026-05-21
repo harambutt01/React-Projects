@@ -76,10 +76,10 @@ router.post('/', async (req, res) => {
     }
 
     // Insert order
-    const [orderResult] = await connection.query(
-      'INSERT INTO shopping_orders (customer_id, total_amount) VALUES (?, ?)',
-      [customerId, totalAmount]
-    );
+       const [orderResult] = await connection.query(
+  'INSERT INTO orders (user_id, total_price, status) VALUES (?, ?, ?)',
+  [activeUserId, totalAmount, 'pending']
+);
 
     const orderId = orderResult.insertId;
 

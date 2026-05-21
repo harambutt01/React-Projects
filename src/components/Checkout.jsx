@@ -1,18 +1,18 @@
 import { useState, useEffect, useRef } from "react";
+import { useCart } from "./CartContext";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useTheme } from "./ThemeContext";
 import { getNames } from "country-list";
-import { API_BASE_URL } from '../Config/Api';
+import {  API_BASE_URL, IMAGE_BASE_URL } from '../Config/Api';
 
 
 function Checkout() {
   const { isDark } = useTheme();
+  const { fetchCartItems } = useCart(); 
   const navigate = useNavigate();
-
   const [cartItems, setCartItems] = useState([]);
   const [total, setTotal] = useState(0);
-
   const [shipping, setShipping] = useState({
     name: "",
     email: "",
@@ -95,14 +95,21 @@ function Checkout() {
 
       if (response.ok) {
         toast.success(`🎉 Order Placed! ID: ${result.orderId}`);
-        const orderedProductIds = cartItems.map(item => item.id || item.product_id);
-        const fullCart = JSON.parse(localStorage.getItem("cart")) || [];
-        const remainingCartItems = fullCart.filter(item => !orderedProductIds.includes(item.id));
         
-        localStorage.setItem("cart", JSON.stringify(remainingCartItems));
+        // --- YEH HISSAB UPDATE KAREIN ---
+        const user = JSON.parse(localStorage.getItem("user"));
+        const currentUserId = user?.id || 2; 
+
+        // Database se cart delete karne ki request
+        await fetch(`${API_BASE_URL}/cart/clear/${currentUserId}`, {
+          method: 'DELETE'
+        });
+
+        // UI ko sync karne ke liye cart refresh karen
+        fetchCartItems(); 
+        // --------------------------------
+
         localStorage.removeItem("checkout_staging"); 
-        
-        window.dispatchEvent(new Event("cartUpdate")); 
         navigate("/"); 
       } else {
         toast.error(result.error || "Order failed!");

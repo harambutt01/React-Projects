@@ -2,8 +2,11 @@ import React, { useState } from 'react';
 import emailjs from '@emailjs/browser';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { useTheme } from './ThemeContext';
+import { API_BASE_URL } from '../Config/Api';
 
 const DataModal = ({ isOpen, onClose }) => {
+  const { isDark } = useTheme();
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [form, setForm] = useState({
@@ -17,7 +20,6 @@ const DataModal = ({ isOpen, onClose }) => {
     setLoading(true);
 
     try {
-      // 1. EmailJS call (Notification ke liye)
       await emailjs.send(
         'service_t3iioit', 
         'template_0jxtwwl', 
@@ -31,8 +33,7 @@ const DataModal = ({ isOpen, onClose }) => {
         'DhTTFdtTNnLJ1_KPQ'
       );
 
-      // 2. Database API call (Trendora backend ke liye)
-      const response = await fetch('http://localhost:4000/api/support', {
+      const response = await fetch(`${API_BASE_URL}/support`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(form)
@@ -54,15 +55,24 @@ const DataModal = ({ isOpen, onClose }) => {
 
   return (
     <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
-      <div className="relative w-full max-w-md bg-[#0f1a1a] border border-[#00bcd4]/30 rounded-2xl p-6 shadow-2xl">
-        
+<div className={`relative w-full max-w-md border rounded-2xl p-6 shadow-2xl transition-colors duration-300 ${
+  isDark 
+    ? "bg-white border-gray-300" 
+    : "bg-[#0f1a1a] border-[#00bcd4]/30"
+}`}>        
         <div className="mb-5">
-          <h2 className="text-xl font-bold text-white">Support Request</h2>
-          <p className="text-[9px] uppercase tracking-widest text-[#00bcd4]/60">Get help with your order</p>
+          <h2 className={`text-xl font-bold ${isDark ? "text-black" : "text-white"}`}>Support Request</h2>
+          <p className={`text-[9px] uppercase tracking-widest ${isDark ? "text-[#00bcd4]/60" : "text-[#00bcd4]/60"}`}>Get help with your order</p>
         </div>
 
-        <button onClick={onClose} className="absolute top-6 right-6 text-white/50 hover:text-white transition-all">✕</button>
-
+<button 
+  onClick={onClose} 
+  className={`absolute top-6 right-6 transition-all ${
+    isDark ? "text-black/50 hover:text-black" : "text-white/50 hover:text-white"
+  }`}
+>
+  ✕
+</button>
         {!submitted ? (
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="grid grid-cols-2 gap-3">

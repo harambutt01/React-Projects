@@ -28,7 +28,7 @@ const Contact = () => {
         
         {/* --- left side support card --- */}
         <div className="lg:col-span-4 space-y-6">
-          <SupportCard title="Order Support" desc="Looking to track your package? Click the link below." btnText="Track My Order" isDark={isDark} />
+          <SupportCard title="Order Support" desc="Looking to track your package? Click the link below."  isDark={isDark} />
           
           <div className={`p-8 border-l-4 transition-all hover:shadow-md ${isDark ? "bg-[#1e1e1e] border-white" : "bg-[#f9f9f9] border-black"}`}>
             <h3 className="font-bold uppercase text-xs tracking-widest mb-2">Customer Care</h3>

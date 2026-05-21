@@ -114,6 +114,28 @@ app.use('/api/cart', cartRoutes);
 app.use('/api/products/:productId/reviews', reviewRoutes);
 app.use('/api/checkout', checkoutRoutes);
 
+// --- NEW: ADMIN STATS API (Yahan add karein) ---
+app.get('/api/admin/stats', (req, res) => {
+  const revenueSql = "SELECT SUM(total_price) AS totalRevenue FROM orders";
+  const ordersSql = "SELECT COUNT(*) AS totalOrders FROM orders";
+  const usersSql = "SELECT COUNT(*) AS totalUsers FROM users WHERE role = 'user'";
+
+  db.query(revenueSql, (err, revData) => {
+    if (err) return res.status(500).json({ error: "Failed to fetch revenue" });
+    db.query(ordersSql, (err, ordData) => {
+      if (err) return res.status(500).json({ error: "Failed to fetch orders" });
+      db.query(usersSql, (err, userData) => {
+        if (err) return res.status(500).json({ error: "Failed to fetch users" });
+        res.json({
+          totalRevenue: revData[0].totalRevenue || 0,
+          totalOrders: ordData[0].totalOrders || 0,
+          totalUsers: userData[0].totalUsers || 0
+        });
+      });
+    });
+  });
+});
+
 // --- 7. HEALTH CHECK ---
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', message: 'Backend is running' });

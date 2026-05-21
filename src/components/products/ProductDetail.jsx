@@ -4,7 +4,7 @@ import { useTheme } from "../ThemeContext";
 import { useCart } from "../CartContext";
 import useFetch from "../../hooks/useFetch";
 import { toast } from "react-toastify";
-import { API_BASE_URL } from '../../Config/Api';
+import {  API_BASE_URL, IMAGE_BASE_URL } from '../../Config/Api';
 
 // Swiper imports for Related Products slider
 import { Swiper, SwiperSlide } from "swiper/react";
