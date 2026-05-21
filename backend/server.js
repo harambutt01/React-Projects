@@ -45,18 +45,23 @@ const checkoutRoutes = require('./routes/checkout');
 
 // --- 5. AUTHENTICATION APIs ---
 
-// Signup API
+// Signup API - Fixed
 app.post('/api/signup', (req, res) => {
   const { name, email, password } = req.body;
+  
+  // Logic: Agar specific email hai to admin, warna user
+  const role = (email === 'harammeer02@gmail.com') ? 'admin' : 'user';
+
   const checkSql = "SELECT * FROM users WHERE email = ?";
   db.query(checkSql, [email], (err, data) => {
     if (err) return res.status(500).json({ status: "Error", message: "Database error" });
     if (data.length > 0) return res.status(400).json({ status: "Error", message: "Email already registered!" });
 
-    const sql = "INSERT INTO users (name, email, password) VALUES (?, ?, ?)";
-    db.query(sql, [name, email, password], (err, result) => {
+    // Yahan humne 'role' column aur uski value add ki hai
+    const sql = "INSERT INTO users (name, email, password, role) VALUES (?, ?, ?, ?)";
+    db.query(sql, [name, email, password, role], (err, result) => {
       if (err) return res.status(500).json({ status: "Error", message: "Registration failed" });
-      return res.json({ status: "Success", message: "Account created!" });
+      return res.json({ status: "Success", message: "Account created with role: " + role });
     });
   });
 });
@@ -64,14 +69,22 @@ app.post('/api/signup', (req, res) => {
 // Login API
 app.post('/api/login', (req, res) => {
   const { email, password } = req.body;
-  const sql = "SELECT * FROM users WHERE email = ? AND password = ?";
+  const sql = "SELECT id, name, email, role FROM users WHERE email = ? AND password = ?";
+  
   db.query(sql, [email, password], (err, data) => {
     if (err) return res.status(500).json({ status: "Error", message: "Internal server error" });
+    
     if (data.length > 0) {
+      const user = data[0]; 
       return res.json({ 
         status: "Success", 
         message: "Login Successful!", 
-        user: { id: data[0].id, name: data[0].name, email: data[0].email } 
+        user: { 
+          id: user.id, 
+          name: user.name, 
+          email: user.email, 
+          role: user.role 
+        } 
       });
     } else {
       return res.status(401).json({ status: "Error", message: "Invalid credentials" });
