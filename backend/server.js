@@ -103,11 +103,15 @@ app.get('/api/admin/sales-trend', (req, res) => {
 
 app.get('/api/admin/recent-orders', (req, res) => {
   const sql = `
-    SELECT o.id, u.name AS user_name, o.total_price, o.status 
+    SELECT 
+      o.id AS order_id, 
+      u.name AS customer_name, 
+      o.total_price, 
+      o.status 
     FROM orders o
     JOIN users u ON o.user_id = u.id
-    ORDER BY o.created_at DESC 
-    LIMIT 5`;
+    ORDER BY o.id DESC LIMIT 5`;
+    
   db.query(sql, (err, data) => {
     if (err) return res.status(500).json({ error: "Failed to fetch orders" });
     res.json(data);
