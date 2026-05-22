@@ -72,6 +72,43 @@ app.post('/api/login', (req, res) => {
     }
   });
 });
+app.get('/api/admin/transactions', (req, res) => {
+  const sql = `
+    SELECT 
+      s.id, 
+      s.total_revenue, 
+      s.payment_status, 
+      s.report_date,
+      p.name AS product_name,
+      s.category
+    FROM sales_report s
+    JOIN products p ON s.product_id = p.id
+    ORDER BY s.report_date DESC`;
+    
+  db.query(sql, (err, data) => {
+    if (err) return res.status(500).json({ error: "Failed to fetch transactions" });
+    res.json(data);
+  });
+});
+
+app.get('/api/admin/reviews', (req, res) => {
+  const sql = `
+    SELECT 
+      r.id, 
+      r.reviewer_name, 
+      r.comment, 
+      r.rating, 
+      r.created_at,
+      p.name AS product_name 
+    FROM reviews r
+    JOIN products p ON r.product_id = p.id
+    ORDER BY r.created_at DESC`;
+
+  db.query(sql, (err, data) => {
+    if (err) return res.status(500).json({ error: "Failed to fetch reviews" });
+    res.json(data);
+  });
+});
 
 // --- 6. ADMIN APIs ---
 app.get('/api/admin/stats', (req, res) => {
@@ -117,6 +154,7 @@ app.get('/api/admin/recent-orders', (req, res) => {
     res.json(data);
   });
 });
+
 
 // --- NEWLY ADDED: GET ALL USERS ---
 app.get('/api/users', (req, res) => {

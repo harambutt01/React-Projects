@@ -16,50 +16,60 @@ function Navbar() {
   const [cartOpen, setCartOpen] = useState(false);
   const [wishlistCount, setWishlistCount] = useState(0); 
   const navigate = useNavigate();
-
-  // 1. User State (Isse hum toggle control karenge)
+  
+  // State for Auth
+  const [authTrigger, setAuthTrigger] = useState(0);
   const [user, setUser] = useState(JSON.parse(localStorage.getItem("user")));
-
-  // 2. Online Toggle State
   const [isOnline, setIsOnline] = useState(false);
 
-  // LOGIC: Login/Logout ke sath toggle update karna
+  // Sync Auth State Function
   const syncAuthState = useCallback(() => {
     const loggedInUser = JSON.parse(localStorage.getItem("user"));
     setUser(loggedInUser);
-    
-    // Agar user hai toh online (true), warna offline (false)
     setIsOnline(!!loggedInUser); 
   }, []);
 
+  // Sync Data Function (Wishlist)
+  const syncData = useCallback(() => {
+    const savedWishlist = JSON.parse(localStorage.getItem('wishlist')) || [];
+    setWishlistCount(savedWishlist.length);
+  }, []);
+
+  // Combined useEffect to handle everything in the right order
   useEffect(() => {
-    // Initial check on load
+    // Initial sync
     syncAuthState();
-
-    const syncData = () => {
-      const savedWishlist = JSON.parse(localStorage.getItem('wishlist')) || [];
-      setWishlistCount(savedWishlist.length);
-      
-    };
-
     syncData();
 
-    // Listeners for Auth and Data changes
-    window.addEventListener('authChange', syncAuthState); // Custom event for Login/Logout
+    // Listener function
+    const handleStorageChange = () => {
+      syncAuthState();
+      syncData();
+      setAuthTrigger(prev => prev + 1);
+    };
+
+    // Add listeners
+    window.addEventListener('authChange', handleStorageChange);
     window.addEventListener('wishlistUpdate', syncData);
     window.addEventListener('cartUpdate', syncData);
-    window.addEventListener('storage', syncData);
-return () => {
-      window.removeEventListener('authChange', syncAuthState);
+    window.addEventListener('storage', handleStorageChange);
+    
+    // Cleanup listeners
+    return () => {
+      window.removeEventListener('authChange', handleStorageChange);
       window.removeEventListener('wishlistUpdate', syncData);
       window.removeEventListener('cartUpdate', syncData);
-      window.removeEventListener('storage', syncData);
+      window.removeEventListener('storage', handleStorageChange);
     };
-  }, [syncAuthState]);
+  }, [syncAuthState, syncData]);
 
   // Logout Functionality
   const handleLogout = () => {
     localStorage.removeItem("user");
+    localStorage.removeItem("userRole"); 
+    // State ko manually update karna zaroori hai
+    setUser(null);
+    setIsOnline(false);
     window.dispatchEvent(new Event("authChange")); 
     toast.error("Logged out successfully!", { theme: "colored" });
     setMenuOpen(false);
@@ -70,6 +80,7 @@ return () => {
     if (user) {
       setIsOnline((prev) => !prev);
     } else {
+      setIsOnline(false); 
       toast.warning("Please login first!", { theme: "colored", autoClose: 1000 });
     }
   }, [user]);
@@ -94,21 +105,20 @@ return () => {
             <li><Link to="/products" className="text-white no-underline text-[0.85rem] uppercase tracking-widest hover:text-[#00bcd4] transition-colors">Product</Link></li>
             <li><Link to="/about" className="text-white no-underline text-[0.85rem] uppercase tracking-widest hover:text-[#00bcd4] transition-colors">About</Link></li>
             <li><Link to="/contact" className="text-white no-underline text-[0.85rem] uppercase tracking-widest hover:text-[#00bcd4] transition-colors">Contact</Link></li>
-            
-            <li>
-              {user ? (
-                <button 
-                  onClick={handleLogout}
-                  className="bg-red-500 text-white px-4 py-1.5 rounded-md text-[0.8rem] uppercase font-bold tracking-widest hover:bg-red-600 transition-all shadow-md"
-                >
-                  Logout
-                </button>
-              ) : (
-                <Link to="/login" className="bg-[#00bcd4] text-white px-4 py-1.5 rounded-md text-[0.8rem] uppercase font-bold tracking-widest hover:bg-[#0097a7] transition-all shadow-md">
-                  Login
-                </Link>
-              )}
-            </li>
+          <li>
+  {user ? (
+    <button 
+      onClick={handleLogout}
+      className="bg-red-500 text-white px-4 py-1.5 rounded-md text-[0.8rem] uppercase font-bold tracking-widest hover:bg-red-600 transition-all shadow-md"
+    >
+      Logout
+    </button>
+  ) : (
+    <Link to="/login" className="bg-[#00bcd4] text-white px-4 py-1.5 rounded-md text-[0.8rem] uppercase font-bold tracking-widest hover:bg-[#0097a7] transition-all shadow-md">
+      Login
+    </Link>
+  )}
+</li>
           </ul>
         </nav>
 
@@ -130,21 +140,18 @@ return () => {
           </button>
 
           <button onClick={() => setCartOpen(true)} className="relative bg-transparent border-none text-white cursor-pointer hover:scale-110 transition-transform">
-  <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
-  
-  {/* Yahan humne cartItems.length use kiya hai */}
-  {cartItems.length > 0 && (
-    <span className="absolute -top-1.5 -right-2 bg-[#00bcd4] text-white text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center border border-[#222]">
-      {cartItems.length}
-    </span>
-  )}
-</button>
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
+            {cartItems.length > 0 && (
+              <span className="absolute -top-1.5 -right-2 bg-[#00bcd4] text-white text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center border border-[#222]">
+                {cartItems.length}
+              </span>
+            )}
+          </button>
         </div>
       </header>
 
       <CartDrawer isOpen={cartOpen} onClose={() => setCartOpen(false)} />
 
-      {/* Mobile Menu */}
       <nav className={`fixed top-0 h-screen w-[70%] sm:w-[280px] bg-[#222] text-white z-[2000] transition-all duration-300 p-6 flex flex-col shadow-2xl ${menuOpen ? "left-0" : "-left-full"}`}>
         <div className="flex justify-between items-center mb-8 border-b border-white/10 pb-4">
           <span className="font-bold text-lg italic uppercase">Trendora</span>
@@ -156,21 +163,20 @@ return () => {
               <Link to={item === "Home" ? "/" : `/${item.toLowerCase()}`} onClick={closeMenu} className="text-white no-underline text-[1.1rem] block px-4 py-3 rounded-lg hover:bg-[#00bcd4]/10 transition-all">{item}</Link>
             </li>
           ))}
-          
-          <li>
-            {user ? (
-              <button 
-                onClick={handleLogout} 
-                className="w-full text-red-500 font-bold no-underline text-[1.1rem] block px-4 py-3 border border-red-500 rounded-lg mt-4 text-center bg-transparent"
-              >
-                Logout
-              </button>
-            ) : (
-              <Link to="/login" onClick={closeMenu} className="text-[#00bcd4] font-bold no-underline text-[1.1rem] block px-4 py-3 border border-[#00bcd4] rounded-lg mt-4 text-center">
-                Login / Sign Up
-              </Link>
-            )}
-          </li>
+         <li>
+  {user ? (
+    <button 
+      onClick={handleLogout} 
+      className="w-full text-red-500 font-bold no-underline text-[1.1rem] block px-4 py-3 border border-red-500 rounded-lg mt-4 text-center bg-transparent"
+    >
+      Logout
+    </button>
+  ) : (
+    <Link to="/login" onClick={closeMenu} className="text-[#00bcd4] font-bold no-underline text-[1.1rem] block px-4 py-3 border border-[#00bcd4] rounded-lg mt-4 text-center">
+      Login / Sign Up
+    </Link>
+  )}
+</li>
         </ul>
       </nav>
     </>

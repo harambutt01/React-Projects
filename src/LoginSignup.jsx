@@ -2,8 +2,6 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify'; 
-// import { API_BASE_URL} from './Config/Api';
-
 
 export default function LoginSignup() {
     const [isLogin, setIsLogin] = useState(true);
@@ -27,17 +25,21 @@ export default function LoginSignup() {
                     theme: "colored",
                 });
 
-                if (isLogin) {
-                    localStorage.setItem('user', JSON.stringify(response.data.user));
-                    
-                    // --- SYNC LOGIC START ---
-                    // Yeh line Navbar ko bataye gi ke user login ho gaya hai taake toggle ON ho jaye
-                    window.dispatchEvent(new Event("authChange"));
-                    // --- SYNC LOGIC END ---
+                // --- LOGIC: User data save karna aur Navbar ko signal bhejna ---
+                const userData = response.data.user;
+                const userRole = userData.role || 'customer'; 
+                
+                localStorage.setItem('user', JSON.stringify(userData));
+                localStorage.setItem('userRole', userRole); 
+                
+                // Navbar ko update karne ka signal
+                window.dispatchEvent(new Event("authChange"));
 
-                    setTimeout(() => navigate('/dashboard'), 2000);
+                // Redirect logic
+                if (userRole === 'admin') {
+                    navigate('/admin'); 
                 } else {
-                    setIsLogin(true);
+                    navigate('/'); // User ko home page par bhej rahe hain
                 }
             }
         } catch (error) {

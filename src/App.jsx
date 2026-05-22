@@ -5,10 +5,9 @@ import { CartProvider } from "./components/CartContext";
 import { ToastContainer } from "react-toastify"; 
 import "react-toastify/dist/ReactToastify.css"; 
 
-// Layouts
+// Layouts & Guards
 import AdminLayout from './components/Admin/AdminLayout';
-import Navbar from "./components/Navbar";
-import Footer from "./components/Footer"; 
+import ProtectedRoute from './components/ProtectedRoute';
 
 // Admin Pages
 import Dashboard from './pages/Admin/Dashboard.jsx';
@@ -16,9 +15,11 @@ import Products from "./pages/Admin/Products.jsx";
 import Users from "./pages/Admin/Users.jsx";
 import Orders from './pages/Admin/Orders.jsx';
 import Transactions from './pages/Admin/Transactions.jsx';
-import Complaints from './pages/Admin/Complaints.jsx';
+import Complaints from './pages/Admin/Reviews.jsx';
 
-// User Pages
+// User Components
+import Navbar from "./components/Navbar";
+import Footer from "./components/Footer"; 
 import Home from "./components/Home";
 import About from "./components/About";
 import Contact from "./components/Contact";
@@ -43,8 +44,12 @@ function App() {
           <ToastContainer position="top-right" autoClose={2500} theme="colored" style={{ zIndex: 99999 }} />
           
           <Routes>
-            {/* 1. ADMIN SECTION (No Navbar/Footer) */}
-            <Route path="/admin" element={<AdminLayout />}>
+            {/* 1. ADMIN SECTION (Protected by ProtectedRoute) */}
+            <Route path="/admin/" element={
+              <ProtectedRoute>
+                <AdminLayout />
+              </ProtectedRoute>
+            }>
               <Route index element={<Dashboard />} />
               <Route path="products" element={<Products />} />
               <Route path="users" element={<Users />} />
@@ -53,7 +58,7 @@ function App() {
               <Route path="complaints" element={<Complaints />} />
             </Route>
 
-            {/* 2. USER SECTION (With Navbar & Footer) */}
+            {/* 2. USER SECTION (Public with Navbar & Footer) */}
             <Route path="/*" element={
               <>
                 <Navbar />
@@ -82,7 +87,7 @@ function App() {
               </>
             } />
           </Routes>
-          
+
         </CartProvider>
       </ThemeProvider>
     </BrowserRouter>

@@ -1,12 +1,29 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import {  API_BASE_URL } from '../../Config/Api';
+
 
 const Products = () => {
-  // Mock data - jab aap API connect karein, toh yahan useState use karke data set karein
-  const products = [
-    { id: 1, name: 'Laptop', category: 'Electronics', stock: 10, status: 'In Stock', price: '$800' },
-    { id: 2, name: 'Shoes', category: 'Fashion', stock: 5, status: 'Low Stock', price: '$50' },
-    { id: 3, name: 'Headphones', category: 'Electronics', stock: 0, status: 'Out of Stock', price: '$100' },
-  ];
+  const [products, setProducts] = useState([]); 
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const response = await axios.get(`${API_BASE_URL}/api/products`);
+        // Backend se response.data.products aa raha hai
+        setProducts(response.data.products); 
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching products:", error);
+        setLoading(false);
+      }
+    };
+
+    fetchProducts();
+  }, []);
+
+  if (loading) return <div className="p-6">Loading products...</div>;
 
   return (
     <div className="p-6">
@@ -19,25 +36,16 @@ const Products = () => {
               <th className="py-3 px-4">ID</th>
               <th className="py-3 px-4">Product Name</th>
               <th className="py-3 px-4">Category</th>
-              <th className="py-3 px-4">Stock</th>
-              <th className="py-3 px-4">Status</th>
               <th className="py-3 px-4">Price</th>
             </tr>
           </thead>
           <tbody>
             {products.map((item) => (
               <tr key={item.id} className="border-b hover:bg-gray-50">
-                <td className="py-3 px-4">{item.id}</td>
+                <td className="py-3 px-4">{item.id}</td> {/* Yahan sirf item.id likha hai */}
                 <td className="py-3 px-4 font-medium">{item.name}</td>
                 <td className="py-3 px-4">{item.category}</td>
-                <td className="py-3 px-4">{item.stock}</td>
-                <td className={`py-3 px-4 font-semibold ${
-                  item.status === 'In Stock' ? 'text-green-600' : 
-                  item.status === 'Low Stock' ? 'text-yellow-600' : 'text-red-600'
-                }`}>
-                  {item.status}
-                </td>
-                <td className="py-3 px-4">{item.price}</td>
+                <td className="py-3 px-4">${item.price}</td>
               </tr>
             ))}
           </tbody>
