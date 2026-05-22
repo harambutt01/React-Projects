@@ -1,3 +1,5 @@
+
+
 const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
@@ -166,10 +168,9 @@ app.get('/api/users', (req, res) => {
 });
 
 // --- 7. OTHER ROUTES ---
-app.use('/api/products', productRoutes);
+app.use('/api/products/:productId/reviews', reviewRoutes); // Specific route pehle
+app.use('/api/products', productRoutes); // General route baad mein
 app.use('/api/categories', categoryRoutes);
 app.use('/api/cart', cartRoutes);
-app.use('/api/products/:productId/reviews', reviewRoutes);
 app.use('/api/checkout', checkoutRoutes);
-
 app.listen(port, () => console.log(`Backend running on http://localhost:${port}`));
