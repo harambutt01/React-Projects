@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
-import { FiLogOut } from 'react-icons/fi'; // 1. Icon install karein: npm install react-icons
+import { FiLogOut } from 'react-icons/fi'; 
 
 const Sidebar = () => {
   const navigate = useNavigate();
@@ -48,7 +48,6 @@ const Sidebar = () => {
         </ul>
       </nav>
 
-      {/* Professional Logout Button */}
       <button 
         onClick={handleLogout}
         className="mt-auto py-3 px-4 bg-gray-800 hover:bg-red-600 text-gray-300 hover:text-white rounded-lg transition-all duration-300 flex items-center justify-center gap-2 font-medium border border-gray-700 hover:border-red-600"

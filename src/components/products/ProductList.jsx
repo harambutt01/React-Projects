@@ -6,6 +6,7 @@ import ProductFilters from "./ProductFilters";
 import { API_BASE_URL } from '../../Config/Api';
 
 const API_URL = `${API_BASE_URL}/api/products?page=1&limit=100`;
+
 function ProductList() {
   const { isDark } = useTheme();
   const { data: apiData, loading, error } = useFetch(API_URL);
@@ -13,8 +14,10 @@ function ProductList() {
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("");
   const [sort, setSort] = useState("");
-  
   const [showFilters, setShowFilters] = useState(false);
+  
+  // Naya state: initial 8 products show honge
+  const [visibleCount, setVisibleCount] = useState(8); 
 
   const productsData = useMemo(() => {
     if (Array.isArray(apiData)) return apiData;
@@ -49,7 +52,6 @@ function ProductList() {
           </p>
         </div>
 
-        {/* 2. Toggle Button */}
         {!loading && (
           <button 
             onClick={() => setShowFilters(!showFilters)}
@@ -81,11 +83,32 @@ function ProductList() {
             <div key={i} className={`h-[350px] rounded-xl animate-pulse ${isDark ? "bg-[#1e1e1e]" : "bg-white"}`} />
           ))
         ) : (
-          filteredProducts.map((product) => (
+          filteredProducts.slice(0, visibleCount).map((product) => (
             <ProductCard key={product.id} product={product} />
           ))
         )}
       </div>
+
+      {/* View All / View Less Button */}
+      {!loading && filteredProducts.length > 8 && (
+        <div className="flex justify-center mt-12 mb-8">
+          {visibleCount < filteredProducts.length ? (
+            <button 
+              onClick={() => setVisibleCount(filteredProducts.length)} 
+              className={`px-8 py-3 rounded-full font-bold transition-all shadow-lg ${isDark ? "bg-[#333] text-white hover:bg-[#444]" : "bg-black text-white hover:bg-gray-800"}`}
+            >
+              View All 
+            </button>
+          ) : (
+            <button 
+              onClick={() => setVisibleCount(8)} 
+              className={`px-8 py-3 rounded-full font-bold transition-all shadow-lg ${isDark ? "bg-[#333] text-white hover:bg-[#444]" : "bg-gray-200 text-black hover:bg-gray-300"}`}
+            >
+              View Less
+            </button>
+          )}
+        </div>
+      )}
     </div>
   );
 }
