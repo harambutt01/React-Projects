@@ -163,82 +163,83 @@ function CartDrawer({ isOpen, onClose }) {
           </div>
         )}
 
-        {/* Cart Items */}
-        <div className="flex-1 overflow-y-auto px-4 sm:px-5 py-5">
-          {cartItems.length === 0 ? (
-            <div className="text-center mt-16">
-              <p className="text-4xl mb-4">🛒</p>
-              <p className={`font-medium ${isDark ? "text-[#aaa]" : "text-[#666]"}`}>
-                Go Shopping
-              </p>
-            </div>
-          ) : (
-            cartItems.map((item) => (
-              <div key={item.id} className={`flex items-center gap-2 sm:gap-3 mb-5 pb-5 border-b ${borderColor} ${!selectedItems.includes(item.id) ? 'opacity-50' : ''}`}>
-                
-                {/* Individual Checkbox */}
-                <div className="flex-shrink-0">
-                  <input
-                    type="checkbox"
-                    checked={selectedItems.includes(item.id)}
-                    onChange={() => toggleSelectItem(item.id)}
-                    className="w-4 h-4 accent-[#00bcd4] cursor-pointer"
-                  />
-                </div>
-
-                {/* Image */}
-                <div className="w-[65px] h-[65px] sm:w-[75px] sm:h-[75px] flex-shrink-0 bg-gray-50 rounded-lg overflow-hidden flex items-center justify-center">
-                  <img
-                    src={item.thumbnail || item.image}
-                    alt={item.title}
-                    className="w-full h-full object-contain p-1"
-                    onError={(e) => { e.target.src = "https://placehold.co/150?text=No+Image"; }}
-                  />
-                </div>
-
-                {/* Info */}
-                <div className="flex-1 min-w-0">
-                  <h3 className="text-[13px] sm:text-[14px] font-semibold mb-1 line-clamp-1">
-                    {item.title || item.name}
-                  </h3>
-                  <p className="text-[13px] text-[#00bcd4] font-bold mb-2">
-                    ${Number(item.price).toFixed(2)}
-                  </p>
-
-                  <div className="flex items-center gap-3">
-                    <div className="flex items-center border rounded-md overflow-hidden">
-                      <button
-                        onClick={() => handleQuantityDecrease(item.id, item.quantity)}
-                        className={`px-2 py-1 cursor-pointer border-none text-xs font-bold ${qtyBtn}`}
-                      >
-                        -
-                      </button>
-                      <span className="px-3 text-xs font-semibold">{item.quantity}</span>
-                      <button
-                        onClick={() => handleQuantityIncrease(item.id, item.quantity)}
-                        className={`px-2 py-1 cursor-pointer border-none text-xs font-bold ${qtyBtn}`}
-                      >
-                        +
-                      </button>
-                    </div>
-                    <button
-                      onClick={() => handleRemoveItem(item.id, item.title || item.name)}
-                      className="text-red-500 text-[11px] sm:text-xs cursor-pointer bg-transparent border-none hover:underline font-medium"
-                    >
-                      Remove
-                    </button>
-                  </div>
-                </div>
-
-                {/* Item Total */}
-                <p className="font-bold text-[13px] sm:text-[14px] flex-shrink-0 pl-1">
-                  ${(item.price * item.quantity).toFixed(2)}
-                </p>
-
-              </div>
-            ))
-          )}
+      {/* Cart Items */}
+<div className="flex-1 overflow-y-auto px-4 sm:px-5 py-5">
+  {cartItems.length === 0 ? (
+    <div className="text-center mt-16">
+      <p className="text-4xl mb-4">🛒</p>
+      <p className={`font-medium ${isDark ? "text-[#aaa]" : "text-[#666]"}`}>
+        Go Shopping
+      </p>
+    </div>
+  ) : (
+    cartItems.map((item) => (
+      <div key={item.id} className={`flex items-center gap-2 sm:gap-3 mb-5 pb-5 border-b ${borderColor} ${!selectedItems.includes(item.id) ? 'opacity-50' : ''}`}>
+        
+        {/* Individual Checkbox */}
+        <div className="flex-shrink-0">
+          <input
+            type="checkbox"
+            checked={selectedItems.includes(item.id)}
+            onChange={() => toggleSelectItem(item.id)}
+            className="w-4 h-4 accent-[#00bcd4] cursor-pointer"
+          />
         </div>
+
+       {/* Image */}
+<div className="w-[65px] h-[65px] sm:w-[75px] sm:h-[75px] flex-shrink-0 bg-gray-50 rounded-lg overflow-hidden flex items-center justify-center">
+  <img
+    // Yahan hum database ke 'image_url' field ka istemal karenge
+    src={item.image_url ? (item.image_url.startsWith("http") ? item.image_url : `http://localhost:4000/${item.image_url}`) : "https://via.placeholder.com/150"}
+    alt={item.title || item.name}
+    className="w-full h-full object-contain p-1"
+    onError={(e) => { e.target.src = "https://placehold.co/150?text=No+Image"; }}
+  />
+</div>
+
+        {/* Info */}
+        <div className="flex-1 min-w-0">
+          <h3 className="text-[13px] sm:text-[14px] font-semibold mb-1 line-clamp-1">
+            {item.title || item.name}
+          </h3>
+          <p className="text-[13px] text-[#00bcd4] font-bold mb-2">
+            ${Number(item.price).toFixed(2)}
+          </p>
+
+          <div className="flex items-center gap-3">
+            <div className="flex items-center border rounded-md overflow-hidden">
+              <button
+                onClick={() => handleQuantityDecrease(item.id, item.quantity)}
+                className={`px-2 py-1 cursor-pointer border-none text-xs font-bold ${qtyBtn}`}
+              >
+                -
+              </button>
+              <span className="px-3 text-xs font-semibold">{item.quantity}</span>
+              <button
+                onClick={() => handleQuantityIncrease(item.id, item.quantity)}
+                className={`px-2 py-1 cursor-pointer border-none text-xs font-bold ${qtyBtn}`}
+              >
+                +
+              </button>
+            </div>
+            <button
+              onClick={() => handleRemoveItem(item.id, item.title || item.name)}
+              className="text-red-500 text-[11px] sm:text-xs cursor-pointer bg-transparent border-none hover:underline font-medium"
+            >
+              Remove
+            </button>
+          </div>
+        </div>
+
+        {/* Item Total */}
+        <p className="font-bold text-[13px] sm:text-[14px] flex-shrink-0 pl-1">
+          ${(item.price * item.quantity).toFixed(2)}
+        </p>
+
+      </div>
+    ))
+  )}
+</div>
 
         {/* Footer */}
         {cartItems.length > 0 && (

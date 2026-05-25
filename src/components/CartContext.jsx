@@ -8,12 +8,12 @@ export function CartProvider({ children }) {
   const [selectedItems, setSelectedItems] = useState([]);
 
   // 1. Database se Cart fetch karne ka function
-  const fetchCartItems = async () => {
+const fetchCartItems = async () => {
     const user = JSON.parse(localStorage.getItem("user"));
     if (!user?.id) return;
 
     try {
-      const response = await fetch(`${API_BASE_URL}/cart/${user.id}`);
+      const response = await fetch(`${API_BASE_URL}/api/cart/${user.id}`);
       if (response.ok) {
         const data = await response.json();
         setCartItems(data);
@@ -26,25 +26,24 @@ export function CartProvider({ children }) {
   useEffect(() => {
     fetchCartItems();
   }, []);
-
   const addToCart = async (product, quantity) => {
     const user = JSON.parse(localStorage.getItem("user"));
     if (!user?.id) return;
 
     try {
-      const response = await fetch(`${API_BASE_URL}/cart`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          user_id: user.id,
-          productId: product.id,
-          name: product.name,
-          price: product.price,
-          image: product.image,
-          quantity,
-          category: product.category || 'General'
-        }),
-      });
+    const response = await fetch(`${API_BASE_URL}/api/cart`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      user_id: user.id,
+      productId: product.id,
+      name: product.name,
+      price: product.price,
+      image_url: product.image_url || product.image,
+      quantity: quantity, 
+      category: product.category || 'General'
+    }),
+  });
 
       if (!response.ok) throw new Error("Failed to add to cart");
       fetchCartItems(); // DB se data refresh karein
@@ -56,7 +55,7 @@ export function CartProvider({ children }) {
   const removeFromCart = async (id) => {
     setCartItems((prev) => prev.filter((item) => item.id !== id));
     try {
-      await fetch(`${API_BASE_URL}/cart/${id}`, { method: "DELETE" });
+      await fetch(`${API_BASE_URL}/api/cart/${id}`, { method: "DELETE" });
       fetchCartItems();
     } catch (error) {
       console.error("Delete Failed:", error);
@@ -64,11 +63,18 @@ export function CartProvider({ children }) {
   };
 
   const updateQuantity = async (id, quantity) => {
+    {console.log("Cart Items Array:", cartItems)}
     if (quantity < 1) return;
     setCartItems((prev) =>
+      
       prev.map((item) => (item.id === id ? { ...item, quantity } : item))
     );
-    // Note: Yahan aap backend update bhi call kar sakti hain
+    // Backend update yahan aayega
+    await fetch(`${API_BASE_URL}/api/cart/${id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ quantity })
+    });
   };
 
   const toggleSelectItem = (id) => {
@@ -84,6 +90,7 @@ export function CartProvider({ children }) {
       setSelectedItems([]);
     } else {
       setSelectedItems(cartItems.map((item) => item.id));
+      console.log("Item ka data:", cartItems);
     }
   };
 
@@ -91,7 +98,7 @@ export function CartProvider({ children }) {
     if (selectedItems.length === 0) return;
     
     try {
-      await fetch(`${API_BASE_URL}/cart/delete-multiple`, {
+      await fetch(`${API_BASE_URL}/api/cart/delete-multiple`, {
         method: "DELETE",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ ids: selectedItems }),

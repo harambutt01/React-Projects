@@ -85,7 +85,7 @@ function Checkout() {
     }
 
     try {
-      const response = await fetch(`${API_BASE_URL}/checkout`, {
+      const response = await fetch(`${API_BASE_URL}/api/checkout`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(orderPayload),
@@ -101,7 +101,7 @@ function Checkout() {
         const currentUserId = user?.id || 2; 
 
         // Database se cart delete karne ki request
-        await fetch(`${API_BASE_URL}/cart/clear/${currentUserId}`, {
+        await fetch(`${API_BASE_URL}/api/cart/clear/${currentUserId}`, {
           method: 'DELETE'
         });
 

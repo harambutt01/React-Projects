@@ -2,6 +2,8 @@ import { useCart } from "./CartContext";
 import { useTheme } from "./ThemeContext";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify"; 
+import { API_BASE_URL } from '../Config/Api';
+
 
 function Cart() {
   const { cartItems, removeFromCart, updateQuantity, totalPrice } = useCart();
@@ -11,7 +13,7 @@ function Cart() {
   const handleShopNow = () => {
     navigate("/products");
   };
-
+console.log("Cart Items in UI:", cartItems);
   const handleQuantityDecrease = (id, currentQty) => {
     updateQuantity(id, currentQty - 1);
   };
@@ -62,11 +64,11 @@ function Cart() {
       {cartItems.map((item) => (
         <div key={item.id} className={`flex items-center gap-4 mb-4 p-4 rounded-xl border ${borderColor}`}>
 
-          <img
-            src={item.thumbnail}
-            alt={item.title}
-            className="w-20 h-20 object-cover rounded-lg"
-          />
+           <img
+  src={item.image_url.startsWith("http") ? item.image_url : `${API_BASE_URL}/${item.image_url.replace('uploads/', '')}`}
+  alt={item.title}
+  className="w-20 h-20 object-cover rounded-lg"
+/>
 
           <div className="flex-1">
             <h3 className="font-semibold text-[0.95rem]">{item.title}</h3>
