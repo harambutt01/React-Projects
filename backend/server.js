@@ -17,8 +17,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 // --- 2. STATIC ASSETS ---
-app.use('/assets', express.static(path.join(__dirname, '../public/assets')));
-
+app.use('/assets', express.static(path.join(__dirname, 'public', 'assets')));
 // --- 3. DATABASE CONNECTION ---
 const db = mysql.createConnection({
   host: 'localhost',
@@ -167,10 +166,28 @@ app.get('/api/users', (req, res) => {
   });
 });
 
-// --- 7. OTHER ROUTES ---
-app.use('/api/products/:productId/reviews', reviewRoutes); // Specific route pehle
-app.use('/api/products', productRoutes); // General route baad mein
+// --- NEWLY ADDED: POST REVIEW ROUTE ---
+app.post('/api/products/:productId/reviews', (req, res) => {
+    const { productId } = req.params;
+    const { reviewerName, comment, rating } = req.body;
+
+    const sql = "INSERT INTO reviews (product_id, reviewer_name, comment, rating, created_at) VALUES (?, ?, ?, ?, NOW())";
+    
+    db.query(sql, [productId, reviewerName, comment, rating], (err, result) => {
+        if (err) {
+            console.error("Error saving review:", err);
+            return res.status(500).json({ status: "Error", message: "Failed to save review" });
+        }
+        res.json({ status: "Success", message: "Review added successfully!" });
+    });
+});
+// --- 7. OTHER ROUTES (Cleaned) ---
+// Note: Manual app.post wala block yahan se hata dein taake conflict na ho
+
+app.use('/api/products/:productId/reviews', reviewRoutes); 
+app.use('/api/products', productRoutes); 
 app.use('/api/categories', categoryRoutes);
 app.use('/api/cart', cartRoutes);
 app.use('/api/checkout', checkoutRoutes);
+
 app.listen(port, () => console.log(`Backend running on http://localhost:${port}`));
