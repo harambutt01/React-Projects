@@ -21,8 +21,8 @@ const Sidebar = () => {
   ];
 
   return (
-    <div className="w-64 bg-gray-900 text-white min-h-screen p-5 flex flex-col shadow-xl">
-      <h2 className="text-2xl font-bold mb-8 text-blue-400 border-b border-gray-700 pb-4">
+<div className="w-64 bg-gray-900 text-white h-screen fixed left-0 top-0 p-5 flex flex-col shadow-xl z-50">
+        <h2 className="text-2xl font-bold mb-8 text-blue-400 border-b border-gray-700 pb-4">
         Admin Panel
       </h2>
       

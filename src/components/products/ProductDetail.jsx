@@ -4,7 +4,7 @@ import { useTheme } from "../ThemeContext";
 import { useCart } from "../CartContext";
 import useFetch from "../../hooks/useFetch";
 import { toast } from "react-toastify";
-import {  API_BASE_URL, IMAGE_BASE_URL } from '../../Config/Api';
+import { API_BASE_URL, IMAGE_BASE_URL } from '../../Config/Api';
 
 // Swiper imports for Related Products slider
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -20,7 +20,8 @@ function ProductDetail() {
   const { isDark } = useTheme();
   const { addToCart } = useCart(); 
 
-  const { data: apiData, loading, error } = useFetch(`${API_BASE_URL}/api/products/${id}`);  const [quantity, setQuantity] = useState(1);
+  const { data: apiData, loading, error } = useFetch(`${API_BASE_URL}/api/products/${id}`);
+  const [quantity, setQuantity] = useState(1);
   const [activeTab, setActiveTab] = useState("details");
   const [selectedImage, setSelectedImage] = useState(null);
   const [localReviews, setLocalReviews] = useState([]);
@@ -31,7 +32,11 @@ function ProductDetail() {
   const displayImage = (img) => {
     if (!img) return "https://via.placeholder.com/400?text=No+Image";
     if (img.startsWith("http")) return img;
-    return `${API_BASE_URL}/${img}`;
+
+    const path = img.startsWith('/') ? img : `/${img}`;
+    const baseUrl = API_BASE_URL.endsWith('/') ? API_BASE_URL.slice(0, -1) : API_BASE_URL;
+
+    return `${baseUrl}${path}`;
   };
 
   const product = useMemo(() => {
@@ -43,7 +48,6 @@ function ProductDetail() {
     return apiData;
   }, [apiData, id]);
 
-  
   const allProductImages = useMemo(() => {
     if (!product) return [];
     
@@ -55,8 +59,7 @@ function ProductDetail() {
       try {
         const parsed = JSON.parse(product.images);
         if (Array.isArray(parsed) && parsed.length > 0) return parsed;
-      } catch (e) {
-      }
+      } catch (e) {}
     }
 
     const fallbackArray = [
@@ -100,7 +103,6 @@ function ProductDetail() {
     }
   }, [product, id]);
 
-  // --- AUTO SCROLL WITH SMOOTH EFFECT ---
   useEffect(() => {
     if (!product) return;
     window.scrollTo({ top: 0, behavior: "smooth" }); 
@@ -114,16 +116,23 @@ function ProductDetail() {
 
   const handleReviewSubmit = async (e) => {
     e.preventDefault();
-    if (!newReview.reviewerName.trim() || !newReview.comment.trim()) {
-      toast.error("Please fill in all fields.");
+    const savedUser = JSON.parse(localStorage.getItem("user"));
+    if (!savedUser) {
+      toast.error("Please login to post a review!");
+      navigate("/login");
       return;
     }
+
+    const reviewPayload = {
+      ...newReview,
+      reviewerName: savedUser.name || "Anonymous"
+    };
 
     try {
       const response = await fetch(`${API_BASE_URL}/api/products/${id}/reviews`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(newReview)
+        body: JSON.stringify(reviewPayload)
       });
 
       if (response.ok) {
@@ -132,13 +141,15 @@ function ProductDetail() {
         setNewReview({ reviewerName: "", comment: "", rating: 5 });
         setShowReviewForm(false);
         toast.success("Review saved!");
+      } else {
+        const errorData = await response.json();
+        toast.error(errorData.message || "Failed to save review");
       }
     } catch (err) {
-      toast.error("Failed to save review");
+      toast.error("Server connection failed");
     }
   };
 
-  // --- HANDLERS ---
   const handleTabChange = (tab) => setActiveTab(tab);
   const handleQuantityIncrease = () => setQuantity((q) => q + 1);
   const handleQuantityDecrease = () => setQuantity((q) => Math.max(1, q - 1));
@@ -151,10 +162,8 @@ function ProductDetail() {
   };
   const toggleReviewForm = () => setShowReviewForm((prev) => !prev);
 
-  // --- DATABASE DRIVEN ADD TO CART ---
   const handleAddToCart = async () => {
     if (!product) return;
-
     const savedUser = JSON.parse(localStorage.getItem("user"));
 
     if (!savedUser || !savedUser.id) {
@@ -163,18 +172,21 @@ function ProductDetail() {
       return;
     }
 
+    // Fix: Sahi image path nikalna
+    const actualImagePath = product.image_url || product.image || product.thumbnail || "";
+
     const cartPayload = {
-      user_id: savedUser.id,
-      productId: product.id,
-      price: product.price,
-      image: product.image || product.thumbnail || product.img_url,
-      category: product.category,
-      quantity: quantity
+        user_id: savedUser.id,
+        productId: product.id,
+        price: product.price,
+        image_url: actualImagePath,
+        category: product.category,
+        quantity: quantity
     };
 
     try {
-const response = await fetch(`${API_BASE_URL}/api/cart`, {
-          method: 'POST',
+      const response = await fetch(`${API_BASE_URL}/api/cart`, {
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(cartPayload)
       });
@@ -211,14 +223,11 @@ const response = await fetch(`${API_BASE_URL}/api/cart`, {
         </button>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 mb-16">
-          {/* Left Side: Images Section */}
           <div className="flex flex-col gap-4">
-            {/* Main Badi Image Box */}
             <div className={`rounded-2xl p-6 flex items-center justify-center min-h-[300px] md:min-h-[450px] ${imgBg}`}>
               <img src={displayImage(selectedImage)} alt={product.title || product.name} className="max-h-[280px] md:max-h-[400px] object-contain hover:scale-105 transition-all duration-500" />
             </div>
 
-            {/* 🟢 DYNAMIC MINI GALLERY TRACK: Agar 1 se zyada images bani hain toh forced show karega */}
             {allProductImages.length > 1 && (
               <div className="flex items-center gap-3 overflow-x-auto py-2 pr-2 scrollbar-none">
                 {allProductImages.map((imgUrl, index) => {
@@ -242,7 +251,6 @@ const response = await fetch(`${API_BASE_URL}/api/cart`, {
             )}
           </div>
 
-          {/* Right Side: Product Details info */}
           <div className="flex flex-col">
             <span className={`text-xs font-black uppercase tracking-widest mb-2 ${isDark ? "text-gray-400" : "text-gray-500"}`}>{product.category}</span>
             <h1 className="text-2xl md:text-4xl font-bold mb-4">{product.title || product.name}</h1>
@@ -330,7 +338,7 @@ const response = await fetch(`${API_BASE_URL}/api/cart`, {
               navigation 
               pagination={{ clickable: true }}
               autoplay={{
-                delay: 2000,                 
+                delay: 2000,                
                 disableOnInteraction: false, 
                 pauseOnMouseEnter: false    
               }}

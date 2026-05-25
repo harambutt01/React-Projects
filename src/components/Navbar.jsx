@@ -122,7 +122,7 @@ function Navbar() {
           </ul>
         </nav>
 
-        <div className="flex items-center gap-[15px] sm:gap-[20px]">
+        <div className="flex items-center gap-[4px] sm:gap-[8px]">
           <button 
             className={`w-[28px] h-[15px] sm:w-[30px] sm:h-[17px] rounded-full border-none cursor-pointer relative transition-all duration-300 ${isOnline ? "bg-[#00e5a0]" : "bg-[#cccccc]"}`} 
             onClick={toggleStatus}

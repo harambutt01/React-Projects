@@ -4,41 +4,47 @@ import { toast } from 'react-toastify';
 import { API_BASE_URL } from '../../Config/Api';
 
 const ProductModal = ({ isOpen, onClose, onSave, product }) => {
-  const [form, setForm] = useState(product || { 
-    name: '', 
-    price: '', 
-    description: '', 
-    stock: '', 
-    category_id: '', 
-    seller_id: 1, 
-    image_url: '' 
+  const [form, setForm] = useState({ 
+    name: '', price: '', description: '', stock: '', category_id: '', seller_id: 1 
   });
+  const [imageUrl, setImageUrl] = useState('');
+
   useEffect(() => {
     if (product) {
-      setForm(product); 
+      setForm({
+        name: product.name,
+        price: product.price,
+        description: product.description || '',
+        stock: product.stock,
+        category_id: product.category_id,
+        seller_id: product.seller_id || 1
+      });
+      setImageUrl(product.image_url || ''); // Edit mode ke liye image URL set karna
     } else {
-      // Agar naya product add kar rahe hain, to form khali kar dein
-      setForm({ name: '', price: '', description: '', stock: '', category_id: '', seller_id: 1, image_url: '' });
+      setForm({ name: '', price: '', description: '', stock: '', category_id: '', seller_id: 1 });
+      setImageUrl('');
     }
   }, [product]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    // Naya data object jo backend ko jayega
+    const productData = { ...form, image_url: imageUrl };
+
     try {
       if (product) {
-        // Edit Mode: PUT request
-        await axios.put(`${API_BASE_URL}/api/products/${product.id}`, form);
+        await axios.put(`${API_BASE_URL}/api/products/${product.id}`, productData);
         toast.success("Product updated successfully!");
       } else {
-        // Add Mode: POST request
-        await axios.post(`${API_BASE_URL}/api/products`, form);
+        await axios.post(`${API_BASE_URL}/api/products`, productData);
         toast.success("Product added successfully!");
       }
-      onSave(); // Parent (Products.jsx) ko refresh karne ke liye
+      onSave();
       onClose();
     } catch (err) {
       console.error(err);
-      toast.error("Failed to save product. Check console logs.");
+      toast.error("Failed to save product.");
     }
   };
 
@@ -54,6 +60,16 @@ const ProductModal = ({ isOpen, onClose, onSave, product }) => {
           <input className="w-full border p-2 rounded" placeholder="Description" value={form.description} onChange={(e) => setForm({...form, description: e.target.value})} />
           <input className="w-full border p-2 rounded" type="number" placeholder="Stock Quantity" value={form.stock} onChange={(e) => setForm({...form, stock: e.target.value})} required />
           <input className="w-full border p-2 rounded" type="number" placeholder="Category ID" value={form.category_id} onChange={(e) => setForm({...form, category_id: e.target.value})} required />
+          
+          <label className="block text-sm font-medium text-gray-700">Image URL</label>
+          <input 
+            type="text" 
+            value={imageUrl}
+            onChange={(e) => setImageUrl(e.target.value)} 
+            placeholder="https://example.com/image.jpg"
+            className="w-full border p-2 rounded" 
+            required 
+          />
           
           <div className="flex gap-2 pt-2">
             <button type="submit" className="flex-1 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Save</button>

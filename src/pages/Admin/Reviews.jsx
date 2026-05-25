@@ -7,7 +7,7 @@ const Reviews = () => {
   const [reviews, setReviews] = useState([]);
 
   useEffect(() => {
-    axios.get(`${API_BASE_URL}/admin/reviews`)
+    axios.get(`${API_BASE_URL}/api/admin/reviews`)
       .then(res => setReviews(res.data))
       .catch(err => console.error(err));
   }, []);
