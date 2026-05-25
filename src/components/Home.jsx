@@ -12,19 +12,30 @@ function Home() {
   const navigate = useNavigate();
   const { isDark } = useTheme(); // 
 
-  const fetchProducts = async () => {
+// Home.jsx mein ye update karein
+const fetchProducts = async () => {
     try {
       setLoading(true);
-      const response = await fetch(`${API_BASE_URL}/api/products?pageSize=100`);
-      if (!response.ok) throw new Error("Failed to fetch products");
+      // Confirm karein ke API_BASE_URL sahi hai
+      const response = await fetch(`${API_BASE_URL}/api/products`); 
+      
+      if (!response.ok) throw new Error("Server response was not ok");
+      
       const data = await response.json();
-      setProducts(data.products || data || []);
+      
+      // Console mein check karein ke data array hai ya object
+      console.log("API se milne wala data:", data);
+
+      // Agar data array hai, toh direct set karein, warna data.products
+      setProducts(Array.isArray(data) ? data : (data.products || []));
+      
     } catch (err) {
+      console.error("Fetch error:", err);
       setError(err.message);
     } finally {
       setLoading(false);
     }
-  };
+};
 
   useEffect(() => {
     fetchProducts();

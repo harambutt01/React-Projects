@@ -29,14 +29,15 @@ function ProductDetail() {
   const [newReview, setNewReview] = useState({ reviewerName: "", comment: "", rating: 5 });
   const [relatedProducts, setRelatedProducts] = useState([]);
 
-  const displayImage = (img) => {
+ const displayImage = (img) => {
     if (!img) return "https://via.placeholder.com/400?text=No+Image";
     if (img.startsWith("http")) return img;
 
-    const path = img.startsWith('/') ? img : `/${img}`;
-    const baseUrl = API_BASE_URL.endsWith('/') ? API_BASE_URL.slice(0, -1) : API_BASE_URL;
-
-    return `${baseUrl}${path}`;
+    // Path ko clean karein (agar shuru mein '/' hai toh hata dein)
+    const cleanPath = img.startsWith('/') ? img.slice(1) : img;
+    
+    // Yahan seedha 4000 port ka path banayein
+    return `http://localhost:4000/${cleanPath}`;
   };
 
   const product = useMemo(() => {
@@ -103,14 +104,15 @@ function ProductDetail() {
     }
   }, [product, id]);
 
-  useEffect(() => {
+useEffect(() => {
     if (!product) return;
     window.scrollTo({ top: 0, behavior: "smooth" }); 
     setQuantity(1);
     setActiveTab("details");
     setShowReviewForm(false);
     
-    const mainImg = product.image || product.thumbnail || product.img_url;
+    // Yahan priority set karein
+    const mainImg = product.image_url || product.image || product.thumbnail;
     setSelectedImage(mainImg);
   }, [id, product]);
 

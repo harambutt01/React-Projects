@@ -17,7 +17,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 // --- 2. STATIC ASSETS ---
-app.use('/assets', express.static(path.join(__dirname, 'public', 'assets')));
+app.use('/', express.static(path.join(__dirname, '../public')));
 // --- 3. DATABASE CONNECTION ---
 const db = mysql.createConnection({
   host: 'localhost',
@@ -184,10 +184,10 @@ app.post('/api/products/:productId/reviews', (req, res) => {
 // --- 7. OTHER ROUTES (Cleaned) ---
 // Note: Manual app.post wala block yahan se hata dein taake conflict na ho
 
-app.use('/api/products/:productId/reviews', reviewRoutes); 
 app.use('/api/products', productRoutes); 
 app.use('/api/categories', categoryRoutes);
 app.use('/api/cart', cartRoutes);
+app.use('/api/reviews', reviewRoutes); 
 app.use('/api/checkout', checkoutRoutes);
 
 app.listen(port, () => console.log(`Backend running on http://localhost:${port}`));
