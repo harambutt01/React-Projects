@@ -63,7 +63,7 @@ const fetchCartItems = async () => {
   };
 
   const updateQuantity = async (id, quantity) => {
-    {console.log("Cart Items Array:", cartItems)}
+    console.log("Cart Items Array:", cartItems);
     if (quantity < 1) return;
     setCartItems((prev) =>
       
@@ -90,7 +90,7 @@ const fetchCartItems = async () => {
       setSelectedItems([]);
     } else {
       setSelectedItems(cartItems.map((item) => item.id));
-      console.log("Item ka data:", cartItems);
+      console.log("Item's data:", cartItems);
     }
   };
 

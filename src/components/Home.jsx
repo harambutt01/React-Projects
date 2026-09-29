@@ -10,23 +10,20 @@ function Home() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
-  const { isDark } = useTheme(); // 
+  const { isDark } = useTheme(); 
 
-// Home.jsx mein ye update karein
 const fetchProducts = async () => {
     try {
       setLoading(true);
-      // Confirm karein ke API_BASE_URL sahi hai
+      
       const response = await fetch(`${API_BASE_URL}/api/products`); 
       
       if (!response.ok) throw new Error("Server response was not ok");
       
       const data = await response.json();
       
-      // Console mein check karein ke data array hai ya object
       console.log("API se milne wala data:", data);
 
-      // Agar data array hai, toh direct set karein, warna data.products
       setProducts(Array.isArray(data) ? data : (data.products || []));
       
     } catch (err) {
@@ -148,18 +145,19 @@ function CategorySection({ title, tag, items, id, isDark, isSale, invert }) {
       </div>
 
       <div className="mt-12 md:mt-20 flex justify-center px-4">
-        <button
-          onClick={() => navigate('/products')}
-          className={`group relative px-7 py-3.5 md:px-14 md:py-5 text-[10px] md:text-[11px] tracking-[2px] md:tracking-[4px] font-black uppercase border-2 overflow-hidden transition-all duration-500 active:scale-95
-            ${isDark ? 'border-[#00bcd4] text-[#00bcd4] shadow-[0_0_15px_rgba(0,188,212,0.2)]' : 'border-black text-black'}`}
-        >
-          <span className={`absolute -inset-[2px] translate-y-full transition-transform duration-500 ease-out group-hover:translate-y-0 group-active:translate-y-0 ${isDark ? 'bg-[#00bcd4]' : 'bg-black'}`}></span>
-          <span className={`relative z-10 transition-colors duration-500 ${isDark ? 'group-hover:text-black group-active:text-black' : 'group-hover:text-white group-active:text-white'}`}>
-            See More Products
-          </span>
-        </button>
+  <button
+    onClick={() => navigate('/products')}
+    className={`group relative px-7 py-3.5 md:px-14 md:py-5 text-[10px] md:text-[11px] tracking-[2px] md:tracking-[4px] font-black uppercase border-2 overflow-hidden transition-all duration-500 active:scale-95
+      ${isCurrentlyDark ? 'border-[#00bcd4] text-[#00bcd4] shadow-[0_0_15px_rgba(0,188,212,0.2)]' : 'border-black text-black'}`}
+  >
+    <span className={`absolute -inset-[2px] translate-y-full transition-transform duration-500 ease-out group-hover:translate-y-0 group-active:translate-y-0 ${isCurrentlyDark ? 'bg-[#00bcd4]' : 'bg-black'}`}></span>
+    <span className={`relative z-10 transition-colors duration-500 ${isCurrentlyDark ? 'group-hover:text-black group-active:text-black' : 'group-hover:text-white group-active:text-white'}`}>
+      See More Products
+    </span>
+  </button>
+</div>
       </div>
-    </div>
+    
   );
 }
 
